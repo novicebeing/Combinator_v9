@@ -64,19 +64,17 @@ classdef SpectraList < handle
                 end
             end
         end
+        function setWorkspace(this, val)
+            %SET
+            this.LocalWorkspace = val;
+        end
         function set.LocalWorkspace(this, val)
             %SET
             this.LocalWorkspace = val;
             addlistener(this.LocalWorkspace, 'ComponentChanged', @(~, evnt) localWorkspaceChangeCallback(this, evnt));
         end
-        function setDataBrowser(this, val)
-            %SET
-            this.LocalWorkspace = val.LocalWorkspace;
-            this.LocalWorkspaceView = val.LocalWorkspaceView;
-        end
-        function addSpectra(this, val, NUP, inspectordata, plantname)
+        function addItem(this, val, NUP, inspectordata, name)
             % Spectra Properties
-            name = 'spectra1';
             
             allnames = this.PlantNames;
             k = 1;
@@ -92,9 +90,6 @@ classdef SpectraList < handle
             this.PlantNames = [this.PlantNames; name];
             this.enabledWSListener = false;
             this.LocalWorkspace.assignin(name, val);
-            if ~isempty(this.LocalWorkspaceView)
-                hilite(this.LocalWorkspaceView,name);
-            end
             this.enabledWSListener = true;
             if nargin >= 3
                 this.NUPData = setfield(this.NUPData, name, NUP);
@@ -105,9 +100,6 @@ classdef SpectraList < handle
                 inspectordata = [];
             end
             this.InspectorData = setfield(this.InspectorData, name, inspectordata); %#ok<*SFLD>
-            notify(this, 'PlantsEvent', pidtool.desktop.pidtuner.tc.PlantsEventData(true, false, false));
-            this.isSelectedPlantAdded = true;
-            this.SelectedPlantIndex = this.NumPlants;
         end
         function removePlant(this, plantname)
             %REMOVEPLANT
@@ -325,6 +317,20 @@ classdef SpectraList < handle
         end
         function out = isSelectedPlantLinearized(this)
             out = ~isempty(getfield(this.InspectorData, this.SelectedPlantName));
+        end
+        function plantName = getItemNames(this, plantids)
+            if isempty(plantids)
+                return
+            end
+            if isnumeric(plantids)
+                idx = plantids;
+            else
+                idx = [];
+                for i = 1:length(plantids)
+                    idx = [idx;find(strcmp(this.PlantNames, plantids{i}))]; %#ok<AGROW>
+                end
+            end
+            plantName = this.PlantNames{idx};
         end
     end
 end

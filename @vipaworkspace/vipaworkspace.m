@@ -15,11 +15,34 @@ classdef vipaworkspace < handle
         OpenLoopRelinearizer
         ClosedLoopRelinearizer
         DataBrowser
+        ImagesList
+        CalibrationList
         SpectraList
-        SpectraList2
+        FitSpectraList
+        FitsList
         TC
         TabGC
+        
+        % Tabs
         hometab
+        acquiretab
+        fittingtab
+        fitanalysistab
+        figuretab
+        
+        % Image Acquire Functions Library
+        acquireOperations
+        acquireFunctions
+        singleImageAcquireFunctions
+        kineticsImagesAcquireFunctions
+        fitAnalysisFunctions
+        
+        % Acquire Functions
+        acquireOperation
+        acquireFunction % Takes no arguments, returns images or spectra, timestamps, {'images','spectra'}
+        singleImageAcquireFunction % Takes no arguments, returns a single image
+        kineticsImagesAcquireFunction % Takes no arguments, returns multiple images, timestamps
+        fitAnalysisFunction % Takes three arguments: time, moleculeConcentrations, moleculeLabels
     end
     properties (SetAccess = private)
         Type = 'MATLAB'
@@ -35,22 +58,92 @@ classdef vipaworkspace < handle
         function this = vipaworkspace(varargin)
             %PIDTOOLDESKTOP
             %====================================================================================================(Plant List)
+            this.ImagesList = vipadesktop.ImagesList();
+            this.CalibrationList = vipadesktop.CalibrationList();
             this.SpectraList = vipadesktop.SpectraList();
-            this.SpectraList2 = vipadesktop.SpectraList();
+            this.FitSpectraList = vipadesktop.FitSpectraList();
+            this.FitsList = vipadesktop.FitsList();
+%             this.SpectraList2 = vipadesktop.SpectraList();
             this.DataBrowser = vipadesktop.VIPAdataBrowser();
-            this.SpectraList.setDataBrowser(this.DataBrowser);
-            this.SpectraList.addSpectra(0,0, 0,0);
-            this.SpectraList2.setDataBrowser(this.DataBrowser);
-            this.SpectraList2.addSpectra(0,0, 0,0);
+            this.ImagesList.setWorkspace(this.DataBrowser.imagesWorkspace);
+            this.CalibrationList.setWorkspace(this.DataBrowser.calibrationWorkspace);
+            this.SpectraList.setWorkspace(this.DataBrowser.spectraWorkspace);
+            this.FitSpectraList.setWorkspace(this.DataBrowser.fitspectraWorkspace);
+            this.FitsList.setWorkspace(this.DataBrowser.fitsWorkspace);
+            %this.SpectraList.addSpectra(0,0, 0,'test1');
+%             this.SpectraList2.setDataBrowser(this.DataBrowser);
+%             this.SpectraList2.addSpectra(0,0, 0,0);
             %=================================================================================================(Desktop Group)
             this.GroupName = tempname;
             this.TPComponent = vipadesktop.ToolGroup(this.GroupName,'VIPA Workspace');
             this.TPComponent.setDataBrowser(this.DataBrowser.View.getPanel);
             
-            % Tab Control
+            % Get Image Acquire Operations
+            this.acquireOperations = {'add','replace','average','averageWithRestart'};
+            this.acquireOperation = this.acquireOperations{1};
+            
+            % Get Image Acquire functions
+            acquireFunctionsPackage = what('acquireFunctions');
+            singleImageAcquireFunctionsPackage = what('singleImageAcquireFunctions');
+            kineticsImagesAcquireFunctionsPackage = what('kineticsImagesAcquireFunctions');
+            fitAnalysisFunctionsPackage = what('fitAnalysisFunctions');
+            
+            this.acquireFunctions = {};
+            for i = 1:numel(acquireFunctionsPackage.m)
+                [~,b,~] = fileparts(acquireFunctionsPackage.m{i});
+                this.acquireFunctions{end+1} = str2func(sprintf('%s.%s','acquireFunctions',b));
+            end
+            if numel(this.acquireFunctions) > 0
+                this.acquireFunction = this.acquireFunctions{1};
+            end
+            
+            this.singleImageAcquireFunctions = {};
+            for i = 1:numel(singleImageAcquireFunctionsPackage.m)
+                [~,b,~] = fileparts(singleImageAcquireFunctionsPackage.m{i});
+                this.singleImageAcquireFunctions{end+1} = str2func(sprintf('%s.%s','singleImageAcquireFunctions',b));
+            end
+            if numel(this.singleImageAcquireFunctions) > 0
+                this.singleImageAcquireFunction = this.singleImageAcquireFunctions{1};
+            end
+            
+            this.kineticsImagesAcquireFunctions = {};
+            for i = 1:numel(kineticsImagesAcquireFunctionsPackage.m)
+                [~,b,~] = fileparts(kineticsImagesAcquireFunctionsPackage.m{i});
+                this.kineticsImagesAcquireFunctions{end+1} = str2func(sprintf('%s.%s','kineticsImagesAcquireFunctions',b));
+            end
+            if numel(this.kineticsImagesAcquireFunctions) > 0
+                this.kineticsImagesAcquireFunction = this.kineticsImagesAcquireFunctions{1};
+            end
+            
+            this.fitAnalysisFunctions = {};
+            for i = 1:numel(fitAnalysisFunctionsPackage.m)
+                [~,b,~] = fileparts(fitAnalysisFunctionsPackage.m{i});
+                this.fitAnalysisFunctions{end+1} = str2func(sprintf('%s.%s','fitAnalysisFunctions',b));
+            end
+            if numel(this.fitAnalysisFunctions) > 0
+                this.fitAnalysisFunction = this.fitAnalysisFunctions{1};
+            end
+            
+            % Tab Controls
             this.hometab = vipadesktop.hometab(this.TPComponent);
             this.TPComponent.add(this.hometab.TPComponent);
+            this.acquiretab = vipadesktop.acquiretab(this.TPComponent,this.acquireFunctions,this.singleImageAcquireFunctions,this.kineticsImagesAcquireFunctions);
+            this.TPComponent.add(this.acquiretab.TPComponent);
+            addlistener(this.acquiretab,'AcquireFunctionBoxAction',@(~,~) this.setAcquireFunction(this.acquiretab.acquireFunctionComboBox.SelectedItem));
+            addlistener(this.acquiretab,'AcquireOperationBoxAction',@(~,~) this.setAcquireOperation(this.acquiretab.acquireOperationComboBox.SelectedItem));
+            
+            this.fittingtab = vipadesktop.fittingtab(this.TPComponent);
+            this.TPComponent.add(this.fittingtab.TPComponent);
+            this.fitanalysistab = vipadesktop.fitanalysistab(this.TPComponent,this.fitAnalysisFunctions);
+            this.TPComponent.add(this.fitanalysistab.TPComponent);
+            this.figuretab = vipadesktop.figuretab(this.TPComponent);
+            this.TPComponent.add(this.figuretab.TPComponent);
+            addlistener(this.hometab,'NewButtonPressed',@(~,~) this.newDialog());
             addlistener(this.hometab,'OpenButtonPressed',@(~,~) this.openDialog());
+            addlistener(this.hometab,'OpenButtonKineticsObjectPressed',@(~,~) this.openDialogKineticsObject());
+            
+            % Add Spectrum acquire listener
+            addlistener(this.acquiretab,'AcquireButtonPressed',@(~,~) this.acquire());
             
             %=====================================================================================================(PID Tuner)
             %this.PIDTuner = pidtool.desktop.PIDTuner(this, desiredtype, baselinecontroller);
@@ -76,8 +169,8 @@ classdef vipaworkspace < handle
 %                 @(es,ed)showClosedLoopRelinearizationTab(this));
 %             addlistener(this.PlantList, 'PlantIdentificationRequested', ...
 %                 @(es,ed)showIdentificationTab(this));
-%             addlistener(this.PlantListBrowser, 'ComponentRequest', ...
-%                 @(es,ed)cbPlantListBrowserRequest(this,ed));
+            addlistener(this.DataBrowser, 'ComponentRequest', ...
+                @(es,ed)cbPlantListBrowserRequest(this,ed));
         end
         function open(this)
             %OPEN
@@ -165,146 +258,95 @@ classdef vipaworkspace < handle
                 end
             end
         end
-    end
-end
-%=================================================================================================================(Callbacks)
-function cbCloseGroup(this, evnt)
-%CBCLOSEGROUP
-ET = evnt.EventData.EventType;
-if strcmp(ET, 'CLOSING')
-    this.PIDTuner.isGroupActionClosing = true;
-    this.TPComponent.approveClose;
-end
-if strcmp(ET, 'CLOSED')
-    L = this.Listeners;
-    for ct = 1:numel(L)
-        delete(L{ct})
-    end
-    delete(this);
-end
-end
-function cbModelLinearizationChanged(this)
-%CBMODELLINEARIZATIONCHANGED
-this.PlantList.addPlant(this.SimulinkGateway.LinearizedPlant, 0, this.SimulinkGateway.InspectorData,'');
-end
-function cbClientAction(this, evnt)
-% Selected tab changed callback
-ET = evnt.EventData.EventType;
-if strcmp(ET, 'ACTIVATED')
-    fig = evnt.EventData.Client;
-    if ~isempty(fig)
-        tunertool = this.PIDTuner;
-        plantidtool = this.PlantIdentifier;
-        relintool = this.ClosedLoopRelinearizer;
-        tooltag = get(fig,'Tag');
-        if ~isempty(tunertool) && isvalid(tunertool) && strcmp(tooltag, 'PIDTunerFigure')
-            tunertool.TC.updateStatusBar();
-            tunertool.TC.DataSourcePlot.setActiveFigure(fig);
-            tunertool.updateMessagePanel();
-        elseif ~isempty(plantidtool) && isvalid(plantidtool) && ...
-                strcmp(tooltag, sprintf('PIDIdentificationPlot:%s',plantidtool.Name))
-            if ~strcmp(this.StatusBar.ParentTool,'plantid')
-                this.StatusBar.setText('',[],'west');
-                this.StatusBar.ParentTool = 'plantid';
-            end
-            showStatus(plantidtool.Data);
-        elseif ~isempty(relintool) && isvalid(relintool) && strcmp(tooltag, 'RelinFigure')
-            relintool.TC.updateStatusBar();
-        else
-            % ignore
+        
+        % Get Set functions
+        function setAcquireFunction(this,acquireFunctionString)
+            this.acquireFunction = str2func(sprintf('%s.%s','acquireFunctions',acquireFunctionString));
+        end
+        function setAcquireOperation(this,acquireOperationString)
+            this.acquireOperation = acquireOperationString;
         end
     end
 end
-end
+
+%=================================================================================================================(Callbacks)
 function cbPlantListBrowserRequest(this,ed)
 switch ed.Request
-    case 'export'
-        success = this.PIDTuner.TC.ExportDialogTC.exportControllerAndSelectedPlants('', ed.Variables);
-        if success
-            this.StatusBar.setText(pidtool.utPIDgetStrings('cst','strPlantExported'),'info','west');
-            this.StatusBar.ParentTool = 'plantlistbrowser';
-        else
-            this.StatusBar.setText('',[],'west');
+    % Image Acquire Events
+    case 'acquiresingleimage'
+        image = this.singleImageAcquireFunction();
+        this.ImagesList.setImages(ed.Variables,image,0);
+    case 'acquirekineticsimages'
+        [images,time] = this.kineticsImagesAcquireFunction();
+        this.ImagesList.setImages(ed.Variables,images,time);
+        
+    % Image Calibration Events
+    case 'createcalibration'
+        itemNames = this.ImagesList.getItemNames(ed.Variables);
+        h = this.ImagesList.createCalibration(ed.Variables);
+        this.CalibrationList.addItem(h,0,0,itemNames);
+    
+    % Save Events
+    case 'fitslist_savetofile'
+        this.FitsList.saveToFile(ed.Variables);
+    case 'fitslist_setinitialconditions'
+        this.FitsList.setInitialConditions(ed.Variables);
+    
+    % Other functions
+    case 'openplotbrowser'
+        hwait = waitbar(0,'Opening Plot Browsers...', 'WindowStyle', 'modal');
+        for i = 1:numel(ed.Variables)
+            h = this.SpectraList.openPlotBrowsers(ed.Variables(i));
+            this.TPComponent.addFigure(h);
+            waitbar(i/numel(ed.Variables),hwait);
         end
+        close(hwait);
+    case 'openimagebrowser'
+        h = this.ImagesList.openImageBrowsers(ed.Variables);
+        this.TPComponent.addFigure(h);
+    case 'openfitbrowser'
+        h = this.FitsList.openFitBrowsers(ed.Variables);
+        this.TPComponent.addFigure(h);
+    case 'openfitbrowserwithresiduals'
+        h = this.FitsList.openFitBrowsersWithResiduals(ed.Variables);
+        this.TPComponent.addFigure(h);
+    case 'plotfitcoefficients'
+        hwait = waitbar(0,'Plotting Fit Coefficients...', 'WindowStyle', 'modal');
+        for i = 1:numel(ed.Variables)
+            h = this.FitsList.plotFitCoefficients(ed.Variables(i));
+            this.TPComponent.addFigure(h);
+            waitbar(i/numel(ed.Variables),hwait);
+        end
+        close(hwait);
+    case 'plotgroupedfitcoefficients'
+        hs = this.FitsList.plotGroupedFitCoefficients(ed.Variables);
+        for h = hs
+            this.TPComponent.addFigure(h);
+        end
+    case 'exportDOCOglobals'
+        this.FitsList.exportDOCOglobals(ed.Variables);
+    case 'exportToSimBiology'
+        this.FitsList.exportToSimBiology(ed.Variables);
+    case 'performspectralfit'
+        hwait = waitbar(0,'Fitting Spectra', 'WindowStyle', 'modal');
+        for i = 1:numel(ed.Variables)
+            h = this.SpectraList.performSpectralFits(ed.Variables(i),this.FitSpectraList.Plants,0);
+            this.FitsList.addItem(h,0,0,strrep(h.name,' ','_'));
+            waitbar(i/numel(ed.Variables),hwait);
+        end
+        close(hwait);
+    case 'imageslist_setacquiredestination'
+        itemNames = this.ImagesList.getItemNames(ed.Variables);
+        this.acquiretab.imageDestTextField.Text = itemNames;
+    case 'calibrationlist_setacquirecalibration'
+        itemNames = this.CalibrationList.getItemNames(ed.Variables);
+        this.acquiretab.calibrationTextField.Text = itemNames;
+    case 'spectralist_setacquiredestination'
+        itemNames = this.SpectraList.getItemNames(ed.Variables);
+        this.acquiretab.spectraDestTextField.Text = itemNames;
+    case 'calibrationlist_collectfringes'
+        this.CalibrationList.collectFringes(ed.Variables);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
 end
 end
-%====================================================================================(Launch Open Loop Re-Linearization Tool)
-function showOpenLoopRelinearizationTab(this)
-% show tab for plant identification
-if isempty(this.OpenLoopRelinearizer) || ~isvalid(this.OpenLoopRelinearizer)
-    relintc = pidtool.desktop.relinearizetool.ReLinTC(this.SimulinkGateway, 'openloop');
-    relintc.StatusBar = this.StatusBar;
-    this.OpenLoopRelinearizer = pidtool.desktop.RelinearizationTool(relintc,this);
-    L = handle.listener(this.OpenLoopRelinearizer.hPlot, 'ObjectBeingDestroyed',...
-        {@localReleaseOpenLoopRelinearizer,this});
-    this.Listeners{1} = L;
-else
-    figure(this.OpenLoopRelinearizer.hPlot.AxesGrid.Parent);
-end
-this.OpenLoopRelinearizer.hPlot.Visible = 'on';
-end
-%==================================================================================(Launch Closed Loop Re-Linearization Tool)
-function showClosedLoopRelinearizationTab(this)
-% show tab for plant identification
-if isempty(this.ClosedLoopRelinearizer) || ~isvalid(this.ClosedLoopRelinearizer)
-    this.configureTiling([]);
-    relintc = pidtool.desktop.relinearizetool.ReLinTC(this.SimulinkGateway, 'closedloop', this.StatusBar);
-    this.ClosedLoopRelinearizer = pidtool.desktop.RelinearizationTool(relintc, this);
-    L = handle.listener(this.ClosedLoopRelinearizer.hPlot, 'ObjectBeingDestroyed',...
-        {@localReleaseClosedLoopRelinearizer,this});
-    this.Listeners{2} = L;
-else
-    figure(this.ClosedLoopRelinearizer.hPlot.AxesGrid.Parent);
-end
-this.ClosedLoopRelinearizer.hPlot.Visible = 'on';
-end
-%========================================================================================================(Launch Sys-ID Tool)
-function showIdentificationTab(this)
-% show tab for plant identification
-
-if ~controllibutils.isSITBInstalled
-    TaskName = getString(message('Control:pidtool:strIdentifyNewPlant'));
-    DlgMode = struct('WindowStyle','modal','Interpreter','tex');
-    Msg = getString(message('Control:pidtool:requiresSITB',TaskName));
-    errordlg(Msg,'',DlgMode)
-    return
-end
-if strcmp(this.Type, 'Simulink')
-    isMatlab = false;
-    is2DOF = this.SimulinkGateway.is2DOF;
-else
-    isMatlab = true;
-    is2DOF = false;
-end
-if isempty(this.PlantIdentifier) || ~isvalid(this.PlantIdentifier)
-    this.configureTiling([]);
-    Data = iduis.pid.TaskData(isMatlab,is2DOF,this.PlantList);
-    Data.StatusBar = this.StatusBar;
-    this.PlantIdentifier = iduis.pid.IdentificationPlot(pidtool.utPIDgetStrings('cst','strIdentification'),...
-        Data, this.TPComponent);
-    this.PlantIdentifier.DataGenerationMode.setSLGateway(this.SimulinkGateway);
-    L1 = handle.listener(this.PlantIdentifier.hPlot, 'ObjectBeingDestroyed',...
-        {@localReleaseIdentifier,this});
-    this.Listeners{3} = L1;
-else
-    figure(this.PlantIdentifier.hPlot.AxesGrid.Parent);
-end
-this.PlantIdentifier.hPlot.Visible = 'on';
-showInstructionBanner(this.PlantIdentifier, true)
-end
-%==================================================================================================================(Clean-up)
-function localReleaseOpenLoopRelinearizer(~,~,this)
-% Release plant identifier.
-this.OpenLoopRelinearizer = [];
-end
-function localReleaseClosedLoopRelinearizer(~,~,this)
-% Release plant identifier.
-this.ClosedLoopRelinearizer = [];
-end
-function localReleaseIdentifier(~,~,this)
-% Release plant identifier.
-this.PlantIdentifier = [];
-end
-

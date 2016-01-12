@@ -7,8 +7,16 @@ classdef VIPAdataBrowser < handle
     properties
         Model
         View
-        LocalWorkspace
-        LocalWorkspaceView
+        imagesWorkspace
+        imagesWorkspaceView
+        spectraWorkspace
+        spectraWorkspaceView
+        fitsWorkspace
+        fitsWorkspaceView
+        fitspectraWorkspace
+        fitspectraWorkspaceView
+        calibrationWorkspace
+        calibrationWorkspaceView
     end
     events
         ComponentRequest
@@ -17,43 +25,341 @@ classdef VIPAdataBrowser < handle
         function obj = VIPAdataBrowser()
             %PLANTLISTBROWSER
             
+            % Construct the basic model
             obj.Model = toolpack.databrowser.DataBrowserModel;
             obj.Model.remove('base');
             obj.Model.remove('filter');
             obj.Model.remove('preview');
+            obj.Model.remove('local');
+            
+            % Add the necessary sections
+            tc = toolpack.databrowser.LocalWorkspaceModel;
+            tc.Name = 'images';
+            obj.Model.add(tc);
+            tc = toolpack.databrowser.LocalWorkspaceModel;
+            tc.Name = 'calibration';
+            obj.Model.add(tc);
+            tc = toolpack.databrowser.LocalWorkspaceModel;
+            tc.Name = 'spectra';
+            obj.Model.add(tc);
+            tc = toolpack.databrowser.LocalWorkspaceModel;
+            tc.Name = 'fitspectra';
+            obj.Model.add(tc);
+            tc = toolpack.databrowser.LocalWorkspaceModel;
+            tc.Name = 'fits';
+            obj.Model.add(tc);
+            
+            % Set View Parameters
             obj.View = toolpack.databrowser.DataBrowserView(obj.Model);
-            setTitle(getComponent(obj.View,'local'),pidtool.utPIDgetStrings('cst','strPlantList'));
+            setTitle(getComponent(obj.View,'images'),'Images');
+            setTitle(getComponent(obj.View,'calibration'),'Calibration');
+            setTitle(getComponent(obj.View,'spectra'),'Spectra');
+            setTitle(getComponent(obj.View,'fitspectra'),'Fit Spectra');
+            setTitle(getComponent(obj.View,'fits'),'Fits');
             reset(obj.View);
-            obj.LocalWorkspace = obj.Model.getComponent('local');
-            obj.LocalWorkspaceView = obj.View.getComponent('local');
-            selectionPopupMenu = obj.LocalWorkspaceView.getSelectionPopupMenu;
-            nonselectionPopupMenu = obj.LocalWorkspaceView.getNoSelectionPopupMenu;
+            
+            % Set internal parameters
+            obj.imagesWorkspace = obj.Model.getComponent('images');
+            obj.imagesWorkspaceView = obj.View.getComponent('images');
+            obj.calibrationWorkspace = obj.Model.getComponent('calibration');
+            obj.calibrationWorkspaceView = obj.View.getComponent('calibration');
+            obj.spectraWorkspace = obj.Model.getComponent('spectra');
+            obj.spectraWorkspaceView = obj.View.getComponent('spectra');
+            obj.fitspectraWorkspace = obj.Model.getComponent('fitspectra');
+            obj.fitspectraWorkspaceView = obj.View.getComponent('fitspectra');
+            obj.fitsWorkspace = obj.Model.getComponent('fits');
+            obj.fitsWorkspaceView = obj.View.getComponent('fits');
+            
+            % Set Images popup parameters
+            selectionPopupMenu = obj.imagesWorkspaceView.getSelectionPopupMenu;
+            nonselectionPopupMenu = obj.imagesWorkspaceView.getNoSelectionPopupMenu;
             WarningState = warning('off','MATLAB:Containers:Map:NoKeyToRemove');
             selectionPopupMenu.removeMenuItem('RecordCopyingMenuItem');
-            s.Text = pidtool.utPIDgetStrings('cst','strExport');
-            s.Name = 'exportplant';
-            s.Callback = @(x)localExportPlantCb(obj,x);
-            s.MultiSelection = true;
+            s.Text = 'Set Acquire Destination';
+            s.Name = 'imageslist_setacquiredestination';
+            s.Callback = @(x)imageslist_setacquiredestination(obj,x);
+            s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,1);
-            s.Text = pidtool.utPIDgetStrings('cst','strSelectForTuning');
-            s.Name = 'selectplant';
-            s.Callback = @(x)localSelectPlantCb(obj,x);
+            s.Text = 'Open Image Browser';
+            s.Name = 'openplotbrowser';
+            s.Callback = @(x)openimagebrowser(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,2);
+            s.Text = 'Acquire Single Image';
+            s.Name = 'acquiresingleimage';
+            s.Callback = @(x)acquiresingleimage(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,3);
+            s.Text = 'Acquire Kinetics Images';
+            s.Name = 'acquirekineticsimages';
+            s.Callback = @(x)acquirekineticsimages(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,4);
+            s.Text = 'Create Calibration';
+            s.Name = 'createcalibration';
+            s.Callback = @(x)createcalibration(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,5);
+            s.Text = 'Collect Fringes';
+            s.Name = 'collectfringes';
+            s.Callback = @(x)collectfringes(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,6);
+            s.Text = 'Save To File...';
+            s.Name = 'imageslist_savetofile';
+            s.Callback = @(x)imageslist_savetofile(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,7);
             nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
-            showColumn(obj.LocalWorkspaceView,'Value');
-            hideColumn(obj.LocalWorkspaceView,'Class');
-            hideColumn(obj.LocalWorkspaceView,'Size');
-            hideColumn(obj.LocalWorkspaceView,'Bytes');
+            hideColumn(obj.imagesWorkspaceView,'Value');
+            hideColumn(obj.imagesWorkspaceView,'Class');
+            hideColumn(obj.imagesWorkspaceView,'Size');
+            hideColumn(obj.imagesWorkspaceView,'Bytes');
+            
+            % Set Calibration popup parameters
+            selectionPopupMenu = obj.calibrationWorkspaceView.getSelectionPopupMenu;
+            nonselectionPopupMenu = obj.calibrationWorkspaceView.getNoSelectionPopupMenu;
+            WarningState = warning('off','MATLAB:Containers:Map:NoKeyToRemove');
+            selectionPopupMenu.removeMenuItem('RecordCopyingMenuItem');
+            s.Text = 'Set Active Calibration';
+            s.Name = 'calibrationlist_setacquirecalibration';
+            s.Callback = @(x)calibrationlist_setacquirecalibration(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,1);
+            s.Text = 'Open Plot Browser';
+            s.Name = 'openplotbrowser';
+            s.Callback = @(x)openplotbrowser(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,2);
+            s.Text = 'Save To File...';
+            s.Name = 'calibrationlist_savetofile';
+            s.Callback = @(x)calibrationlist_savetofile(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,3);
+            s.Text = 'Collect Fringes';
+            s.Name = 'calibrationlist_collectfringes';
+            s.Callback = @(x)calibrationlist_collectfringes(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,3);
+            nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
+            nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
+            warning(WarningState);
+            hideColumn(obj.calibrationWorkspaceView,'Value');
+            hideColumn(obj.calibrationWorkspaceView,'Class');
+            hideColumn(obj.calibrationWorkspaceView,'Size');
+            hideColumn(obj.calibrationWorkspaceView,'Bytes');
+            
+            % Set Spectra popup parameters
+            selectionPopupMenu = obj.spectraWorkspaceView.getSelectionPopupMenu;
+            nonselectionPopupMenu = obj.spectraWorkspaceView.getNoSelectionPopupMenu;
+            WarningState = warning('off','MATLAB:Containers:Map:NoKeyToRemove');
+            selectionPopupMenu.removeMenuItem('RecordCopyingMenuItem');
+            s.Text = 'Set Acquire Destination';
+            s.Name = 'spectralist_setacquiredestination';
+            s.Callback = @(x)spectralist_setacquiredestination(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,1);
+            s.Text = 'Open Plot Browser';
+            s.Name = 'openplotbrowser';
+            s.Callback = @(x)openplotbrowser(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,2);
+            s.Text = 'Perform Spectral Fit';
+            s.Name = 'performspectralfit';
+            s.Callback = @(x)performspectralfit(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,3);
+            s.Text = 'Save To File...';
+            s.Name = 'spectralist_savetofile';
+            s.Callback = @(x)spectralist_savetofile(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,4);
+            nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
+            nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
+            warning(WarningState);
+            hideColumn(obj.spectraWorkspaceView,'Value');
+            hideColumn(obj.spectraWorkspaceView,'Class');
+            hideColumn(obj.spectraWorkspaceView,'Size');
+            hideColumn(obj.spectraWorkspaceView,'Bytes');
+            
+            % Set Fit Spectra popup parameters
+            selectionPopupMenu = obj.fitspectraWorkspaceView.getSelectionPopupMenu;
+            nonselectionPopupMenu = obj.fitspectraWorkspaceView.getNoSelectionPopupMenu;
+            WarningState = warning('off','MATLAB:Containers:Map:NoKeyToRemove');
+            selectionPopupMenu.removeMenuItem('RecordCopyingMenuItem');
+            s.Text = 'Open Fit Browser';
+            s.Name = 'openfitbrowser';
+            s.Callback = @(x)openfitbrowser(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,1);
+            s.Text = 'Save To File...';
+            s.Name = 'fitspectralist_savetofile';
+            s.Callback = @(x)fitspectralist_savetofile(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,2);
+            %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
+            nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
+            warning(WarningState);
+            showColumn(obj.fitspectraWorkspaceView,'Value');
+            hideColumn(obj.fitspectraWorkspaceView,'Class');
+            hideColumn(obj.fitspectraWorkspaceView,'Size');
+            hideColumn(obj.fitspectraWorkspaceView,'Bytes');
+            
+            % Set Fits popup parameters
+            selectionPopupMenu = obj.fitsWorkspaceView.getSelectionPopupMenu;
+            nonselectionPopupMenu = obj.fitsWorkspaceView.getNoSelectionPopupMenu;
+            WarningState = warning('off','MATLAB:Containers:Map:NoKeyToRemove');
+            selectionPopupMenu.removeMenuItem('RecordCopyingMenuItem');
+            s.Text = 'Open Fit Browser';
+            s.Name = 'openfitbrowser';
+            s.Callback = @(x)openfitbrowser(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,1);
+            s.Text = 'Open Fit Browser with Residuals';
+            s.Name = 'openfitbrowserwithresiduals';
+            s.Callback = @(x)openfitbrowserwithresiduals(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,2);
+            s.Text = 'Plot Fit Coefficients';
+            s.Name = 'plotfitcoefficients';
+            s.Callback = @(x)plotfitcoefficients(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,3);
+            s.Text = 'Plot Grouped Fit Coefficients';
+            s.Name = 'plotgroupedfitcoefficients';
+            s.Callback = @(x)plotgroupedfitcoefficients(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,4);
+            s.Text = 'Export DOCO Globals';
+            s.Name = 'exportDOCOglobals';
+            s.Callback = @(x)exportDOCOglobals(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,5);
+            s.Text = 'Export to SimBiology';
+            s.Name = 'exportToSimbiology';
+            s.Callback = @(x)exportToSimBiology(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,6);
+            s.Text = 'Run Fit Analysis Function';
+            s.Name = 'runfitanalysisfunction';
+            s.Callback = @(x)runfitanalysisfunction(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,7);
+            s.Text = 'Save To File...';
+            s.Name = 'fitslist_savetofile';
+            s.Callback = @(x)fitslist_savetofile(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,8);
+            s.Text = 'Set Initial Conditions';
+            s.Name = 'fitslist_setinitialconditions';
+            s.Callback = @(x)fitslist_setinitialconditions(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,9);
+            nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
+            nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
+            warning(WarningState);
+            showColumn(obj.fitsWorkspaceView,'Value');
+            hideColumn(obj.fitsWorkspaceView,'Class');
+            hideColumn(obj.fitsWorkspaceView,'Size');
+            hideColumn(obj.fitsWorkspaceView,'Bytes');
         end
     end
 end
 
-function localExportPlantCb(obj,src)
-notify(obj,'ComponentRequest',pidtool.desktop.pidtuner.tc.PlantListBrowserEventData('export',src.Variables));
+function openimagebrowser(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('openimagebrowser',src.Variables));
 end
-function localSelectPlantCb(obj,src)
-notify(obj,'ComponentRequest',pidtool.desktop.pidtuner.tc.PlantListBrowserEventData('select',src.Variables));
+
+function openplotbrowser(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('openplotbrowser',src.Variables));
+end
+
+function performspectralfit(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('performspectralfit',src.Variables));
+end
+
+function openfitbrowser(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('openfitbrowser',src.Variables));
+end
+
+function openfitbrowserwithresiduals(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('openfitbrowserwithresiduals',src.Variables));
+end
+
+function plotfitcoefficients(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('plotfitcoefficients',src.Variables));
+end
+
+function plotgroupedfitcoefficients(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('plotgroupedfitcoefficients',src.Variables));
+end
+
+function exportDOCOglobals(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('exportDOCOglobals',src.Variables));
+end
+
+function exportToSimBiology(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('exportToSimBiology',src.Variables));
+end
+
+function acquiresingleimage(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('acquiresingleimage',src.Variables));
+end
+
+function acquirekineticsimages(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('acquirekineticsimages',src.Variables));
+end
+
+function createcalibration(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('createcalibration',src.Variables));
+end
+
+function collectfringes(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('collectfringes',src.Variables));
+end
+
+function runfitanalysisfunction(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('runfitanalysisfunction',src.Variables));
+end
+
+function fitslist_savetofile(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitslist_savetofile',src.Variables));
+end
+
+function fitspectralist_savetofile(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitspectralist_savetofile',src.Variables));
+end
+
+function spectralist_savetofile(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_savetofile',src.Variables));
+end
+
+function calibrationlist_savetofile(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('calibrationlist_savetofile',src.Variables));
+end
+
+function imageslist_savetofile(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_savetofile',src.Variables));
+end
+
+function fitslist_setinitialconditions(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitslist_setinitialconditions',src.Variables));
+end
+
+function imageslist_setacquiredestination(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_setacquiredestination',src.Variables));
+end
+
+function calibrationlist_setacquirecalibration(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('calibrationlist_setacquirecalibration',src.Variables));
+end
+
+function spectralist_setacquiredestination(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_setacquiredestination',src.Variables));
+end
+
+function calibrationlist_collectfringes(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('calibrationlist_collectfringes',src.Variables));
 end

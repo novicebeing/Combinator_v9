@@ -1,0 +1,24 @@
+Fit Spectrum Class Template
+
+METHODS:
+--------
+
+crossSection = obj.createSpectrum(wavenum,varargin)
+	Outputs:
+	crossSection: Molecular cross section in cm/mlc, same dimensions as wavenumber input.
+
+	Inputs:
+	wavenum: Wavenumber x-axis in cm^-1. May be a multidimensional array.
+
+	Parameters (varargin):
+	'instrumentGaussianFWHM': Instrument Gaussian FWHM in wavenumbers.
+			Must be a double array with size(wavenum) or size 1.
+	'instrumentLorentzianFWHM': Instrument Lorentzian FWHM in wavenumbers.
+			Must be a double array with size(wavenum) or size 1.
+	'instrumentPhase': Instrument Phase offset in Radians.
+			Must be a double array with size(wavenum) or size 1.
+	'lineshapeFunction': The following options are available
+			'pseudoVoigt'(default): fast pseudo Voigt function
+			'voigt': Full voigt function, evaluated using complex error function
+			'gaussian': Only evaluates the Gaussian component of the lineshape
+			'lorentzian': Only evaluates the lorentzian component of the lineshape
