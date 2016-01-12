@@ -22,6 +22,18 @@ classdef imagesobject < handle
         function updateImagePlot(obj,hp,ind)
             set(hp,'CData',obj.images(:,:,ind));
         end
+        function h = lineProfilePlot(obj,ax,ind)
+            x = 1:size(obj.images(:,:,ind),2);
+            y = obj.images(round(size(obj.images(:,:,ind),2)/2),:,ind);
+            h = plot(x,y,'Parent',ax);
+            ylim([0 6000]);
+        end
+        function updateLineProfilePlot(obj,hp,ind)
+            x = 1:size(obj.images(:,:,ind),2);
+            y = obj.images(round(size(obj.images(:,:,ind),2)/2),:,ind);
+            set(hp,'XData',x);
+            set(hp,'YData',y);
+        end
         function hf = imagebrowser(obj,varargin)
             if isempty(obj.name)
                 hf = figure;
@@ -35,6 +47,20 @@ classdef imagesobject < handle
             b = uicontrol('Parent',hf,'Style','slider','Position',[81,10,419,23],...
               'value',1, 'min',1, 'max',numel(obj.time),'sliderstep',[1/numel(obj.time) 10/numel(obj.time)]);
             set(b,'Callback',@(es,ed) obj.updateImagePlot(hp,round(get(es,'Value'))));
+        end
+        function hf = lineProfileBrowser(obj)
+            if isempty(obj.name)
+                hf = figure;
+            else
+                hf = figure('Name',obj.name,'NumberTitle','off');
+            end
+            ax = axes('Parent',hf,'position',[0.13 0.20 0.79 0.72]);
+            [hp] = obj.lineProfilePlot(ax,1);
+            obj.liveImagePlotHandles(end+1) = hp;
+            obj.updateLineProfilePlot(hp,round(1));
+            b = uicontrol('Parent',hf,'Style','slider','Position',[81,10,419,23],...
+              'value',1, 'min',1, 'max',numel(obj.time),'sliderstep',[1/numel(obj.time) 10/numel(obj.time)]);
+            set(b,'Callback',@(es,ed) obj.updateLineProfilePlot(hp,round(get(es,'Value'))));
         end
         function setImages(obj,images,time)
             obj.images = images;

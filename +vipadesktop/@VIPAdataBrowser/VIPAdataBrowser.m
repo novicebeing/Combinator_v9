@@ -110,6 +110,31 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)imageslist_savetofile(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,7);
+            s.Text = 'Create Spectra';
+            s.Name = 'imageslist_createspectra';
+            s.Callback = @(x)imageslist_createspectra(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,8);
+            s.Text = 'Use As Ref Image';
+            s.Name = 'imageslist_useasrefimage';
+            s.Callback = @(x)imageslist_useasrefimage(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,9);
+            s.Text = 'Use As Sig Image';
+            s.Name = 'imageslist_useassigimage';
+            s.Callback = @(x)imageslist_useassigimage(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,10);
+            s.Text = 'Average Images';
+            s.Name = 'imageslist_averageimages';
+            s.Callback = @(x)imageslist_averageimages(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,11);
+            s.Text = 'Open Line Profile Browser';
+            s.Name = 'imageslist_openlineprofilebrowser';
+            s.Callback = @(x)imageslist_openlineprofilebrowser(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,10);
             nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -142,7 +167,12 @@ classdef VIPAdataBrowser < handle
             s.Name = 'calibrationlist_collectfringes';
             s.Callback = @(x)calibrationlist_collectfringes(obj,x);
             s.MultiSelection = false;
-            selectionPopupMenu.addMenuItem(s,3);
+            selectionPopupMenu.addMenuItem(s,4);
+            s.Text = 'Export To Base Workspace';
+            s.Name = 'calibrationlist_exporttobaseworkspace';
+            s.Callback = @(x)calibrationlist_exporttobaseworkspace(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,4);
             nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -362,4 +392,28 @@ end
 
 function calibrationlist_collectfringes(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('calibrationlist_collectfringes',src.Variables));
+end
+
+function imageslist_createspectra(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_createspectra',src.Variables));
+end
+
+function imageslist_useasrefimage(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_useasrefimage',src.Variables));
+end
+
+function imageslist_useassigimage(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_useassigimage',src.Variables));
+end
+
+function calibrationlist_exporttobaseworkspace(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('calibrationlist_exporttobaseworkspace',src.Variables));
+end
+
+function imageslist_averageimages(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_averageimages',src.Variables));
+end
+
+function imageslist_openlineprofilebrowser(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_openlineprofilebrowser',src.Variables));
 end

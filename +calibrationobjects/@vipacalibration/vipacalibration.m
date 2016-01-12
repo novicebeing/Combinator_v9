@@ -4,6 +4,11 @@ classdef vipacalibration < handle
     properties
         name = '';
         
+        % Calibration Status
+        fringesCalibrated = false;
+        xaxisCalibrated = false;
+        yaxisCalibrated = false;
+        
         % Image Specific Parameters
         imageDimensions;
         
@@ -12,6 +17,11 @@ classdef vipacalibration < handle
         fringeX;
         fringeY;
         fringeImageSize;
+        spectrumIndcs;
+        
+        % X and Y axis calibration
+        refImage;
+        sigImage;
     end
     methods
         function obj = vipacalibration(varargin)

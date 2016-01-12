@@ -124,9 +124,9 @@ function self = collectFringes(self)
         % Save other parameters
 %         self.fringeXcrop = self.fringeX;
 %         self.fringeYcrop = self.fringeY;
-%         self.spectrumIdcs = sub2ind(size(fringeImage),...
-%             self.fringeXcrop,...
-%             self.fringeYcrop);
+        self.spectrumIndcs = sub2ind(size(fringeImage),...
+            self.fringeX,...
+            self.fringeY);
 %         self.spectrumX = reshape(1e4./(1:numel(self.spectrumIdcs)),size(self.spectrumIdcs));
         
 %         self.spectrumX = zeros(size(self.spectrumIdcs));
@@ -146,5 +146,10 @@ function self = collectFringes(self)
         fringesEvenY = newFringesY(:,2:2:end);
         scatter(fringesOddX(:),fringesOddY(:),'.k');
         scatter(fringesEvenX(:),fringesEvenY(:),'.r');
+        
+        % Set the calibration status
+        self.fringesCalibrated = true;
+        self.xaxisCalibrated = false;
+        self.yaxisCalibrated = false;
 end
 

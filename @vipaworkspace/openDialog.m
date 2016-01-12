@@ -11,6 +11,7 @@ function openDialog(this)
     end
        
     % Iterate over files and import them one by one
+    hwait = waitbar(0,'Loading Files...', 'WindowStyle', 'modal');
     for i = 1:numel(filename)
         % Load in the data file
         [~,~,ext] = fileparts(filename{i});
@@ -45,7 +46,16 @@ function openDialog(this)
                     else
                         this.FitsList.addItem(h,0,0,strrep(h.name,' ','_'));
                     end
+                case 'imagesobjects.imagesobject'
+                    h = data.(fields{j});
+                    if isempty(h.name)
+                        this.ImagesList.addItem(h,0,0,fields{j});
+                    else
+                        this.ImagesList.addItem(h,0,0,strrep(h.name,' ','_'));
+                    end
             end
         end
+        waitbar(i/numel(filename),hwait);
     end
+    close(hwait);
 end

@@ -348,6 +348,34 @@ switch ed.Request
         this.acquiretab.spectraDestTextField.Text = itemNames;
     case 'calibrationlist_collectfringes'
         this.CalibrationList.collectFringes(ed.Variables);
+    case 'imageslist_createspectra'
+        calibrationobjid = {this.acquiretab.calibrationTextField.Text};
+        hwait = waitbar(0,'Creating Spectra...', 'WindowStyle', 'modal');
+        for i = 1:numel(ed.Variables)
+            itemNames = this.ImagesList.getItemNames(ed.Variables(i));
+            [images,time] = this.ImagesList.getImages(ed.Variables(i));
+            h = this.CalibrationList.createSpectra(calibrationobjid,images,time);
+            this.SpectraList.addItem(h,0,0,strrep(itemNames,' ','_'));
+            waitbar(i/numel(ed.Variables),hwait);
+        end
+        close(hwait);
+    case 'imageslist_useasrefimage'
+        calibrationobjid = {this.acquiretab.calibrationTextField.Text};
+        [images,time] = this.ImagesList.getImages(ed.Variables(1));
+        this.CalibrationList.setRefImage(calibrationobjid,images(:,:,1));
+    case 'imageslist_averageimages'
+        itemNames = this.ImagesList.getItemNames(ed.Variables(1));
+        h = this.ImagesList.averageImages(ed.Variables(1));
+        this.ImagesList.addItem(h,0,0,strrep(sprintf('%s_avg',itemNames),' ','_'));
+    case 'imageslist_useassigimage'
+        calibrationobjid = {this.acquiretab.calibrationTextField.Text};
+        [images,time] = this.ImagesList.getImages(ed.Variables(1));
+        this.CalibrationList.setSigImage(calibrationobjid,images(:,:,1));
+    case 'calibrationlist_exporttobaseworkspace'
+        assignin('base','hobj',this.CalibrationList.Plants);
+    case 'imageslist_openlineprofilebrowser'
+        h = this.ImagesList.openLineProfileBrowsers(ed.Variables);
+        this.TPComponent.addFigure(h);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
 end
