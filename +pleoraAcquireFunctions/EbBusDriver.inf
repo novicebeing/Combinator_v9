@@ -1,0 +1,89 @@
+; *****************************************************************************
+;
+;    Copyright (c) 2006-2007, Pleora Technologies Inc., All rights reserved.
+;
+; *****************************************************************************
+;
+; File Name....: EbBusDriver.inf
+;
+; *****************************************************************************
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = EbBusDriver
+ClassGUID   = {ff646f82-8def-11d2-9449-00105a075f6b}
+Provider    = "Pleora Technologies Inc."
+DriverVer   = 03/08/2011,3.0.1.1951    
+CatalogFile = EbBusDriver.cat
+
+[ClassInstall32]
+Addreg=Class_AddReg
+
+; Icon : Connection to a cable
+; DeviceCharacteristics : FILE_DEVICE_SECURE_OPEN
+; Security : Generic all access - System and Admin
+[Class_AddReg]
+HKR,,,%REG_SZ%,"Ethernet Bus"
+HKR,,Icon,,"-6"
+HKR,,DeviceCharacteristics,%REG_DWORD%,0x100
+HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;WD)"
+HKR, , SilentInstall, , 1
+
+[Manufacturer]
+"Pleora Technologies Inc." = Pleora,NTx86,NTamd64
+
+[Pleora]
+"Ethernet Bus Driver" = EbBusDriver_DDI, pt_ebbusdriver
+
+[Pleora.NTx86]
+"Ethernet Bus Driver" = EbBusDriver_DDI, pt_ebbusdriver
+
+[Pleora.NTamd64]
+"Ethernet Bus Driver" = EbBusDriver_DDI, pt_ebbusdriver
+
+; [ControlFlags]
+; Not needed.
+
+[EbBusDriver_DDI.NT]
+CopyFiles=EbBusDriver_Files_Driver
+
+[EbBusDriver_Files_Driver]
+EbBusDriver.sys
+
+[EbBusDriver_DDI.NT.Services]
+Addservice = EbBusDriver, %FLG_ADDREG_NOCLOBBER%, EbBusDriver_AddService, EbBusDriver_EventLog_AddReg
+
+[EbBusDriver_AddService]
+DisplayName   = "Ethernet Bus Driver"
+ServiceType   = %SERVICE_KERNEL_DRIVER%
+StartType     = %SERVICE_DEMAND_START%
+ErrorControl  = %SERVICE_ERROR_NORMAL%
+ServiceBinary = %10%\System32\Drivers\EbBusDriver.sys
+
+[EbBusDriver_EventLog_AddReg]
+HKR, , EventMessageFile, 0x00020000, "%%SystemRoot%%\System32\Drivers\EbBusDriver.sys"
+HKR, , TypesSupported, 0x00010001, 7 
+
+[DestinationDirs]
+EbBusDriver_Files_Driver = 10,System32\Drivers
+
+[SourceDisksNames]
+1 = %DISK_NAME%, , , ""
+
+[SourceDisksFiles]
+EbBusDriver.sys = 1, ,
+
+[Strings]
+
+DISK_NAME = "EbBusDriver Device Installation Disk #1"
+FLG_ADDREG_NOCLOBBER = 0x00000002
+
+REG_DWORD = 0x00010001
+REG_SZ    = 0x00000000
+
+SERVICE_DEMAND_START = 0x3
+
+SERVICE_ERROR_NORMAL = 0x00000001
+
+SERVICE_KERNEL_DRIVER = 0x00000001
+

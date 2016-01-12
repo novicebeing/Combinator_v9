@@ -1,0 +1,10 @@
+{00000000-0000-0000-0000-000000000000}
+eBUS Service
+61000000
+EbService
+Pleora Technologies Inc.
+This driver is needed to run any other Ethernet Bus driver.
+END
+EbService.exe
+%SystemRoot%\system32\EbService\EbService.exe
+END

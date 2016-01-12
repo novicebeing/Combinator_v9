@@ -1,0 +1,13 @@
+{19442E54-7A72-4785-8167-D221CBE3D3F6}
+iPORT Protocol Driver
+26000000
+EbCoyote
+Pleora Technologies Inc.
+EBUS FDO iPORT Protocol Driver
+EbCoyote.inf
+END
+EbCoyote.sys
+%SystemRoot%\system32\drivers\EbCoyote.sys
+EbIcon.dll
+%SystemRoot%\system32\EbIcon.dll
+END

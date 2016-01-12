@@ -1,0 +1,205 @@
+; *****************************************************************************
+;
+;    Copyright (c) 2006-2007, Pleora Technologies Inc., All rights reserved.
+;
+; *****************************************************************************
+;
+; File Name....: EbPro1000.inf
+;
+; *****************************************************************************
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = "EBusAdapter"
+ClassGUID   = {530EFDDE-BDA0-4539-B1FD-93F39A484D4B}
+Provider    = "Pleora Technologies Inc."
+DriverVer   = 03/08/2011,3.0.1.1951    
+CatalogFile = EbPro1000.cat
+
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR, , , %REG_SZ%, "Ethernet Bus Adapters"
+HKR, , Icon, , "-5"
+HKR, , DeviceCharacteristics, %REG_DWORD%, 0x100
+HKR, , Security, , "D:P(A;;GA;;;SY)(A;;GA;;;BA)"
+HKR, , SilentInstall, , 1
+
+[Manufacturer]
+"Pleora Technologies Inc."=Pleora,NTx86,NTamd64
+
+[Pleora]
+"Intel PRO/1000 Adapter (82540 EM)"=Driver_DDI, PCI\VEN_8086&DEV_100E ; e1000, Card
+"Intel PRO/1000 Adapter (82545 EM)"=Driver_DDI, PCI\VEN_8086&DEV_100F ; e1000, Card
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1010 ; e1000, Card
+"Intel PRO/1000 Adapter (82545 EM)"=Driver_DDI, PCI\VEN_8086&DEV_1011 ; e1000, Card
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1012 ; e1000, Card
+"Intel PRO/1000 Adapter (82541 EI)"=Driver_DDI, PCI\VEN_8086&DEV_1013 ; e1000, Card
+"Intel PRO/1000 Adapter (82541 ER)"=Driver_DDI, PCI\VEN_8086&DEV_1014 ; e1000, Card
+"Intel PRO/1000 Adapter (82540 EM)"=Driver_DDI, PCI\VEN_8086&DEV_1015 ; e1000, Card
+"Intel PRO/1000 Adapter (82540 EP)"=Driver_DDI, PCI\VEN_8086&DEV_1016 ; e1000, Card
+"Intel PRO/1000 Adapter (82541 EI)"=Driver_DDI, PCI\VEN_8086&DEV_1018 ; e1000, Card
+"Intel PRO/1000 Adapter (82547 EI)"=Driver_DDI, PCI\VEN_8086&DEV_1019 ; e1000, Card82547
+"Intel PRO/1000 Adapter (82547 EI)"=Driver_DDI, PCI\VEN_8086&DEV_101A ; e1000, Card82547
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_101D ; e1000, Card
+"Intel PRO/1000 Adapter (82540 EP)"=Driver_DDI, PCI\VEN_8086&DEV_101E ; e1000, Card
+"Intel PRO/1000 Adapter (82545 GM)"=Driver_DDI, PCI\VEN_8086&DEV_1026 ; e1000, Card
+"Intel PRO/1000 Adapter (82545 GM)"=Driver_DDI, PCI\VEN_8086&DEV_1027 ; e1000, Card
+"Intel PRO/1000 Adapter (82545 GM)"=Driver_DDI, PCI\VEN_8086&DEV_1028 ; e1000, Card
+"Intel PRO/1000 Adapter (82571 EB)"=Driver_DDI, PCI\VEN_8086&DEV_105E ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82571 EB)"=Driver_DDI, PCI\VEN_8086&DEV_105F ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82571 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1060 ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82547 GI)"=Driver_DDI, PCI\VEN_8086&DEV_1075 ; e1000, Card82547
+"Intel PRO/1000 Adapter (82541 GI)"=Driver_DDI, PCI\VEN_8086&DEV_1076 ; e1000, Card
+"Intel PRO/1000 Adapter (82541 GI)"=Driver_DDI, PCI\VEN_8086&DEV_1077 ; e1000, Card
+"Intel PRO/1000 Adapter (82541 ER)"=Driver_DDI, PCI\VEN_8086&DEV_1078 ; e1000, Card
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1079 ; e1000, Card
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_107A ; e1000, Card
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_107B ; e1000, Card
+"Intel PRO/1000 Adapter (82541 PI)"=Driver_DDI, PCI\VEN_8086&DEV_107C ; e1000, Card
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_107D ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_107E ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_107F ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_108A ; e1000, Card
+"Intel PRO/1000 Adapter (82572 E)"=Driver_DDI, PCI\VEN_8086&DEV_108B ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82572 E)"=Driver_DDI, PCI\VEN_8086&DEV_108C ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82563 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1096 ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82546 GT)"=Driver_DDI, PCI\VEN_8086&DEV_1099 ; e1000, Card82546
+"Intel PRO/1000 Adapter (82573 L)"=Driver_DDI, PCI\VEN_8086&DEV_109A ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82571 GB)"=Driver_DDI, PCI\VEN_8086&DEV_10A4 ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82546 GB)"=Driver_DDI, PCI\VEN_8086&DEV_10B5 ; e1000, Card82546
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_10B9 ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82574 L)"=Driver_DDI, PCI\VEN_8086&DEV_10D3 ; e1e, CardPCIe
+"Intel PRO/1000 Adapter (82571 GB)"=Driver_DDI, PCI\VEN_8086&DEV_10BC ; e1e, CardPCIe
+
+[Pleora.NTx86]
+"Intel PRO/1000 Adapter (82540 EM)"=Driver_DDI, PCI\VEN_8086&DEV_100E
+"Intel PRO/1000 Adapter (82545 EM)"=Driver_DDI, PCI\VEN_8086&DEV_100F
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1010
+"Intel PRO/1000 Adapter (82545 EM)"=Driver_DDI, PCI\VEN_8086&DEV_1011
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1012
+"Intel PRO/1000 Adapter (82541 EI)"=Driver_DDI, PCI\VEN_8086&DEV_1013
+"Intel PRO/1000 Adapter (82541 ER)"=Driver_DDI, PCI\VEN_8086&DEV_1014
+"Intel PRO/1000 Adapter (82540 EM)"=Driver_DDI, PCI\VEN_8086&DEV_1015
+"Intel PRO/1000 Adapter (82540 EP)"=Driver_DDI, PCI\VEN_8086&DEV_1016
+"Intel PRO/1000 Adapter (82541 EI)"=Driver_DDI, PCI\VEN_8086&DEV_1018
+"Intel PRO/1000 Adapter (82547 EI)"=Driver_DDI, PCI\VEN_8086&DEV_1019
+"Intel PRO/1000 Adapter (82547 EI)"=Driver_DDI, PCI\VEN_8086&DEV_101A
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_101D
+"Intel PRO/1000 Adapter (82540 EP)"=Driver_DDI, PCI\VEN_8086&DEV_101E
+"Intel PRO/1000 Adapter (82545 GM)"=Driver_DDI, PCI\VEN_8086&DEV_1026
+"Intel PRO/1000 Adapter (82545 GM)"=Driver_DDI, PCI\VEN_8086&DEV_1027
+"Intel PRO/1000 Adapter (82545 GM)"=Driver_DDI, PCI\VEN_8086&DEV_1028
+"Intel PRO/1000 Adapter (82571 EB)"=Driver_DDI, PCI\VEN_8086&DEV_105E
+"Intel PRO/1000 Adapter (82571 EB)"=Driver_DDI, PCI\VEN_8086&DEV_105F
+"Intel PRO/1000 Adapter (82571 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1060
+"Intel PRO/1000 Adapter (82547 GI)"=Driver_DDI, PCI\VEN_8086&DEV_1075
+"Intel PRO/1000 Adapter (82541 GI)"=Driver_DDI, PCI\VEN_8086&DEV_1076
+"Intel PRO/1000 Adapter (82541 GI)"=Driver_DDI, PCI\VEN_8086&DEV_1077
+"Intel PRO/1000 Adapter (82541 ER)"=Driver_DDI, PCI\VEN_8086&DEV_1078
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1079
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_107A
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_107B
+"Intel PRO/1000 Adapter (82541 PI)"=Driver_DDI, PCI\VEN_8086&DEV_107C
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_107D
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_107E
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_107F
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_108A
+"Intel PRO/1000 Adapter (82572 E)"=Driver_DDI, PCI\VEN_8086&DEV_108B 
+"Intel PRO/1000 Adapter (82572 E)"=Driver_DDI, PCI\VEN_8086&DEV_108C 
+"Intel PRO/1000 Adapter (82563 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1096 
+"Intel PRO/1000 Adapter (82546 GT)"=Driver_DDI, PCI\VEN_8086&DEV_1099
+"Intel PRO/1000 Adapter (82573 L)"=Driver_DDI, PCI\VEN_8086&DEV_109A 
+"Intel PRO/1000 Adapter (82571 GB)"=Driver_DDI, PCI\VEN_8086&DEV_10A4
+"Intel PRO/1000 Adapter (82546 GB)"=Driver_DDI, PCI\VEN_8086&DEV_10B5
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_10B9
+"Intel PRO/1000 Adapter (82574 L)"=Driver_DDI, PCI\VEN_8086&DEV_10D3
+"Intel PRO/1000 Adapter (82571 GB)"=Driver_DDI, PCI\VEN_8086&DEV_10BC
+
+[Pleora.NTamd64]
+"Intel PRO/1000 Adapter (82540 EM)"=Driver_DDI, PCI\VEN_8086&DEV_100E
+"Intel PRO/1000 Adapter (82545 EM)"=Driver_DDI, PCI\VEN_8086&DEV_100F
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1010
+"Intel PRO/1000 Adapter (82545 EM)"=Driver_DDI, PCI\VEN_8086&DEV_1011
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1012
+"Intel PRO/1000 Adapter (82541 EI)"=Driver_DDI, PCI\VEN_8086&DEV_1013
+"Intel PRO/1000 Adapter (82541 ER)"=Driver_DDI, PCI\VEN_8086&DEV_1014
+"Intel PRO/1000 Adapter (82540 EM)"=Driver_DDI, PCI\VEN_8086&DEV_1015
+"Intel PRO/1000 Adapter (82540 EP)"=Driver_DDI, PCI\VEN_8086&DEV_1016
+"Intel PRO/1000 Adapter (82541 EI)"=Driver_DDI, PCI\VEN_8086&DEV_1018
+"Intel PRO/1000 Adapter (82547 EI)"=Driver_DDI, PCI\VEN_8086&DEV_1019
+"Intel PRO/1000 Adapter (82547 EI)"=Driver_DDI, PCI\VEN_8086&DEV_101A
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_101D
+"Intel PRO/1000 Adapter (82540 EP)"=Driver_DDI, PCI\VEN_8086&DEV_101E
+"Intel PRO/1000 Adapter (82545 GM)"=Driver_DDI, PCI\VEN_8086&DEV_1026
+"Intel PRO/1000 Adapter (82545 GM)"=Driver_DDI, PCI\VEN_8086&DEV_1027
+"Intel PRO/1000 Adapter (82545 GM)"=Driver_DDI, PCI\VEN_8086&DEV_1028
+"Intel PRO/1000 Adapter (82571 EB)"=Driver_DDI, PCI\VEN_8086&DEV_105E
+"Intel PRO/1000 Adapter (82571 EB)"=Driver_DDI, PCI\VEN_8086&DEV_105F
+"Intel PRO/1000 Adapter (82571 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1060
+"Intel PRO/1000 Adapter (82547 GI)"=Driver_DDI, PCI\VEN_8086&DEV_1075
+"Intel PRO/1000 Adapter (82541 GI)"=Driver_DDI, PCI\VEN_8086&DEV_1076
+"Intel PRO/1000 Adapter (82541 GI)"=Driver_DDI, PCI\VEN_8086&DEV_1077
+"Intel PRO/1000 Adapter (82541 ER)"=Driver_DDI, PCI\VEN_8086&DEV_1078
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1079
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_107A
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_107B
+"Intel PRO/1000 Adapter (82541 PI)"=Driver_DDI, PCI\VEN_8086&DEV_107C
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_107D
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_107E
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_107F
+"Intel PRO/1000 Adapter (82546 EB)"=Driver_DDI, PCI\VEN_8086&DEV_108A
+"Intel PRO/1000 Adapter (82572 E)"=Driver_DDI, PCI\VEN_8086&DEV_108B 
+"Intel PRO/1000 Adapter (82572 E)"=Driver_DDI, PCI\VEN_8086&DEV_108C 
+"Intel PRO/1000 Adapter (82563 EB)"=Driver_DDI, PCI\VEN_8086&DEV_1096 
+"Intel PRO/1000 Adapter (82546 GT)"=Driver_DDI, PCI\VEN_8086&DEV_1099
+"Intel PRO/1000 Adapter (82573 L)"=Driver_DDI, PCI\VEN_8086&DEV_109A 
+"Intel PRO/1000 Adapter (82571 GB)"=Driver_DDI, PCI\VEN_8086&DEV_10A4
+"Intel PRO/1000 Adapter (82546 GB)"=Driver_DDI, PCI\VEN_8086&DEV_10B5
+"Intel PRO/1000 Adapter (82572 EI)"=Driver_DDI, PCI\VEN_8086&DEV_10B9
+"Intel PRO/1000 Adapter (82574 L)"=Driver_DDI, PCI\VEN_8086&DEV_10D3
+"Intel PRO/1000 Adapter (82571 GB)"=Driver_DDI, PCI\VEN_8086&DEV_10BC
+
+[Driver_DDI.NT]
+CopyFiles=Driver_Files_Driver
+
+[Driver_Files_Driver]
+EbPro1000.sys, , , 2
+
+[Driver_DDI.NT.Services]
+Addservice = EbPro1000, %FLG_ADDREG_NOCLOBBER%, Driver_AddService
+
+[Driver_AddService]
+DisplayName    = "Ethernet Bus Pro1000 Adapter"
+ServiceType    = %SERVICE_KERNEL_DRIVER%
+StartType      = %SERVICE_DEMAND_START%
+ErrorControl   = %SERVICE_ERROR_NORMAL%
+ServiceBinary  = %12%\EbPro1000.sys
+LoadOrderGroup = Extended Base
+
+[DestinationDirs]
+DefaultDestDir      = 10
+Driver_Files_Driver = 12
+
+[SourceDisksNames]
+1 = %DISK_NAME%, , , ""
+
+[SourceDisksFiles]
+EbPro1000.sys = 1, ,
+
+[Strings]
+
+DISK_NAME = "EbPro1000 Device Installation Disk #1"
+
+FLG_ADDREG_NOCLOBBER = 0x00000002
+
+REG_SZ    = 0x00000000
+REG_DWORD = 0x00010001
+
+SERVICE_DEMAND_START = 0x3
+
+SERVICE_ERROR_NORMAL = 0x00000001
+
+SERVICE_KERNEL_DRIVER = 0x00000001
+

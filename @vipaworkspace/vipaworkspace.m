@@ -287,6 +287,8 @@ switch ed.Request
         this.CalibrationList.addItem(h,0,0,itemNames);
     
     % Save Events
+    case 'imageslist_savetofile'
+        this.ImagesList.saveToFile(ed.Variables);
     case 'fitslist_savetofile'
         this.FitsList.saveToFile(ed.Variables);
     case 'fitslist_setinitialconditions'

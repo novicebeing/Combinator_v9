@@ -1,0 +1,11 @@
+{4d36e972-e325-11ce-bfc1-08002be10318}
+eBUS network interface card driver
+21000000
+EbNDIS
+Pleora Technologies Inc.
+Virtual network adapter card used on top of optimized Ethernet Bus adapter.
+EbNDIS.inf
+END
+EbNDIS.sys
+%SystemRoot%\system32\drivers\EbNDIS.sys
+END

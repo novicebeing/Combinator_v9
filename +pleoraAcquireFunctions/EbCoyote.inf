@@ -1,0 +1,122 @@
+; *****************************************************************************
+;
+;    Copyright (c) 2006-2007, Pleora Technologies Inc., All rights reserved.
+;
+; *****************************************************************************
+;
+; File Name....: EbCoyote.inf
+;
+; *****************************************************************************
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = EbCoyote
+ClassGUID   = {19442E54-7A72-4785-8167-D221CBE3D3F6}
+Provider    = "Pleora Technologies Inc."
+DriverVer   = 03/08/2011,3.0.1.1951    
+CatalogFile = EbCoyote.cat
+
+[ClassInstall32]
+CopyFiles=EbCoyote_Files_Icon
+Addreg=EbCoyoteClassAddReg
+
+[ClassInstall32.NTx86]
+CopyFiles=EbCoyote_Files_Icon
+Addreg=EbCoyoteClassAddReg
+
+[ClassInstall32.NTamd64]
+CopyFiles=EbCoyote_Files_Icon
+Addreg=EbCoyoteClassAddReg
+
+[EbCoyoteClassAddReg]
+;reg-root,[subkey],[value-entry-name],[flags],[value]
+HKR,,,%REG_SZ%,%DeviceClassName%
+HKR,,Installer32,,"EbIcon.dll,EbEntryPoint"
+HKR,,Icon,,"0"
+HKR,,DeviceCharacteristics,%REG_DWORD%,0x100                    ; FILE_DEVICE_SECURE_OPEN
+HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;WD)"
+
+[DestinationDirs]
+DefaultDestDir = 10
+EbCoyote_Files_Driver = 12
+EbCoyote_Files_Icon = 11
+
+[SourceDisksNames]
+1 = %DiskId1%,,,""
+
+[SourceDisksFiles]
+EbCoyote.sys  = 1,,
+EbIcon.dll = 1,,
+
+[Manufacturer]
+%MfgName% = EbCoyote_Mfg,NTx86,NTamd64
+
+[EbCoyote_Mfg]
+%EbCoyote_DeviceDesc%=EbCoyote_DDI, ETH\VEN_0001&DEV_0000&MOD_0000
+
+[EbCoyote_Mfg.NTx86]
+%EbCoyote_DeviceDesc%=EbCoyote_DDI, ETH\VEN_0001&DEV_0000&MOD_0000
+
+[EbCoyote_Mfg.NTamd64]
+%EbCoyote_DeviceDesc%=EbCoyote_DDI, ETH\VEN_0001&DEV_0000&MOD_0000
+
+[EbCoyote_DDI.NT]
+CopyFiles=EbCoyote_Files_Driver
+
+[EbCoyote_DDI.NT.Services]
+Addservice = EbCoyote, %FLG_ADDREG_NOCLOBBER%, EbCoyote_Service
+
+[EbCoyote_Service]
+DisplayName    = %EbCoyote_SvcDesc%
+ServiceType    = %SERVICE_KERNEL_DRIVER%
+StartType      = %SERVICE_DEMAND_START%
+ErrorControl   = %SERVICE_ERROR_NORMAL%
+ServiceBinary  = %12%\EbCoyote.sys
+LoadOrderGroup = Extended Base
+
+[EbCoyote_Files_Driver]
+EbCoyote.sys,,,2
+
+[EbCoyote_Files_Icon]
+EbIcon.dll,,,2
+
+[Strings]
+Provider = "Pleora Technologies Inc."
+MfgName = "Pleora Technologies Inc."
+EbCoyote_DeviceDesc = "IP Engine"
+DeviceClassName="IP Engines"
+EbCoyote_SvcDesc = "IP Engine"
+DiskId1 = "EbCoyote Device Installation Disk #1"
+
+REG_SZ                      = 0x00000000
+REG_MULTI_SZ                = 0x00010000
+REG_EXPAND_SZ               = 0x00020000
+REG_BINARY                  = 0x00000001
+REG_DWORD                   = 0x00010001
+REG_NONE                    = 0x00020001
+
+SERVICE_KERNEL_DRIVER       = 0x00000001
+SERVICE_FILE_SYSTEM_DRIVER  = 0x00000002
+SERVICE_ADAPTER             = 0x00000004
+SERVICE_RECOGNIZER_DRIVER   = 0x00000008
+
+SERVICE_BOOT_START          = 0x0
+SERVICE_SYSTEM_START        = 0x1
+SERVICE_AUTO_START          = 0x2
+SERVICE_DEMAND_START        = 0x3
+SERVICE_DISABLED            = 0x4
+
+SERVICE_ERROR_IGNORE        = 0x00000000
+SERVICE_ERROR_NORMAL        = 0x00000001
+SERVICE_ERROR_SEVERE        = 0x00000002
+SERVICE_ERROR_CRITICAL      = 0x00000003
+
+FLG_ADDREG_NOCLOBBER        = 0x00000002
+FLG_ADDREG_DELVAL           = 0x00000004
+FLG_ADDREG_APPEND           = 0x00000008
+FLG_ADDREG_KEYONLY          = 0x00000010
+FLG_ADDREG_OVERWRITEONLY    = 0x00000020
+FLG_ADDREG_64BITKEY         = 0x00001000
+FLG_ADDREG_KEYONLY_COMMON   = 0x00002000
+FLG_ADDREG_32BITKEY         = 0x00004000
+

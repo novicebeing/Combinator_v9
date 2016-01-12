@@ -1,0 +1,11 @@
+{530EFDDE-BDA0-4539-B1FD-93F39A484D4B}
+eBUS Optimal Driver
+2d000000
+EbPro1000
+Pleora Technologies Inc.
+Optimized Ethernet Bus adapter to use with Intel Pro1000 network card.
+EbPro1000.inf
+END
+EbPro1000.sys
+%SystemRoot%\system32\drivers\EbPro1000.sys
+END

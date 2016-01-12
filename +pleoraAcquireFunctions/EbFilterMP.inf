@@ -1,0 +1,78 @@
+; *****************************************************************************
+;
+;    Copyright (c) 2006-2007, Pleora Technologies Inc., All rights reserved.
+;
+; *****************************************************************************
+;
+; File Name....: EbFilterMP.inf
+;
+; *****************************************************************************
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = Net
+ClassGUID   = {4d36e972-e325-11ce-bfc1-08002be10318}
+Provider    = "Pleora Technologies Inc."
+DriverVer   = 03/08/2011,3.0.1.1951    
+CatalogFile = EbFilterMP.cat
+
+; Not needed because this inf use a system defined class.
+; [ClassInstall32]
+
+[Manufacturer]
+"Pleora technologies Inc." = Pleora,NTx86,NTamd64
+
+[Pleora]
+"Ethernet Bus Filter Miniport" = EbFilterMP.ndi, pt_ebfiltermp
+
+[Pleora.NTx86]
+"Ethernet Bus Filter Miniport" = EbFilterMP.ndi, pt_ebfiltermp
+
+[Pleora.NTamd64]
+"Ethernet Bus Filter Miniport" = EbFilterMP.ndi, pt_ebfiltermp
+
+[ControlFlags]
+ExcludeFromSelect = Pt_EbFilterMP
+
+[EbFilterMP.ndi]
+Characteristics = 0x01
+CopyFiles       = EbFilterMP.CopyFiles
+
+[EbFilterMP.ndi.Services]
+AddService = EbFilter, %FLG_ADDREG_NOCLOBBER%, EbFilterMP.AddService
+
+[EbFilterMP.AddService]
+DisplayName    = "Ethernet Bus Filter"
+ServiceType    = %SERVICE_KERNEL_DRIVER%
+StartType      = %SERVICE_DEMAND_START%
+ErrorControl   = %SERVICE_ERROR_NORMAL%
+ServiceBinary  = %12%\EbFilter.sys
+LoadOrderGroup = PNP_TDI
+AddReg         = EbFilterMP.AddService.AddReg
+
+[EbFilterMP.CopyFiles]
+; CopyFiles : EbFilter.inf already copied files
+
+[EbFilterMP.AddService.AddReg]
+HKR, NDI\params\MaxPoolSize, ParamDesc, 0, "Maximum number of packet descriptors for repackaging"
+HKR, NDI\params\MaxPoolSize, type,      0, "dword"
+HKR, NDI\params\MaxPoolSize, default,   0, 1024
+HKR, NDI\params\MaxPoolSize, optional,  0, "1"
+HKR, NDI\params\MaxPoolSize, max,	    0, 65535
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+[SourceDisksNames]
+
+[SourceDisksFiles]
+
+[Strings]
+
+FLG_ADDREG_NOCLOBBER = 0x00000002
+
+SERVICE_DEMAND_START = 0x3
+
+SERVICE_ERROR_NORMAL = 0x00000001
+
+SERVICE_KERNEL_DRIVER = 0x00000001

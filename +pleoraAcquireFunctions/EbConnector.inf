@@ -1,0 +1,87 @@
+; *****************************************************************************
+;
+;    Copyright (c) 2006-2007, Pleora Technologies Inc., All rights reserved.
+;
+; *****************************************************************************
+;
+; File Name....: EbConnector.inf
+;
+; *****************************************************************************
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = EbConnector
+ClassGUID   = {7da08814-75c5-4274-bb04-ece505cceb52}
+Provider    = "Pleora Technologies Inc."
+DriverVer   = 03/08/2011,3.0.1.1951    
+CatalogFile = EbConnector.cat
+
+[ClassInstall32]
+Addreg=Class_AddReg
+
+; Icon : Service (Shared computer)
+; DeviceCharacteristics : FILE_DEVICE_SECURE_OPEN
+; Security : Generic all access - System and Admin
+[Class_AddReg]
+HKR, , , %REG_SZ%, "Ethernet Bus Services"
+HKR, , Icon, , "-8"
+HKR, , DeviceCharacteristics, %REG_DWORD%, 0x100
+HKR, , Security, , "D:P(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;WD)"
+HKR, , SilentInstall, , 1
+
+[Manufacturer]
+"Pleora Technologies Inc." = Pleora,NTx86,NTamd64
+
+[Pleora]
+"Ethernet Bus Connector" = EbConnector_DDI, ETH\VEN_0000&DEV_0001
+
+[Pleora.NTx86]
+"Ethernet Bus Connector" = EbConnector_DDI, ETH\VEN_0000&DEV_0001
+
+[Pleora.NTamd64]
+"Ethernet Bus Connector" = EbConnector_DDI, ETH\VEN_0000&DEV_0001
+
+[EbConnector_DDI.NT]
+CopyFiles = EbConnector_Files_Driver
+
+; Not needed.
+; [ControlFlags]
+
+[EbConnector_Files_Driver]
+EbConnector.sys, , , 2
+
+[EbConnector_DDI.NT.Services]
+Addservice = EbConnector, %FLG_ADDREG_NOCLOBBER%, EbConnector_Service
+
+[EbConnector_Service]
+DisplayName    = "Ethernet Bus Connector"
+ServiceType    = %SERVICE_KERNEL_DRIVER%
+StartType      = %SERVICE_DEMAND_START%
+ErrorControl   = %SERVICE_ERROR_NORMAL%
+ServiceBinary  = %12%\EbConnector.sys
+LoadOrderGroup = Extended Base
+
+[DestinationDirs]
+DefaultDestDir           = 10
+EbConnector_Files_Driver = 12
+
+[SourceDisksNames]
+1 = %DISK_NAME%, , , ""
+
+[SourceDisksFiles]
+EbConnector.sys = 1, ,
+
+[Strings]
+
+DISK_NAME = "EbConnector Device Installation Disk #1"
+
+FLG_ADDREG_NOCLOBBER = 0x00000002
+
+REG_DWORD = 0x00010001
+REG_SZ    = 0x00000000
+
+SERVICE_DEMAND_START = 0x3
+
+SERVICE_ERROR_NORMAL = 0x00000001
+
+SERVICE_KERNEL_DRIVER = 0x00000001

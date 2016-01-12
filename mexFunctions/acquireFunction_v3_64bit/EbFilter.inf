@@ -1,0 +1,121 @@
+; *****************************************************************************
+;
+;    Copyright (c) 2006-2007, Pleora Technologies Inc., All rights reserved.
+;
+; *****************************************************************************
+;
+; File Name....: EbFilter.inf
+;
+; *****************************************************************************
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = NetService
+ClassGUID   = {4D36E974-E325-11CE-BFC1-08002BE10318}
+Provider    = "Pleora Technologies Inc."
+DriverVer   = 03/08/2011,1.0.1.1951    
+CatalogFile = EbFilter.cat
+
+; Not needed because this inf use a system defined class.
+; [ClassInstall32]
+
+[Manufacturer]
+"Pleora Technologies Inc." = Pleora,NTx86,NTamd64
+
+[Pleora]
+"Ethernet Bus Filter" = EbFilter.ndi.32, pt_ebfilter
+
+[Pleora.NTx86]
+"Ethernet Bus Filter" = EbFilter.ndi.32, pt_ebfilter
+
+[Pleora.NTamd64]
+"Ethernet Bus Filter" = EbFilter.ndi.64, pt_ebfilter
+
+; Not needed.
+; [ControlFlags]
+
+[EbFilter.ndi.32]
+AddReg          = EbFilter.ndi.AddReg, EbFilter.AddReg
+Characteristics = 0x4410
+CopyFiles       = EbFilter.Files.Init.32, EbFilter.Files.Sys
+CopyInf         = EbFilterMP.inf
+
+[EbFilter.ndi.64]
+AddReg          = EbFilter.ndi.AddReg, EbFilter.AddReg
+Characteristics = 0x4410
+CopyFiles       = EbFilter.Files.Init.64, EbFilter.Files.Sys
+CopyInf         = EbFilterMP.inf
+
+[EbFilter.ndi.AddReg]
+HKR, Ndi,            HelpText,            , "Ethernet Bus Filter"
+HKR, Ndi,            ClsID,               , {975FBE61-7EF3-4A36-AD1B-87847EE3FB23}
+HKR, Ndi,            ComponentDll,        , EbFilterNotObj\EbFilterNotObj.dll
+HKR, Ndi,            Service,             , EbFilter
+HKR, Ndi,            FilterClass,         , failover
+HKR, Ndi,            FilterDeviceInfFile, , EbFilterMP.inf
+HKR, Ndi,            FilterDeviceInfId,   , Pt_EbFilterMP
+HKR, Ndi\Interfaces, UpperRange,          , noupper
+HKR, Ndi\Interfaces, LowerRange,          , nolower
+HKR, Ndi\Interfaces, FilterMediaTypes,    , "ethernet"
+
+[EbFilter.AddReg]
+HKR, Parameters, Mediums, 0, 31
+
+[EbFilter.Files.Init.32]
+EbFilterNotObj.dll, , , 2
+
+[EbFilter.Files.Init.64]
+EbFilterNotObj.dll, , , 2
+
+[EbFilter.Files.Sys]
+Ebfilter.sys, , , 2
+
+[EbFilter.ndi.32.Services]
+AddService = EbFilter, %FLG_ADDREG_NOCLOBBER%, EbFilter.AddService
+
+[EbFilter.ndi.64.Services]
+AddService = EbFilter, %FLG_ADDREG_NOCLOBBER%, EbFilter.AddService
+
+[EbFilter.AddService]
+DisplayName    = "Ethernet Bus Filter"
+ServiceType    = %SERVICE_KERNEL_DRIVER%
+StartType      = %SERVICE_DEMAND_START%
+ErrorControl   = %SERVICE_ERROR_NORMAL%
+ServiceBinary  = %12%\EbFilter.sys
+LoadOrderGroup = PNP_TDI
+AddReg         = EbFilter.AddService.AddReg
+
+[EbFilter.AddService.AddReg]
+HKR, NDI\params\MaxPoolSize, ParamDesc, 0, "Maximum number of packet descriptors for repackaging"
+HKR, NDI\params\MaxPoolSize, type,      0, "dword"
+HKR, NDI\params\MaxPoolSize, default,   0, 1024
+HKR, NDI\params\MaxPoolSize, optional,  0, "1"
+HKR, NDI\params\MaxPoolSize, max,	    0, 65535
+
+[DestinationDirs]
+DefaultDestDir         = 12
+EbFilter.Files.Init.32 = 11, EbFilterNotObj
+EbFilter.Files.Init.64 = 11, EbFilterNotObj
+EbFilter.Files.Sys     = 12
+
+[SourceDisksNames]
+1 = %DISK_NAME%, "", ,
+
+[SourceDisksFiles]
+EbFilterNotObj.dll = 1
+EbFilter.sys       = 1
+
+[Strings]
+
+DISK_NAME = "Ethernet Bus Filter Install Disk"
+
+FLG_ADDREG_NOCLOBBER = 0x00000002
+
+SERVICE_DEMAND_START = 0x3
+
+SERVICE_ERROR_NORMAL = 0x00000001
+
+SERVICE_KERNEL_DRIVER = 0x00000001
+
+
+

@@ -1,0 +1,13 @@
+{fd9ac5fb-ee83-4fc8-8573-49a399a58682}
+GigE Vision Protocol Driver
+26000000
+EbGEV
+Pleora Technologies Inc.
+EBUS FDO Gigabit Ethernet Vision Protocol Driver
+EbGEV.inf
+END
+EbGEV.sys
+%SystemRoot%\system32\drivers\EbGEV.sys
+EbIcon.dll
+%SystemRoot%\system32\EbIcon.dll
+END

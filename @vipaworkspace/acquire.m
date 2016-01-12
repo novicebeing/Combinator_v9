@@ -1,5 +1,5 @@
 function acquire(obj)
-    h = msgbox('Acquiring Spectra','Acquiring...','modal');
+    h = msgbox('Acquiring Spectra','Acquiring...');%,'modal');
     
     n = 0;
     while ishandle(h)

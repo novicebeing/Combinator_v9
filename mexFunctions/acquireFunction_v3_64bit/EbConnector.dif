@@ -1,0 +1,11 @@
+{7DA08814-75C5-4274-BB04-ECE505CCEB52}
+eBUS Connector driver
+25000000
+EbConnector
+Pleora Technologies Inc.
+This driver is needed to run any other Ethernet Bus driver.
+EbConnector.inf
+END
+EbConnector.sys
+%SystemRoot%\system32\drivers\EbConnector.sys
+END

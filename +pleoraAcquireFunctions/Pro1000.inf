@@ -1,0 +1,262 @@
+; *****************************************************************************
+;
+;     Copyright (c) 2007, Pleora Technologies Inc., All rights reserved.
+;
+; *****************************************************************************
+;
+; File Name....: Pro1000.inf
+;
+; *****************************************************************************
+
+[Version]
+Signature="$Windows NT$"
+Provider=%ProviderName%
+Class=%DeviceClassName%
+ClassGUID={ff646f80-8def-11d2-9449-00105a075f6b}
+DriverVer   = 03/08/2011,4.0.1.1951
+CatalogFile=Pro1000.cat
+
+[SourceDisksNames]
+1 = "Installation Disk", , , ""
+
+[SourceDisksFiles]
+Pro1000.sys=1,,
+Pro1000.dll=1,,
+ 
+[DestinationDirs]
+Pro1000_Files_Driver = 12
+Class_Files = 11
+
+[ClassInstall32]
+CopyFiles=Class_Files
+AddReg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%DeviceClassName%
+HKR,,Icon,,"1000"
+HKR,,Installer32,,"Pro1000.dll,Pro1000GrabberClassInstaller"
+HKR,,EnumPropPages32,,"Pro1000.dll,Pro1000GrabberPropPageProvider"
+
+[Class_Files]
+Pro1000.dll
+
+[Manufacturer]
+%MfgName%=Mfg0,NTx86,NTamd64
+
+[Mfg0]
+%Intel_1008%=Pro1000_DDI, PCI\VEN_8086&DEV_1008
+%Intel_1009%=Pro1000_DDI, PCI\VEN_8086&DEV_1009
+%Intel_100C%=Pro1000_DDI, PCI\VEN_8086&DEV_100C
+%Intel_100D%=Pro1000_DDI, PCI\VEN_8086&DEV_100D
+%Intel_100E%=Pro1000_DDI, PCI\VEN_8086&DEV_100E
+%Intel_100F%=Pro1000_DDI, PCI\VEN_8086&DEV_100F
+%Intel_1010%=Pro1000_DDI, PCI\VEN_8086&DEV_1010
+%Intel_1011%=Pro1000_DDI, PCI\VEN_8086&DEV_1011
+%Intel_1012%=Pro1000_DDI, PCI\VEN_8086&DEV_1012
+%Intel_1013%=Pro1000_DDI, PCI\VEN_8086&DEV_1013
+%Intel_1014%=Pro1000_DDI, PCI\VEN_8086&DEV_1014
+%Intel_1015%=Pro1000_DDI, PCI\VEN_8086&DEV_1015
+%Intel_1016%=Pro1000_DDI, PCI\VEN_8086&DEV_1016
+%Intel_1018%=Pro1000_DDI, PCI\VEN_8086&DEV_1018
+%Intel_1019%=Pro1000_DDI, PCI\VEN_8086&DEV_1019
+%Intel_101A%=Pro1000_DDI, PCI\VEN_8086&DEV_101A
+%Intel_101D%=Pro1000_DDI, PCI\VEN_8086&DEV_101D
+%Intel_101E%=Pro1000_DDI, PCI\VEN_8086&DEV_101E
+%Intel_1026%=Pro1000_DDI, PCI\VEN_8086&DEV_1026
+%Intel_1027%=Pro1000_DDI, PCI\VEN_8086&DEV_1027
+%Intel_1028%=Pro1000_DDI, PCI\VEN_8086&DEV_1028
+%Intel_1075%=Pro1000_DDI, PCI\VEN_8086&DEV_1075
+%Intel_1076%=Pro1000_DDI, PCI\VEN_8086&DEV_1076
+%Intel_1077%=Pro1000_DDI, PCI\VEN_8086&DEV_1077
+%Intel_1078%=Pro1000_DDI, PCI\VEN_8086&DEV_1078
+%Intel_1079%=Pro1000_DDI, PCI\VEN_8086&DEV_1079
+%Intel_107A%=Pro1000_DDI, PCI\VEN_8086&DEV_107A
+%Intel_107B%=Pro1000_DDI, PCI\VEN_8086&DEV_107B
+%Intel_107C%=Pro1000_DDI, PCI\VEN_8086&DEV_107C
+%Intel_108A%=Pro1000_DDI, PCI\VEN_8086&DEV_108A
+%Intel_10B5%=Pro1000_DDI, PCI\VEN_8086&DEV_10B5
+%Intel_105E%=Pro1000_DDI, PCI\VEN_8086&DEV_105E
+%Intel_105F%=Pro1000_DDI, PCI\VEN_8086&DEV_105F
+%Intel_1060%=Pro1000_DDI, PCI\VEN_8086&DEV_1060
+%Intel_107D%=Pro1000_DDI, PCI\VEN_8086&DEV_107D
+%Intel_107E%=Pro1000_DDI, PCI\VEN_8086&DEV_107E
+%Intel_107F%=Pro1000_DDI, PCI\VEN_8086&DEV_107F
+%Intel_10B9%=Pro1000_DDI, PCI\VEN_8086&DEV_10B9
+%Intel_108B%=Pro1000_DDI, PCI\VEN_8086&DEV_108B
+%Intel_108C%=Pro1000_DDI, PCI\VEN_8086&DEV_108C
+%Intel_1096%=Pro1000_DDI, PCI\VEN_8086&DEV_1096
+%Intel_109A%=Pro1000_DDI, PCI\VEN_8086&DEV_109A
+%Intel_10A4%=Pro1000_DDI, PCI\VEN_8086&DEV_10A4
+%Intel_10D3%=Pro1000_DDI, PCI\VEN_8086&DEV_10D3
+%Intel_10BC%=Pro1000_DDI, PCI\VEN_8086&DEV_10BC
+
+[Mfg0.NTx86]
+%Intel_1008%=Pro1000_DDI, PCI\VEN_8086&DEV_1008
+%Intel_1009%=Pro1000_DDI, PCI\VEN_8086&DEV_1009
+%Intel_100C%=Pro1000_DDI, PCI\VEN_8086&DEV_100C
+%Intel_100D%=Pro1000_DDI, PCI\VEN_8086&DEV_100D
+%Intel_100E%=Pro1000_DDI, PCI\VEN_8086&DEV_100E
+%Intel_100F%=Pro1000_DDI, PCI\VEN_8086&DEV_100F
+%Intel_1010%=Pro1000_DDI, PCI\VEN_8086&DEV_1010
+%Intel_1011%=Pro1000_DDI, PCI\VEN_8086&DEV_1011
+%Intel_1012%=Pro1000_DDI, PCI\VEN_8086&DEV_1012
+%Intel_1013%=Pro1000_DDI, PCI\VEN_8086&DEV_1013
+%Intel_1014%=Pro1000_DDI, PCI\VEN_8086&DEV_1014
+%Intel_1015%=Pro1000_DDI, PCI\VEN_8086&DEV_1015
+%Intel_1016%=Pro1000_DDI, PCI\VEN_8086&DEV_1016
+%Intel_1018%=Pro1000_DDI, PCI\VEN_8086&DEV_1018
+%Intel_1019%=Pro1000_DDI, PCI\VEN_8086&DEV_1019
+%Intel_101A%=Pro1000_DDI, PCI\VEN_8086&DEV_101A
+%Intel_101D%=Pro1000_DDI, PCI\VEN_8086&DEV_101D
+%Intel_101E%=Pro1000_DDI, PCI\VEN_8086&DEV_101E
+%Intel_1026%=Pro1000_DDI, PCI\VEN_8086&DEV_1026
+%Intel_1027%=Pro1000_DDI, PCI\VEN_8086&DEV_1027
+%Intel_1028%=Pro1000_DDI, PCI\VEN_8086&DEV_1028
+%Intel_1075%=Pro1000_DDI, PCI\VEN_8086&DEV_1075
+%Intel_1076%=Pro1000_DDI, PCI\VEN_8086&DEV_1076
+%Intel_1077%=Pro1000_DDI, PCI\VEN_8086&DEV_1077
+%Intel_1078%=Pro1000_DDI, PCI\VEN_8086&DEV_1078
+%Intel_1079%=Pro1000_DDI, PCI\VEN_8086&DEV_1079
+%Intel_107A%=Pro1000_DDI, PCI\VEN_8086&DEV_107A
+%Intel_107B%=Pro1000_DDI, PCI\VEN_8086&DEV_107B
+%Intel_107C%=Pro1000_DDI, PCI\VEN_8086&DEV_107C
+%Intel_108A%=Pro1000_DDI, PCI\VEN_8086&DEV_108A
+%Intel_10B5%=Pro1000_DDI, PCI\VEN_8086&DEV_10B5
+%Intel_105E%=Pro1000_DDI, PCI\VEN_8086&DEV_105E
+%Intel_105F%=Pro1000_DDI, PCI\VEN_8086&DEV_105F
+%Intel_1060%=Pro1000_DDI, PCI\VEN_8086&DEV_1060
+%Intel_107D%=Pro1000_DDI, PCI\VEN_8086&DEV_107D
+%Intel_107E%=Pro1000_DDI, PCI\VEN_8086&DEV_107E
+%Intel_107F%=Pro1000_DDI, PCI\VEN_8086&DEV_107F
+%Intel_10B9%=Pro1000_DDI, PCI\VEN_8086&DEV_10B9
+%Intel_108B%=Pro1000_DDI, PCI\VEN_8086&DEV_108B
+%Intel_108C%=Pro1000_DDI, PCI\VEN_8086&DEV_108C
+%Intel_1096%=Pro1000_DDI, PCI\VEN_8086&DEV_1096
+%Intel_109A%=Pro1000_DDI, PCI\VEN_8086&DEV_109A
+%Intel_10A4%=Pro1000_DDI, PCI\VEN_8086&DEV_10A4
+%Intel_10D3%=Pro1000_DDI, PCI\VEN_8086&DEV_10D3
+%Intel_10BC%=Pro1000_DDI, PCI\VEN_8086&DEV_10BC
+
+[Mfg0.NTamd64]
+%Intel_1008%=Pro1000_DDI, PCI\VEN_8086&DEV_1008
+%Intel_1009%=Pro1000_DDI, PCI\VEN_8086&DEV_1009
+%Intel_100C%=Pro1000_DDI, PCI\VEN_8086&DEV_100C
+%Intel_100D%=Pro1000_DDI, PCI\VEN_8086&DEV_100D
+%Intel_100E%=Pro1000_DDI, PCI\VEN_8086&DEV_100E
+%Intel_100F%=Pro1000_DDI, PCI\VEN_8086&DEV_100F
+%Intel_1010%=Pro1000_DDI, PCI\VEN_8086&DEV_1010
+%Intel_1011%=Pro1000_DDI, PCI\VEN_8086&DEV_1011
+%Intel_1012%=Pro1000_DDI, PCI\VEN_8086&DEV_1012
+%Intel_1013%=Pro1000_DDI, PCI\VEN_8086&DEV_1013
+%Intel_1014%=Pro1000_DDI, PCI\VEN_8086&DEV_1014
+%Intel_1015%=Pro1000_DDI, PCI\VEN_8086&DEV_1015
+%Intel_1016%=Pro1000_DDI, PCI\VEN_8086&DEV_1016
+%Intel_1018%=Pro1000_DDI, PCI\VEN_8086&DEV_1018
+%Intel_1019%=Pro1000_DDI, PCI\VEN_8086&DEV_1019
+%Intel_101A%=Pro1000_DDI, PCI\VEN_8086&DEV_101A
+%Intel_101D%=Pro1000_DDI, PCI\VEN_8086&DEV_101D
+%Intel_101E%=Pro1000_DDI, PCI\VEN_8086&DEV_101E
+%Intel_1026%=Pro1000_DDI, PCI\VEN_8086&DEV_1026
+%Intel_1027%=Pro1000_DDI, PCI\VEN_8086&DEV_1027
+%Intel_1028%=Pro1000_DDI, PCI\VEN_8086&DEV_1028
+%Intel_1075%=Pro1000_DDI, PCI\VEN_8086&DEV_1075
+%Intel_1076%=Pro1000_DDI, PCI\VEN_8086&DEV_1076
+%Intel_1077%=Pro1000_DDI, PCI\VEN_8086&DEV_1077
+%Intel_1078%=Pro1000_DDI, PCI\VEN_8086&DEV_1078
+%Intel_1079%=Pro1000_DDI, PCI\VEN_8086&DEV_1079
+%Intel_107A%=Pro1000_DDI, PCI\VEN_8086&DEV_107A
+%Intel_107B%=Pro1000_DDI, PCI\VEN_8086&DEV_107B
+%Intel_107C%=Pro1000_DDI, PCI\VEN_8086&DEV_107C
+%Intel_108A%=Pro1000_DDI, PCI\VEN_8086&DEV_108A
+%Intel_10B5%=Pro1000_DDI, PCI\VEN_8086&DEV_10B5
+%Intel_105E%=Pro1000_DDI, PCI\VEN_8086&DEV_105E
+%Intel_105F%=Pro1000_DDI, PCI\VEN_8086&DEV_105F
+%Intel_1060%=Pro1000_DDI, PCI\VEN_8086&DEV_1060
+%Intel_107D%=Pro1000_DDI, PCI\VEN_8086&DEV_107D
+%Intel_107E%=Pro1000_DDI, PCI\VEN_8086&DEV_107E
+%Intel_107F%=Pro1000_DDI, PCI\VEN_8086&DEV_107F
+%Intel_10B9%=Pro1000_DDI, PCI\VEN_8086&DEV_10B9
+%Intel_108B%=Pro1000_DDI, PCI\VEN_8086&DEV_108B
+%Intel_108C%=Pro1000_DDI, PCI\VEN_8086&DEV_108C
+%Intel_1096%=Pro1000_DDI, PCI\VEN_8086&DEV_1096
+%Intel_109A%=Pro1000_DDI, PCI\VEN_8086&DEV_109A
+%Intel_10A4%=Pro1000_DDI, PCI\VEN_8086&DEV_10A4
+%Intel_10D3%=Pro1000_DDI, PCI\VEN_8086&DEV_10D3
+%Intel_10BC%=Pro1000_DDI, PCI\VEN_8086&DEV_10BC
+
+[Pro1000_DDI.NT]
+AddReg=Pro1000_EventLog_Reg
+CopyFiles=Pro1000_Files_Driver
+
+[Pro1000_DDI.NT.Services]
+AddService = Pro1000, 0x00000002, Pro1000_AddService
+
+[Pro1000_AddService]
+DisplayName    = %SvcDesc%
+ServiceType    = 1
+StartType      = 3
+ErrorControl   = 1
+ServiceBinary  = %12%\Pro1000.sys
+
+;[Pro1000_EventLog]
+;AddReg=Pro1000_EventLog_Reg
+
+[Pro1000_EventLog_Reg]
+HKLM, "System\CurrentControlSet\Services\EventLog\System\Pro1000", "EventMessageFile", 0x00020000, "%%SystemRoot%%\system32\drivers\Pro1000.sys"
+HKLM, "System\CurrentControlSet\Services\EventLog\System\Pro1000", "TypesSupported", 0x00010001, 7
+
+[Pro1000_Files_Driver]
+Pro1000.sys
+
+[Strings]
+ProviderName="Pleora Technologies Inc"
+MfgName="Intel Corporation"
+
+Intel_1008="Intel PRO/1000 Grabber Adapter (82544 EI)"
+Intel_1009="Intel PRO/1000 Grabber Adapter (82544 EI)"
+Intel_100C="Intel PRO/1000 Grabber Adapter (82544 GC)"
+Intel_100D="Intel PRO/1000 Grabber Adapter (82544 GC)"
+Intel_100E="Intel PRO/1000 Grabber Adapter (82540 EM)"
+Intel_100F="Intel PRO/1000 Grabber Adapter (82545 EM)"
+Intel_1010="Intel PRO/1000 Grabber Adapter (82546 EB)"
+Intel_1011="Intel PRO/1000 Grabber Adapter (82545 EM)"
+Intel_1012="Intel PRO/1000 Grabber Adapter (82546 EB)"
+Intel_1013="Intel PRO/1000 Grabber Adapter (82541 EI)"
+Intel_1014="Intel PRO/1000 Grabber Adapter (82541 ER)"
+Intel_1015="Intel PRO/1000 Grabber Adapter (82540 EM)"
+Intel_1016="Intel PRO/1000 Grabber Adapter (82540 EP)"
+Intel_1018="Intel PRO/1000 Grabber Adapter (82541 EI)"
+Intel_1019="Intel PRO/1000 Grabber Adapter (82547 EI)"
+Intel_101A="Intel PRO/1000 Grabber Adapter (82547 EI)"
+Intel_101D="Intel PRO/1000 Grabber Adapter (82546 EB)"
+Intel_101E="Intel PRO/1000 Grabber Adapter (82540 EP)"
+Intel_1026="Intel PRO/1000 Grabber Adapter (82545 GM)"
+Intel_1027="Intel PRO/1000 Grabber Adapter (82545 GM)"
+Intel_1028="Intel PRO/1000 Grabber Adapter (82545 GM)"
+Intel_1075="Intel PRO/1000 Grabber Adapter (82547 GI)"
+Intel_1076="Intel PRO/1000 Grabber Adapter (82541 GI)"
+Intel_1077="Intel PRO/1000 Grabber Adapter (82541 GI)"
+Intel_1078="Intel PRO/1000 Grabber Adapter (82541 ER)"
+Intel_1079="Intel PRO/1000 Grabber Adapter (82546 EB)"
+Intel_107A="Intel PRO/1000 Grabber Adapter (82546 EB)"
+Intel_107B="Intel PRO/1000 Grabber Adapter (82546 EB)"
+Intel_107C="Intel PRO/1000 Grabber Adapter (82541 PI)"
+Intel_108A="Intel PRO/1000 Grabber Adapter (82546 EB)"
+Intel_10B5="Intel PRO/1000 Grabber Adapter (82546 GB)"
+Intel_105E="Intel PRO/1000 Grabber Adapter (82571 EB)"
+Intel_105F="Intel PRO/1000 Grabber Adapter (82571 EB)"
+Intel_1060="Intel PRO/1000 Grabber Adapter (82571 EB)"
+Intel_107D="Intel PRO/1000 Grabber Adapter (82572 EI)"
+Intel_107E="Intel PRO/1000 Grabber Adapter (82572 EI)"
+Intel_107F="Intel PRO/1000 Grabber Adapter (82572 EI)"
+Intel_10B9="Intel PRO/1000 Grabber Adapter (82572 EI)"
+Intel_108B="Intel PRO/1000 Grabber Adapter (82572 E)"
+Intel_108C="Intel PRO/1000 Grabber Adapter (82572 E)"
+Intel_1096="Intel PRO/1000 Grabber Adapter (82563 EB)"
+Intel_109A="Intel PRO/1000 Grabber Adapter (82573 L)"
+Intel_10A4="Intel PRO/1000 Grabber Adapter (82571 GB)"
+Intel_10D3="Intel PRO/1000 Grabber Adapter (82574 L)"
+Intel_10BC="Intel PRO/1000 Grabber Adapter (82571 GB)"
+
+DeviceClassName="PRO/1000 Grabber Devices"
+SvcDesc="PRO/1000 Grabber"
