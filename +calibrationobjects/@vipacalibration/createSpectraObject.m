@@ -1,5 +1,6 @@
 function h = createSpectraObject(self,returnImages,time)
 
+        returnImages = cat(3,self.refImage,returnImages);
         returnImages = permute(returnImages,[2 1 3]);
         numImages = size(returnImages,3);
 
@@ -85,9 +86,10 @@ function h = createSpectraObject(self,returnImages,time)
         end
         
         returnSpectra = reshape(returnSpectra,[size(self.spectrumIndcs,1) size(self.spectrumIndcs,2) numImages]);
+        returnSpectra = returnSpectra(:,:,2:end)./repmat(returnSpectra(:,:,1),1,1,size(returnSpectra,3)-1);
         
         % Average the spectra into the kineticsobject
-        h = kineticsobject();
+        h = spectraobjects.spectraobject();
         for i = 1:numel(time)
             h.averageSpectrum(reshape(1:numel(self.spectrumIndcs),size(self.spectrumIndcs)),returnSpectra(:,:,i),[],time(i));
         end

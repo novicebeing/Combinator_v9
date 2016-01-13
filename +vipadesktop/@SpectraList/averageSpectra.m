@@ -1,4 +1,4 @@
-function [wavenum,spectra] = createSpectra(this, plantids,images)
+function hfig = averageSpectra(this, plantids,wavenum,spectra,time)
     % Get the spectra objects
     if isempty(plantids)
         return
@@ -13,9 +13,9 @@ function [wavenum,spectra] = createSpectra(this, plantids,images)
     end
     plants = this.Plants(idx);
     dupids = [];
-    
+
     % Open the plot browsers
-    %for i = 1:length(plants)
-        [wavenum,spectra] = plants{1}.createSpectra(images);
-    %end
+    for i = 1:length(plants)
+        hfig = plants{i}.averageSpectrum(wavenum,spectra,[],time);
+    end
 end

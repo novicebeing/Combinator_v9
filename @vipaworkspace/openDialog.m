@@ -32,6 +32,13 @@ function openDialog(this)
                     else
                         this.SpectraList.addItem(h,0,0,strrep(h.name,' ','_'));
                     end
+                case 'spectraobjects.spectraobject'
+                    h = data.(fields{j});
+                    if isempty(h.name)
+                        this.SpectraList.addItem(h,0,0,fields{j});
+                    else
+                        this.SpectraList.addItem(h,0,0,strrep(h.name,' ','_'));
+                    end
                 case 'fitspectraobjects.linelist'
                     h = data.(fields{j});
                     if isempty(h.name)

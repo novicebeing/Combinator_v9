@@ -1,5 +1,6 @@
-function returnSpectra = createSpectra(self,returnImages)
+function [wavenum,returnSpectra] = createSpectra(self,returnImages)
 
+        returnImages = cat(3,self.refImage,returnImages);
         returnImages = permute(returnImages,[2 1 3]);
         numImages = size(returnImages,3);
 
@@ -84,5 +85,7 @@ function returnSpectra = createSpectra(self,returnImages)
         end
         
         returnSpectra = reshape(returnSpectra,[size(self.spectrumIndcs,1) size(self.spectrumIndcs,2) numImages]);
+        returnSpectra = returnSpectra(:,:,2:end)./repmat(returnSpectra(:,:,1),1,1,size(returnSpectra,3)-1);
+        wavenum = reshape(1:numel(self.spectrumIndcs),size(self.spectrumIndcs));
 end
 

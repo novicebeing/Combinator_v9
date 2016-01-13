@@ -354,7 +354,7 @@ switch ed.Request
         for i = 1:numel(ed.Variables)
             itemNames = this.ImagesList.getItemNames(ed.Variables(i));
             [images,time] = this.ImagesList.getImages(ed.Variables(i));
-            h = this.CalibrationList.createSpectra(calibrationobjid,images,time);
+            h = this.CalibrationList.createSpectraObject(calibrationobjid,images,time);
             this.SpectraList.addItem(h,0,0,strrep(itemNames,' ','_'));
             waitbar(i/numel(ed.Variables),hwait);
         end
