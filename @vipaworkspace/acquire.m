@@ -53,7 +53,9 @@ function acquire(obj)
         end
         
         pause(0.1);
-        disp(n);
+        if ishandle(h)
+            h.Children(2).Children.String = sprintf('Acquired %i Spectra...',n);
+        end
         n = n+1;
     end
 end

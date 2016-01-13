@@ -159,10 +159,10 @@ classdef spectraobject < handle
                 set(herrorminus,'XData',obj.wavenum(:));
                 set(herrorminus,'YData',reshape(obj.yavg(:,:,ind)-obj.ystderror(:,:,ind),[],1));
             elseif strcmp(options,'fft')
-                gridx = linspace(min(obj.wavenum),max(obj.wavenum),10000);
+                gridx = linspace(min(obj.wavenum(:)),max(obj.wavenum(:)),10000);
                 ynonnan = reshape(obj.yavg(:,:,ind),[],1);
                 ynonnan(isnan(ynonnan)) = 0;
-                gridy = interp1(obj.wavenum,ynonnan,gridx);
+                gridy = interp1(obj.wavenum(:),ynonnan,gridx);
                 yfft = abs(fft(gridy));
                 yfft = yfft(1:numel(yfft)/2);
                 Lmax = 1/4/(gridx(2)-gridx(1));
@@ -174,10 +174,10 @@ classdef spectraobject < handle
                 set(herrorminus,'XData',[]);
                 set(herrorminus,'YData',[]);
             elseif strcmp(options,'interp')
-                gridx = linspace(min(obj.wavenum),max(obj.wavenum),10000);
+                gridx = linspace(min(obj.wavenum(:)),max(obj.wavenum(:)),10000);
                 ynonnan = reshape(obj.yavg(:,:,ind),[],1);
                 ynonnan(isnan(ynonnan)) = 0;
-                gridy = interp1(obj.wavenum,ynonnan,gridx);
+                gridy = interp1(obj.wavenum(:),ynonnan,gridx);
                 set(h,'XData',gridx);
                 set(h,'YData',gridy);
                 set(herrorplus,'XData',[]);
