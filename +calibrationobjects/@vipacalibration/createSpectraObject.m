@@ -91,7 +91,7 @@ function h = createSpectraObject(self,returnImages,time)
         % Average the spectra into the kineticsobject
         h = spectraobjects.spectraobject();
         for i = 1:numel(time)
-            h.averageSpectrum(reshape(1:numel(self.spectrumIndcs),size(self.spectrumIndcs)),returnSpectra(:,:,i),[],time(i));
+            h.averageSpectrum(self.xAxis_wavenumber,returnSpectra(:,:,i),[],time(i));
         end
 end
 

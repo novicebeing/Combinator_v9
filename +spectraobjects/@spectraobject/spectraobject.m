@@ -4,6 +4,9 @@ classdef spectraobject < handle
     properties
         name;
         
+        % Plot Handles
+        plotHandles
+        
         % DOCO-specific constants
         integrationTime;
         DOCOtemplateNames;

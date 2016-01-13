@@ -99,18 +99,25 @@ classdef acquiretab < handle
             panel.add(l,'xy(2,6,''r,c'')');
             this.imageDestTextField = toolpack.component.TSTextField('none',15);
             this.imageDestTextField.Editable = false;
+            addlistener(this.imageDestTextField,'ActionPerformed',@(~,~) setTextFieldText(this.imageDestTextField,'none'));
             panel.add(this.imageDestTextField,'xywh(4,2,1,1)');
             this.calibrationTextField = toolpack.component.TSTextField('none',15);
             this.calibrationTextField.Editable = false;
+            addlistener(this.calibrationTextField,'ActionPerformed',@(~,~) setTextFieldText(this.calibrationTextField,'none'));
             panel.add(this.calibrationTextField,'xywh(4,4,1,1)');
             this.spectraDestTextField = toolpack.component.TSTextField('none',15);
             this.spectraDestTextField.Editable = false;
+            addlistener(this.spectraDestTextField,'ActionPerformed',@(~,~) setTextFieldText(this.spectraDestTextField,'none'));
             panel.add(this.spectraDestTextField,'xywh(4,6,1,1)');
             this.TPComponent.add(this.AcquireDestinationSection);
             
             %this.TPComponent = toolpack.desktop.ToolSection('Plant',pidtool.utPIDgetStrings('cst','strPlant'));
             this.vipadesktop = vipadesktop;
             %this.layout();
+            
+           function setTextFieldText(obj,text)
+               obj.Text = text;
+           end
        end
         function layout(this)
             %LAYOUT

@@ -10,6 +10,7 @@ classdef imagesobject < handle
         
         % Live Image Views
         liveImagePlotHandles;
+        plotHandles;
     end
     methods
         function obj = imagesobject(varargin)
@@ -49,19 +50,34 @@ classdef imagesobject < handle
             set(b,'Callback',@(es,ed) obj.updateImagePlot(hp,round(get(es,'Value'))));
         end
         function hf = lineProfileBrowser(obj)
-            if isempty(obj.name)
-                hf = figure;
+            if ~isempty(obj.plotHandles)
+                obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
             else
-                hf = figure('Name',obj.name,'NumberTitle','off');
+                obj.plotHandles = {};
             end
-            ax = axes('Parent',hf,'position',[0.13 0.20 0.79 0.72]);
-            [hp] = obj.lineProfilePlot(ax,1);
-            obj.liveImagePlotHandles(end+1) = hp;
-            obj.updateLineProfilePlot(hp,round(1));
-            b = uicontrol('Parent',hf,'Style','slider','Position',[81,10,419,23],...
-              'value',1, 'min',1, 'max',numel(obj.time),'sliderstep',[1/numel(obj.time) 10/numel(obj.time)]);
-            set(b,'Callback',@(es,ed) obj.updateLineProfilePlot(hp,round(get(es,'Value'))));
+            if ~isempty(obj.plotHandles)
+                n = numel(obj.plotHandles);
+                obj.plotHandles{n+1} = imagesobjects.lineprofilebrowser(obj);
+                hf = obj.plotHandles{n+1}.figureHandle;
+            else
+                obj.plotHandles = {imagesobjects.lineprofilebrowser(obj)};
+                hf = obj.plotHandles{1}.figureHandle;
+            end
         end
+%         function hf = lineProfileBrowser(obj)
+%             if isempty(obj.name)
+%                 hf = figure;
+%             else
+%                 hf = figure('Name',obj.name,'NumberTitle','off');
+%             end
+%             ax = axes('Parent',hf,'position',[0.13 0.20 0.79 0.72]);
+%             [hp] = obj.lineProfilePlot(ax,1);
+%             obj.liveImagePlotHandles(end+1) = hp;
+%             obj.updateLineProfilePlot(hp,round(1));
+%             b = uicontrol('Parent',hf,'Style','slider','Position',[81,10,419,23],...
+%               'value',1, 'min',1, 'max',numel(obj.time),'sliderstep',[1/numel(obj.time) 10/numel(obj.time)]);
+%             set(b,'Callback',@(es,ed) obj.updateLineProfilePlot(hp,round(get(es,'Value'))));
+%         end
         function setImages(obj,images,time)
             obj.images = images;
             obj.time = time;

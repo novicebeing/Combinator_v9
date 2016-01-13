@@ -86,6 +86,6 @@ function [wavenum,returnSpectra] = createSpectra(self,returnImages)
         
         returnSpectra = reshape(returnSpectra,[size(self.spectrumIndcs,1) size(self.spectrumIndcs,2) numImages]);
         returnSpectra = returnSpectra(:,:,2:end)./repmat(returnSpectra(:,:,1),1,1,size(returnSpectra,3)-1);
-        wavenum = reshape(1:numel(self.spectrumIndcs),size(self.spectrumIndcs));
+        wavenum = self.xAxis_wavenumber;
 end
 

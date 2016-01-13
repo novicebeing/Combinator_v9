@@ -135,6 +135,11 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)imageslist_openlineprofilebrowser(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,10);
+            s.Text = 'Export To Base Workspace';
+            s.Name = 'imageslist_exporttobaseworkspace';
+            s.Callback = @(x)imageslist_exporttobaseworkspace(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,11);
             nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -172,7 +177,17 @@ classdef VIPAdataBrowser < handle
             s.Name = 'calibrationlist_exporttobaseworkspace';
             s.Callback = @(x)calibrationlist_exporttobaseworkspace(obj,x);
             s.MultiSelection = false;
-            selectionPopupMenu.addMenuItem(s,4);
+            selectionPopupMenu.addMenuItem(s,5);
+            s.Text = 'Calibrate X Axis';
+            s.Name = 'calibrationlist_calibratexaxis';
+            s.Callback = @(x)calibrationlist_calibratexaxis(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,6);
+            s.Text = 'Calibrate Y Axis';
+            s.Name = 'calibrationlist_calibrateyaxis';
+            s.Callback = @(x)calibrationlist_calibrateyaxis(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,7);
             nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -196,16 +211,26 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)openplotbrowser(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,2);
+            s.Text = 'Open FFTPlot Browser';
+            s.Name = 'openfftplotbrowser';
+            s.Callback = @(x)openfftplotbrowser(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,3);
             s.Text = 'Perform Spectral Fit';
             s.Name = 'performspectralfit';
             s.Callback = @(x)performspectralfit(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,3);
+            selectionPopupMenu.addMenuItem(s,4);
             s.Text = 'Save To File...';
             s.Name = 'spectralist_savetofile';
             s.Callback = @(x)spectralist_savetofile(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,4);
+            selectionPopupMenu.addMenuItem(s,5);
+            s.Text = 'Export To Base Workspace';
+            s.Name = 'spectralist_exporttobaseworkspace';
+            s.Callback = @(x)spectralist_exporttobaseworkspace(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,6);
             nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -304,6 +329,10 @@ end
 
 function openplotbrowser(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('openplotbrowser',src.Variables));
+end
+
+function openfftplotbrowser(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('openfftplotbrowser',src.Variables));
 end
 
 function performspectralfit(obj,src)
@@ -410,10 +439,26 @@ function calibrationlist_exporttobaseworkspace(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('calibrationlist_exporttobaseworkspace',src.Variables));
 end
 
+function imageslist_exporttobaseworkspace(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_exporttobaseworkspace',src.Variables));
+end
+
+function spectralist_exporttobaseworkspace(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_exporttobaseworkspace',src.Variables));
+end
+
 function imageslist_averageimages(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_averageimages',src.Variables));
 end
 
 function imageslist_openlineprofilebrowser(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_openlineprofilebrowser',src.Variables));
+end
+
+function calibrationlist_calibratexaxis(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('calibrationlist_calibratexaxis',src.Variables));
+end
+
+function calibrationlist_calibrateyaxis(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('calibrationlist_calibrateyaxis',src.Variables));
 end

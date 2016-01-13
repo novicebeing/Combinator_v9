@@ -303,6 +303,14 @@ switch ed.Request
             waitbar(i/numel(ed.Variables),hwait);
         end
         close(hwait);
+    case 'openfftplotbrowser'
+        hwait = waitbar(0,'Opening FFT Plot Browsers...', 'WindowStyle', 'modal');
+        for i = 1:numel(ed.Variables)
+            h = this.SpectraList.openFFTPlotBrowsers(ed.Variables(i));
+            this.TPComponent.addFigure(h);
+            waitbar(i/numel(ed.Variables),hwait);
+        end
+        close(hwait);
     case 'openimagebrowser'
         h = this.ImagesList.openImageBrowsers(ed.Variables);
         this.TPComponent.addFigure(h);
@@ -373,9 +381,17 @@ switch ed.Request
         this.CalibrationList.setSigImage(calibrationobjid,images(:,:,1));
     case 'calibrationlist_exporttobaseworkspace'
         assignin('base','hobj',this.CalibrationList.Plants);
+    case 'imageslist_exporttobaseworkspace'
+        assignin('base','hobj',this.ImagesList.Plants);
+    case 'spectralist_exporttobaseworkspace'
+        assignin('base','hobj',this.SpectraList.Plants);
     case 'imageslist_openlineprofilebrowser'
         h = this.ImagesList.openLineProfileBrowsers(ed.Variables);
         this.TPComponent.addFigure(h);
+    case 'calibrationlist_calibratexaxis'
+        this.CalibrationList.calibrateXaxis(ed.Variables);
+    case 'calibrationlist_calibrateyaxis'
+        this.CalibrationList.calibrateYaxis(ed.Variables);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
 end

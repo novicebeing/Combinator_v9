@@ -22,6 +22,12 @@ classdef vipacalibration < handle
         % X and Y axis calibration
         refImage;
         sigImage;
+        
+        % X Axis Calibration
+        xAxis_wavenumber;
+        
+        % Y Axis Calibration
+        yAxis_pathlength;
     end
     methods
         function obj = vipacalibration(varargin)

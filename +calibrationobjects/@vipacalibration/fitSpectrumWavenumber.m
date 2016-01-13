@@ -6,8 +6,9 @@ function self = fitSpectrumWavenumber(self)
     disp('Warning: need to make fit spectrum number a variable')
                 [~,refSpectrum] = self.createSpectra(self.refImage);
                 [~,sigSpectrum] = self.createSpectra(self.sigImage);
+                %plotSpectrum = 1-sigSpectrum./refSpectrum;
                 plotSpectrum = -log(sigSpectrum./refSpectrum);
-                polyBaselineFit = 1;
+                polyBaselineFit = 0;
                 if polyBaselineFit == 1
                     polydegree = 2;
                     for j = 1:size(plotSpectrum,2)
@@ -44,11 +45,9 @@ function self = fitSpectrumWavenumber(self)
     uiwait(h);
     fittedWavenumber = hfit.getFittedXaxis;
     if ~isempty(fittedWavenumber)
-        self.constructTimeDynamicsPlot_spectrumWavenumber = reshape(fittedWavenumber,size(self.constructTimeDynamicsPlot_spectrumWavenumber));
-        self.dependencyHandles.MOD_VIPA.spectrumX = 1e4./self.constructTimeDynamicsPlot_spectrumWavenumber;
+        self.xAxis_wavenumber = reshape(fittedWavenumber,size(self.spectrumIndcs));
+        self.xaxisCalibrated = true;
     end
         
     delete(hfit);
-
-    %self.updatePlot();
 end

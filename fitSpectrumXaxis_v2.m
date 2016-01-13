@@ -25,7 +25,7 @@ classdef fitSpectrumXaxis_v2 < MOD_BASECLASS
            simMaxWavenumber = 2800;
            wavenumMin = 2500;
            wavenumMax = 2800;
-           P = 1; % in atm
+           P = 0.3; % in atm
            Pa = 1e-9; % in atm
            T = 300;
            AbsorptionLength = 0.5488;
