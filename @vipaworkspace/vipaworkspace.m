@@ -79,7 +79,7 @@ classdef vipaworkspace < handle
             this.TPComponent.setDataBrowser(this.DataBrowser.View.getPanel);
             
             % Get Image Acquire Operations
-            this.acquireOperations = {'add','replace','average','averageWithRestart'};
+            this.acquireOperations = {'replace','add','average','averageWithRestart'};
             this.acquireOperation = this.acquireOperations{1};
             
             % Get Image Acquire functions

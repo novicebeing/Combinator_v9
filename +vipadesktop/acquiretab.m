@@ -66,7 +66,7 @@ classdef acquiretab < handle
             this.acquireFunctionComboBox = toolpack.component.TSComboBox(acquireFunctionStrings);
             panel.add(this.acquireFunctionComboBox,'xywh(4,2,1,1)');
             addlistener(this.acquireFunctionComboBox,'ActionPerformed',@(~,~) notify(this,'AcquireFunctionBoxAction'));
-             this.acquireOperationComboBox = toolpack.component.TSComboBox({'add','replace','average','averageWithRestart'});
+             this.acquireOperationComboBox = toolpack.component.TSComboBox({'replace','add','average','averageWithRestart'});
              panel.add(this.acquireOperationComboBox,'xywh(4,4,1,1)');
              addlistener(this.acquireOperationComboBox,'ActionPerformed',@(~,~) notify(this,'AcquireOperationBoxAction'));
 %             this.kineticsImagesComboBox = toolpack.component.TSComboBox(kineticsImagesAcquireFunctionStrings);
