@@ -7,6 +7,7 @@ classdef imagesobject < handle
         % Images Parameters
         images;
         time;
+		avgcounter = 0;
         
         % Live Image Views
         plotHandles;
@@ -61,9 +62,15 @@ classdef imagesobject < handle
         end
 
         % Adding, replacing, clearing images
+		function clearImages(obj)
+			obj.images = [];
+			obj.time = [];
+			obj.avgcounter = 0;
+		end
         function setImages(obj,images,time)
             obj.images = images;
             obj.time = time;
+            obj.avgcounter = 0;
             
             % Update the plots
             obj.updatePlots();
@@ -79,6 +86,19 @@ classdef imagesobject < handle
             % Update the plots
             obj.updatePlots();
         end
+		function averageImages(obj,images,time)
+            if isempty(obj.images)
+                obj.images = images;
+				obj.avgcounter = 1;
+            else
+                obj.images = (obj.avgcounter*obj.images+images)/(obj.avgcounter+1);
+				obj.avgcounter = obj.avgcounter+1;
+            end
+            obj.time = time;
+
+            % Update the plots
+            obj.updatePlots();
+		end
     end
 end
 

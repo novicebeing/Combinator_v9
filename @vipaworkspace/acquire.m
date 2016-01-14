@@ -15,10 +15,10 @@ function acquire(obj)
                     case 'replace'
                         obj.ImagesList.setImages(imageobjid,images,time);
                     case 'average'
-                        %obj.ImagesList.averageImages(imageobjid,images,time);
+                        obj.ImagesList.averageImages(imageobjid,images,time);
                     case 'averageWithRestart'
                         if n == 0
-                            obj.ImagesList.clearImages(imageobjid,images,time);
+                            obj.ImagesList.clearImages(imageobjid);
                         end
                         obj.ImagesList.averageImages(imageobjid,images,time);
                     otherwise

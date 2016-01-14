@@ -108,7 +108,7 @@ classdef lineprofilebrowser < handle
             x = 1:numel(this.lineProfileIndicesX);
             y = this.Parent.images(indcs);
             if this.highPassOn == true
-                y = y - smooth(y,50);
+                y = y - smooth(y,20);
             end
             hp = plot(x,y,'Parent',this.axesHandle);
             ylim([0 6000]);
@@ -118,7 +118,7 @@ classdef lineprofilebrowser < handle
             x = 1:numel(this.lineProfileIndicesX);
             y = this.Parent.images(indcs);
             if this.highPassOn == true
-                y = y - smooth(y,50);
+                y = y - smooth(y,20);
             end
             set(this.plotHandle,'XData',x);
             set(this.plotHandle,'YData',y);
