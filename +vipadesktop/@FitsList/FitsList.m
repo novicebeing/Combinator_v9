@@ -358,6 +358,12 @@ if this.enabledWSListener
         for i = 1:length(removedplants)
             this.removePlant(removedplants{i});
         end
+    elseif evnt.WSChange % An item was added
+        for i = 1:length(WSplantnames)
+            if sum(strcmp(WSplantnames{i},this.PlantNames)) == 0
+                this.addItem(this.LocalWorkspace.getValue(WSplantnames{i}),0,0,WSplantnames{i});
+            end
+        end
     end
 end
 end

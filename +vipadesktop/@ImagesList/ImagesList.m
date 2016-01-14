@@ -80,7 +80,7 @@ classdef ImagesList < handle
             allnames = this.PlantNames;
             k = 1;
             while ismember(name, allnames)
-                name = sprintf('%s%d','Plant',k);
+                name = sprintf('%s%d','images',k);
                 k = k+1;
             end
             if ~isempty(this.StatusBar)
@@ -124,7 +124,7 @@ classdef ImagesList < handle
         end
         function renamePlant(this, oldname, newname)
             %RENAMEPLANT
-            
+
             if ismember(newname,this.PlantNames)
                 if any(strmatch(oldname,this.LocalWorkspace.who, 'exact')) % this is to support renaming through API
                     this.enabledWSListener = false;
@@ -358,21 +358,26 @@ classdef ImagesList < handle
 end
 function localWorkspaceChangeCallback(this, evnt)
 %LOCALWORKSPACECHANGECALLBACK
-
-if this.enabledWSListener
-    plantnames = this.PlantNames;
-    WSplantnames = this.LocalWorkspace.getWho;
-    if evnt.WSRename
-        renamedplant = this.LocalWorkspace.getDatabase.Data.OUT{1};
-        newname = this.LocalWorkspace.getDatabase.Data.IN{1};
-        this.renamePlant(renamedplant, newname);
-    elseif evnt.WSDelete || evnt.WSClear
-        removedplants = setdiff(plantnames, WSplantnames);
-        for i = 1:length(removedplants)
-            this.removePlant(removedplants{i});
+    if this.enabledWSListener
+        plantnames = this.PlantNames;
+        WSplantnames = this.LocalWorkspace.getWho;
+        if evnt.WSRename
+            renamedplant = this.LocalWorkspace.getDatabase.Data.OUT{1};
+            newname = this.LocalWorkspace.getDatabase.Data.IN{1};
+            this.renamePlant(renamedplant, newname);
+        elseif evnt.WSDelete || evnt.WSClear
+            removedplants = setdiff(plantnames, WSplantnames);
+            for i = 1:length(removedplants)
+                this.removePlant(removedplants{i});
+            end
+        elseif evnt.WSChange % An item was added
+            for i = 1:length(WSplantnames)
+                if sum(strcmp(WSplantnames{i},this.PlantNames)) == 0
+                    this.addItem(this.LocalWorkspace.getValue(WSplantnames{i}),0,0,WSplantnames{i});
+                end
+            end
         end
     end
-end
 end
 
 function val = localSamplePlantsForSampleTime(plants, TS)

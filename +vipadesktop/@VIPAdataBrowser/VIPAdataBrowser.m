@@ -26,31 +26,34 @@ classdef VIPAdataBrowser < handle
             %PLANTLISTBROWSER
             
             % Construct the basic model
-            obj.Model = toolpack.databrowser.DataBrowserModel;
+            obj.Model = vipadesktop.DataBrowserModel;%toolpack.databrowser.DataBrowserModel;
             obj.Model.remove('base');
             obj.Model.remove('filter');
             obj.Model.remove('preview');
             obj.Model.remove('local');
             
             % Add the necessary sections
-            tc = toolpack.databrowser.LocalWorkspaceModel;
+            tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'images';
+            tc.NewVariableFunction = @imagesobjects.imagesobject;
             obj.Model.add(tc);
-            tc = toolpack.databrowser.LocalWorkspaceModel;
+            tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'calibration';
+            tc.NewVariableFunction = @calibrationobjects.vipacalibration;
             obj.Model.add(tc);
-            tc = toolpack.databrowser.LocalWorkspaceModel;
+            tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'spectra';
+            tc.NewVariableFunction = @spectraobjects.spectraobject;
             obj.Model.add(tc);
-            tc = toolpack.databrowser.LocalWorkspaceModel;
+            tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'fitspectra';
             obj.Model.add(tc);
-            tc = toolpack.databrowser.LocalWorkspaceModel;
+            tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'fits';
             obj.Model.add(tc);
             
             % Set View Parameters
-            obj.View = toolpack.databrowser.DataBrowserView(obj.Model);
+            obj.View = vipadesktop.DataBrowserView(obj.Model);%toolpack.databrowser.DataBrowserView(obj.Model);
             setTitle(getComponent(obj.View,'images'),'Images');
             setTitle(getComponent(obj.View,'calibration'),'Calibration');
             setTitle(getComponent(obj.View,'spectra'),'Spectra');
@@ -140,7 +143,7 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)imageslist_exporttobaseworkspace(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,11);
-            nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
+            %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
             hideColumn(obj.imagesWorkspaceView,'Value');
@@ -188,7 +191,7 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)calibrationlist_calibrateyaxis(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,7);
-            nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
+            %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
             hideColumn(obj.calibrationWorkspaceView,'Value');
@@ -231,7 +234,7 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)spectralist_exporttobaseworkspace(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,6);
-            nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
+            %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
             hideColumn(obj.spectraWorkspaceView,'Value');
@@ -312,7 +315,7 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)fitslist_setinitialconditions(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,9);
-            nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
+            %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
             showColumn(obj.fitsWorkspaceView,'Value');
