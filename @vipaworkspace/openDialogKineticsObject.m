@@ -5,6 +5,10 @@ function openDialogKineticsObject(this)
        'Pick a file', ...
        'MultiSelect', 'on');
 
+    if filename == 0 && filepath == 0
+        return
+    end
+   
     % Check to see if there is only one file
     if ischar(filename)
         filename = {filename};

@@ -289,8 +289,16 @@ switch ed.Request
     % Save Events
     case 'imageslist_savetofile'
         this.ImagesList.saveToFile(ed.Variables);
+    case 'calibrationlist_savetofile'
+        this.CalibrationList.saveToFile(ed.Variables);
+    case 'spectralist_savetofile'
+        this.SpectraList.saveToFile(ed.Variables);
+    case 'fitspectralist_savetofile'
+        this.FitSpectraList.saveToFile(ed.Variables);
     case 'fitslist_savetofile'
         this.FitsList.saveToFile(ed.Variables);
+        
+    % Other events
     case 'fitslist_setinitialconditions'
         this.FitsList.setInitialConditions(ed.Variables);
     

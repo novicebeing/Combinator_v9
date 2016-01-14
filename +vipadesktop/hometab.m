@@ -8,6 +8,7 @@ classdef hometab < handle
        NewButton
        OpenButton
        OpenButtonKineticsObject
+       SaveAllButton
        FileSection
        FileSection2
    end
@@ -26,7 +27,7 @@ classdef hometab < handle
             this.TPComponent.add(this.FileSection);
             
             % Add New/Open Buttons
-            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
+            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
             this.FileSection.add(panel);
             this.NewButton = toolpack.component.TSButton('New',toolpack.component.Icon.NEW_24);
             panel.add( this.NewButton, 'xy(1,2)' );
@@ -37,6 +38,9 @@ classdef hometab < handle
             this.OpenButtonKineticsObject = toolpack.component.TSButton('Open KO',toolpack.component.Icon.OPEN_24);
             panel.add( this.OpenButtonKineticsObject, 'xy(5,2)' );
             addlistener(this.OpenButtonKineticsObject,'ActionPerformed',@(~,~) notify(this,'OpenButtonKineticsObjectPressed'));
+            this.SaveAllButton = toolpack.component.TSButton('Save All',toolpack.component.Icon.SAVE_24);
+            panel.add( this.SaveAllButton, 'xy(7,2)' );
+            addlistener(this.SaveAllButton,'ActionPerformed',@(~,~) notify(this,'SaveAllButtonPressed'));
             
             % Add Notes Section
             notesSection = toolpack.desktop.ToolSection('Notes','Notes');

@@ -1,14 +1,10 @@
 VIPA Workspace TODO List:
 -------------------------
 
-- "Cancel" in open dialogs
-
-- Make sub-dialogs
+- Make sub-menus
 
 - Allow for "no images" case in images object
 
 - Use statusbar for acquire notes
 
-- Add "save all" button
-
-- Save button does not work for spectra
+- Add code for "save all" button
