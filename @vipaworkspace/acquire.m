@@ -2,8 +2,11 @@ function acquire(obj)
     h = msgbox('Acquiring Spectra','Acquiring...');%,'modal');
     
     n = 0;
+    lastAcquire = now;
     while ishandle(h)
         [images,time,acquireType] = obj.acquireFunction();
+        acqTimeDiff = now - lastAcquire;
+        lastAcquire = now;
         
         % Send the image to the appropriate image object
         if ~strcmp(obj.acquiretab.imageDestTextField.Text,'none')
@@ -54,7 +57,7 @@ function acquire(obj)
         
         pause(0.1);
         if ishandle(h)
-            h.Children(2).Children.String = sprintf('Acquired %i Spectra...',n);
+            h.Children(2).Children.String = sprintf('Acquired %i Spectra, %.1f Hz...',n,1/(acqTimeDiff*24*3600));
         end
         n = n+1;
     end

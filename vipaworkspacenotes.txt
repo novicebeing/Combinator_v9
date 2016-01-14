@@ -3,6 +3,12 @@ VIPA Workspace TODO List:
 
 - "Cancel" in open dialogs
 
-- Make methane linelist
-
 - Make sub-dialogs
+
+- Add vipa workspace notes button to gui
+
+- Allow for "no images" case in images object
+
+- Use statusbar for acquire notes
+
+- Add duty cycle monitor

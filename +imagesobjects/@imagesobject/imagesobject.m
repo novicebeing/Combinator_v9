@@ -8,7 +8,8 @@ classdef imagesobject < handle
         images;
         time;
 		avgcounter = 0;
-        
+    end
+    properties (Transient = true)
         % Live Image Views
         plotHandles;
     end
