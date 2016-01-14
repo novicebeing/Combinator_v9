@@ -8,3 +8,5 @@ VIPA Workspace TODO List:
 - Use statusbar for acquire notes
 
 - Add code for "save all" button
+
+- Add polynomial baseline object
