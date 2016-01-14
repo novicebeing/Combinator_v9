@@ -1,4 +1,4 @@
-classdef fitSpectrumXaxis_v2 < MOD_BASECLASS
+classdef fitSpectrumXaxis_v3 < MOD_BASECLASS
    % write a description of the class here.
        properties (Constant)
            moduleName = 'fitVIPAspectrum';
