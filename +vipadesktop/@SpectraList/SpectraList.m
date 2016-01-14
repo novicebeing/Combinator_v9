@@ -318,7 +318,7 @@ classdef SpectraList < handle
         function out = isSelectedPlantLinearized(this)
             out = ~isempty(getfield(this.InspectorData, this.SelectedPlantName));
         end
-        function plantName = getItemNames(this, plantids)
+        function plantNames = getItemNames(this, plantids)
             if isempty(plantids)
                 return
             end
@@ -330,7 +330,7 @@ classdef SpectraList < handle
                     idx = [idx;find(strcmp(this.PlantNames, plantids{i}))]; %#ok<AGROW>
                 end
             end
-            plantName = this.PlantNames{idx};
+            plantNames = this.PlantNames(idx);
         end
     end
 end

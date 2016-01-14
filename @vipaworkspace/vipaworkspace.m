@@ -339,9 +339,10 @@ switch ed.Request
         this.FitsList.exportToSimBiology(ed.Variables);
     case 'performspectralfit'
         hwait = waitbar(0,'Fitting Spectra', 'WindowStyle', 'modal');
+        itemNames = this.SpectraList.getItemNames(ed.Variables);
         for i = 1:numel(ed.Variables)
             h = this.SpectraList.performSpectralFits(ed.Variables(i),this.FitSpectraList.Plants,0);
-            this.FitsList.addItem(h,0,0,strrep(h.name,' ','_'));
+            this.FitsList.addItem(h,0,0,itemNames{i});
             waitbar(i/numel(ed.Variables),hwait);
         end
         close(hwait);

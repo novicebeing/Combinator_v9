@@ -38,6 +38,14 @@ classdef hometab < handle
             panel.add( this.OpenButtonKineticsObject, 'xy(5,2)' );
             addlistener(this.OpenButtonKineticsObject,'ActionPerformed',@(~,~) notify(this,'OpenButtonKineticsObjectPressed'));
             
+            % Add Notes Section
+            notesSection = toolpack.desktop.ToolSection('Notes','Notes');
+            this.TPComponent.add(notesSection);
+            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
+            notesSection.add(panel);
+            this.NewButton = toolpack.component.TSButton('Notes',toolpack.component.Icon.PROPERTIES_24);
+            panel.add( this.NewButton, 'xy(1,2)' );
+            addlistener(this.NewButton,'ActionPerformed',@(~,~) vipaworkspacenotes);
             
 %             % Add open button
 %             this.FileSection = toolpack.desktop.ToolSection('File','File');

@@ -1,6 +1,6 @@
 function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,fitoptions)
     % Check the input arguments
-    if ~isa(spectrumobject,'kineticsobject')
+    if ~isa(spectrumobject,'kineticsobject') && ~isa(spectrumobject,'spectraobjects.spectraobject')
         error('Spectra object must be of "kineticsobject" type');
     end
 %     if ~isa(fitspectrumobjects,'fitspectraobjects.linelist')
