@@ -1,4 +1,4 @@
-function hfig = openPlotBrowsers(this, plantids)
+function hfig = openSimulationBrowser(this, plantids)
     % Get the spectra objects
     if isempty(plantids)
         return
@@ -16,6 +16,6 @@ function hfig = openPlotBrowsers(this, plantids)
 
     % Open the plot browsers
     for i = 1:length(plants)
-        hfig = plants{i}.plotbrowser();
+        hfig = plants{i}.spectrumsimulationbrowser();
     end
 end

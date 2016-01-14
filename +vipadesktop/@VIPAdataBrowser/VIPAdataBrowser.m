@@ -247,9 +247,9 @@ classdef VIPAdataBrowser < handle
             nonselectionPopupMenu = obj.fitspectraWorkspaceView.getNoSelectionPopupMenu;
             WarningState = warning('off','MATLAB:Containers:Map:NoKeyToRemove');
             selectionPopupMenu.removeMenuItem('RecordCopyingMenuItem');
-            s.Text = 'Open Fit Browser';
-            s.Name = 'openfitbrowser';
-            s.Callback = @(x)openfitbrowser(obj,x);
+            s.Text = 'Open Simulation Browser';
+            s.Name = 'fitspectralist_opensimulationbrowser';
+            s.Callback = @(x)fitspectralist_opensimulationbrowser(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,1);
             s.Text = 'Save To File...';
@@ -464,4 +464,8 @@ end
 
 function calibrationlist_calibrateyaxis(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('calibrationlist_calibrateyaxis',src.Variables));
+end
+
+function fitspectralist_opensimulationbrowser(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitspectralist_opensimulationbrowser',src.Variables));
 end

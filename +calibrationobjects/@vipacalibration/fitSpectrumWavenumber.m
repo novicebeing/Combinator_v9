@@ -8,7 +8,7 @@ function self = fitSpectrumWavenumber(self)
                 [~,sigSpectrum] = self.createSpectra(self.sigImage);
                 %plotSpectrum = 1-sigSpectrum./refSpectrum;
                 plotSpectrum = -log(sigSpectrum./refSpectrum);
-                polyBaselineFit = 1;
+                polyBaselineFit = 0;
                 if polyBaselineFit == 1
                     polydegree = 2;
                     for j = 1:size(plotSpectrum,2)

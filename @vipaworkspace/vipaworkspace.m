@@ -392,6 +392,9 @@ switch ed.Request
         this.CalibrationList.calibrateXaxis(ed.Variables);
     case 'calibrationlist_calibrateyaxis'
         this.CalibrationList.calibrateYaxis(ed.Variables);
+    case 'fitspectralist_opensimulationbrowser'
+        h = this.FitSpectraList.openSimulationBrowser(ed.Variables);
+        this.TPComponent.addFigure(h);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
 end
