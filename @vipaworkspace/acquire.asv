@@ -46,9 +46,9 @@ function acquire(obj)
                         obj.SpectraList.averageSpectra(spectraobjid,wavenum,spectra,spectraTime);
                     case 'averageWithRestart'
                         if n == 0
-                            obj.SpectraList.clearSpectra(spectraobjid,spectra,spectraTime);
+                            obj.SpectraList.clearSpectra(spectraobjid,spectra,time);
                         end
-                        obj.SpectraList.averageSpectra(spectraobjid,spectra,spectraTime);
+                        obj.SpectraList.averageSpectra(spectraobjid,spectra,time);
                     otherwise
                         error('Acquire Operation Not Defined')
                 end

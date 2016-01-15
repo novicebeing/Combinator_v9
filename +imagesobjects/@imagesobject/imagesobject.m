@@ -7,6 +7,7 @@ classdef imagesobject < handle
         % Images Parameters
         images;
         time;
+        refImagesBoolean;
 		avgcounter = 0;
     end
     properties (Transient = true)
@@ -79,22 +80,25 @@ classdef imagesobject < handle
 			obj.images = [];
 			obj.time = [];
 			obj.avgcounter = 0;
+            obj.refImagesBoolean = [];
 		end
-        function setImages(obj,images,time)
+        function setImages(obj,images,time,refImagesBoolean)
             obj.images = images;
             obj.time = time;
             obj.avgcounter = 0;
+            obj.refImagesBoolean = refImagesBoolean;
             
             % Update the plots
             obj.updatePlots();
         end
-        function obj = addImages(obj,images,time)
+        function obj = addImages(obj,images,time,refImagesBoolean)
             if isempty(obj.images)
                 obj.images = images;
             else
                 obj.images(:,:,end+1) = images;
             end
             obj.time(end+1) = time;
+            obj.refImagesBoolean(end+1) = refImagesBoolean;
 
             % Update the plots
             obj.updatePlots();
@@ -108,6 +112,7 @@ classdef imagesobject < handle
 				obj.avgcounter = obj.avgcounter+1;
             end
             obj.time = time;
+            obj.refImagesBoolean = zeros(size(time));
 
             % Update the plots
             obj.updatePlots();

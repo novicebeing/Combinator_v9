@@ -1,4 +1,4 @@
-function hfig = setImages(this, plantids,images,time)
+function hfig = setImages(this, plantids,images,time,refImagesBoolean)
     % Get the spectra objects
     if isempty(plantids)
         return
@@ -16,6 +16,6 @@ function hfig = setImages(this, plantids,images,time)
 
     % Open the plot browsers
     for i = 1:length(plants)
-        plants{i}.setImages(images,time);
+        plants{i}.setImages(images,time,refImagesBoolean);
     end
 end

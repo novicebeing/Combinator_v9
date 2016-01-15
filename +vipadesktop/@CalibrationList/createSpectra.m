@@ -1,4 +1,4 @@
-function [wavenum,spectra] = createSpectra(this, plantids,images)
+function [wavenum,spectra,spectraTime] = createSpectra(this, plantids,images,time,refImageBoolean)
     % Get the spectra objects
     if isempty(plantids)
         return
@@ -16,6 +16,6 @@ function [wavenum,spectra] = createSpectra(this, plantids,images)
     
     % Open the plot browsers
     %for i = 1:length(plants)
-        [wavenum,spectra] = plants{1}.createSpectra(images);
+        [wavenum,spectra,spectraTime] = plants{1}.createSpectra(images,time,refImageBoolean);
     %end
 end
