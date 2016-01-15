@@ -19,4 +19,6 @@ VIPA Workspace TODO List:
 
 - Add table option in fits to input initial conditions.
 
-- wavenum is not set in spectra without x calibration
+- Make bar graph its own object
+
+- Make spectrum browser its own object

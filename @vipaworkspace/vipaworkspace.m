@@ -360,6 +360,9 @@ switch ed.Request
     case 'calibrationlist_setacquirecalibration'
         itemNames = this.CalibrationList.getItemNames(ed.Variables);
         this.acquiretab.calibrationTextField.Text = itemNames{1};
+    case 'spectralist_openaveragingbarchart'
+        h = this.SpectraList.openAveragingBarCharts(ed.Variables);
+        this.TPComponent.addFigure(h);
     case 'spectralist_setacquiredestination'
         itemNames = this.SpectraList.getItemNames(ed.Variables);
         this.acquiretab.spectraDestTextField.Text = itemNames{1};

@@ -4,9 +4,6 @@ classdef spectraobject < handle
     properties
         name;
         
-        % Plot Handles
-        plotHandles
-        
         % DOCO-specific constants
         integrationTime;
         DOCOtemplateNames;
@@ -49,7 +46,10 @@ classdef spectraobject < handle
         
         gaussianTemplateParams;
     end
-    
+    properties (Transient = true)
+        % Live Image Views
+        plotHandles;
+    end
     methods
         function obj = spectraobject(varargin)
             if nargin > 0
@@ -82,6 +82,32 @@ classdef spectraobject < handle
             obj.lognames = {};
             obj.logvalues = [];
         end
+        function delete(obj)
+            % Remove deleted plot handles
+            if ~isempty(obj.plotHandles)
+                obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
+            else
+                obj.plotHandles = {};
+            end
+            
+            for i = 1:numel(obj.plotHandles)
+                delete(obj.plotHandles{i});
+            end
+        end
+        function updatePlots(obj)
+            % Remove deleted plot handles
+            if ~isempty(obj.plotHandles)
+                obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
+            else
+                obj.plotHandles = {};
+            end
+            
+            for i = 1:numel(obj.plotHandles)
+                obj.plotHandles{i}.Update();
+            end
+        end
+        
+        
         function obj = addSpectrum(obj,specWavenum,specY,t)
             if ndims(specWavenum) > 2 || ndims(specY) > 2
                error('Too many dimensions'); 

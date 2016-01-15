@@ -234,6 +234,10 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)spectralist_exporttobaseworkspace(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,6);
+            s.Text = 'Open Averaging Bar Chart';
+            s.Name = 'spectralist_openaveragingbarchart';
+            s.Callback = @(x)spectralist_openaveragingbarchart(obj,x);
+            s.MultiSelection = true;
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -468,4 +472,8 @@ end
 
 function fitspectralist_opensimulationbrowser(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitspectralist_opensimulationbrowser',src.Variables));
+end
+
+function spectralist_openaveragingbarchart(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_openaveragingbarchart',src.Variables));
 end

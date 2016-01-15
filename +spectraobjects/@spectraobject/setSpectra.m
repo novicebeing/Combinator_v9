@@ -26,4 +26,7 @@ function obj = setSpectra(obj,specWavenum,specY,specYerror,t)
     obj.ysum = yout;
     obj.wsum = w;
     obj.wavenum = specWavenum;
+    
+    % Update the plots
+    obj.updatePlots();
 end
