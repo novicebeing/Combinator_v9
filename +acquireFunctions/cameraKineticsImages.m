@@ -16,7 +16,7 @@ function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraKineti
     timestamp = double(timestampOut).*480e-6/4;
     
     % Convert spectra to double
-    collectedImageArray = double(reshape(collectedImageArray,CAM_width,CAM_height,numImages));
+    collectedImageArray = permute(double(reshape(collectedImageArray,CAM_width,CAM_height,numImages)),[2 1 3]);
     
     % Initialize timestamp label array
     timestampLabel = NaN*ones(size(timestamp));

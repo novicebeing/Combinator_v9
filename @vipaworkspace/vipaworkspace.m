@@ -284,7 +284,7 @@ switch ed.Request
     case 'createcalibration'
         itemNames = this.ImagesList.getItemNames(ed.Variables);
         h = this.ImagesList.createCalibration(ed.Variables);
-        this.CalibrationList.addItem(h,0,0,itemNames);
+        this.CalibrationList.addItem(h,0,0,itemNames{1});
     
     % Save Events
     case 'imageslist_savetofile'
@@ -375,7 +375,7 @@ switch ed.Request
             itemNames = this.ImagesList.getItemNames(ed.Variables(i));
             [images,time] = this.ImagesList.getImages(ed.Variables(i));
             h = this.CalibrationList.createSpectraObject(calibrationobjid,images,time);
-            this.SpectraList.addItem(h,0,0,strrep(itemNames,' ','_'));
+            this.SpectraList.addItem(h,0,0,strrep(itemNames{1},' ','_'));
             waitbar(i/numel(ed.Variables),hwait);
         end
         close(hwait);

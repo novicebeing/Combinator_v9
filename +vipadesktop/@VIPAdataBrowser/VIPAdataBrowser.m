@@ -238,6 +238,7 @@ classdef VIPAdataBrowser < handle
             s.Name = 'spectralist_openaveragingbarchart';
             s.Callback = @(x)spectralist_openaveragingbarchart(obj,x);
             s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,7);
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);

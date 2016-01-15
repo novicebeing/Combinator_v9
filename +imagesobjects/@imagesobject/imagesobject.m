@@ -103,7 +103,7 @@ classdef imagesobject < handle
             % Update the plots
             obj.updatePlots();
         end
-		function averageImages(obj,images,time)
+		function averageImages(obj,images,time,refImageBoolean)
             if isempty(obj.images)
                 obj.images = images;
 				obj.avgcounter = 1;
