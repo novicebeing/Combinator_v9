@@ -39,16 +39,16 @@ function acquire(obj)
                 spectraobjid = {obj.acquiretab.spectraDestTextField.Text};
                 switch obj.acquireOperation
                     case 'add'
-                        obj.SpectraList.addSpectra(spectraobjid,spectra,spectraTime);
+                        obj.SpectraList.addSpectra(spectraobjid,wavenum,spectra,[],spectraTime);
                     case 'replace'
-                        obj.SpectraList.setSpectra(spectraobjid,spectra,spectraTime);
+                        obj.SpectraList.setSpectra(spectraobjid,wavenum,spectra,[],spectraTime);
                     case 'average'
-                        obj.SpectraList.averageSpectra(spectraobjid,wavenum,spectra,spectraTime);
+                        obj.SpectraList.averageSpectra(spectraobjid,wavenum,spectra,[],spectraTime);
                     case 'averageWithRestart'
                         if n == 0
-                            obj.SpectraList.clearSpectra(spectraobjid,spectra,spectraTime);
+                            obj.SpectraList.clearSpectra(spectraobjid);
                         end
-                        obj.SpectraList.averageSpectra(spectraobjid,spectra,spectraTime);
+                        obj.SpectraList.averageSpectra(spectraobjid,wavenum,spectra,[],spectraTime);
                     otherwise
                         error('Acquire Operation Not Defined')
                 end

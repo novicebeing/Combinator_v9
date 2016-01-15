@@ -356,13 +356,13 @@ switch ed.Request
         close(hwait);
     case 'imageslist_setacquiredestination'
         itemNames = this.ImagesList.getItemNames(ed.Variables);
-        this.acquiretab.imageDestTextField.Text = itemNames;
+        this.acquiretab.imageDestTextField.Text = itemNames{1};
     case 'calibrationlist_setacquirecalibration'
         itemNames = this.CalibrationList.getItemNames(ed.Variables);
-        this.acquiretab.calibrationTextField.Text = itemNames;
+        this.acquiretab.calibrationTextField.Text = itemNames{1};
     case 'spectralist_setacquiredestination'
         itemNames = this.SpectraList.getItemNames(ed.Variables);
-        this.acquiretab.spectraDestTextField.Text = itemNames;
+        this.acquiretab.spectraDestTextField.Text = itemNames{1};
     case 'calibrationlist_collectfringes'
         this.CalibrationList.collectFringes(ed.Variables);
     case 'imageslist_createspectra'

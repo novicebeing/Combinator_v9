@@ -287,7 +287,7 @@ classdef CalibrationList < handle
                     idx = [idx;find(strcmp(this.PlantNames, plantids{i}))]; %#ok<AGROW>
                 end
             end
-            plantName = this.PlantNames{idx};
+            plantName = this.PlantNames(idx);
         end
         function hfig = openPlotBrowsers(this, plantids)
             % Get the spectra objects

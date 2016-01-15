@@ -18,3 +18,5 @@ VIPA Workspace TODO List:
 - Add simbiology simulation option to "fit analysis" panel
 
 - Add table option in fits to input initial conditions.
+
+- wavenum is not set in spectra without x calibration

@@ -1,5 +1,10 @@
 function [wavenum,returnSpectra,spectraTime] = createSpectra(self,returnImages,time,refImageBoolean)
 
+        % Check if refImageBoolean is empty
+        if isempty(refImageBoolean)
+            refImageBoolean = zeros(size(time));
+        end
+        
         % Check to see if there are any reference images. Add one if not
         if sum(refImageBoolean) == 0
             returnImages = cat(3,self.refImage,returnImages);
@@ -92,14 +97,14 @@ function [wavenum,returnSpectra,spectraTime] = createSpectra(self,returnImages,t
         returnSpectra = reshape(returnSpectra,[size(self.spectrumIndcs,1) size(self.spectrumIndcs,2) numImages]);
         
         % Find the reference for each signal image
-            refIndex = zeros(size(timestampLabel));
+            refIndex = zeros(size(refImageBoolean));
             % Next, iterate through the references
             refImageIndices = find(refImageBoolean);
             for i = 1:numel(refImageIndices)
                 if i == 1
                     refIndex((1:numel(refIndex))<refImageIndices(1)) = refImageIndices(1);
                 end
-                refIndex((1:numel(refIndex))>refImageIndices(i)) = refImagesIndices(i);
+                refIndex((1:numel(refIndex))>refImageIndices(i)) = refImageIndices(i);
             end
             % Set the references to NaN
             refIndex(refImageBoolean) = NaN;
