@@ -72,8 +72,9 @@ classdef imagebrowser < handle
         function hp = imagePlot(obj,ind)
             hp = imagesc(obj.Parent.images(:,:,ind),'Parent',obj.axesHandle);
         end
-        function updateImagePlot(obj,hp,ind)
-            set(hp,'CData',obj.Parent.images(:,:,ind));
+        function updateImagePlot(this,hp,ind)
+            set(hp,'CData',this.Parent.images(:,:,ind));
+            title(this.axesHandle,sprintf('Image %i,T = %i',ind,this.Parent.time(ind)));
         end
     end
 end

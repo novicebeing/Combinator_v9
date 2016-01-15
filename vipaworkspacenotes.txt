@@ -20,3 +20,5 @@ VIPA Workspace TODO List:
 - Add table option in fits to input initial conditions.
 
 - Add correct function for kinetics camera acquire
+
+- Add image time in title
