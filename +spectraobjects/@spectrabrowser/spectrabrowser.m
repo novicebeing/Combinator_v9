@@ -116,7 +116,7 @@ classdef spectrabrowser < handle
                 gridx = linspace(min(this.Parent.wavenum(:)),max(this.Parent.wavenum(:)),10000);
                 ynonnan = reshape(this.Parent.yavg(:,:,ind),[],1);
                 ynonnan(isnan(ynonnan)) = 0;
-                gridy = interp1(obj.wavenum(:),ynonnan,gridx);
+                gridy = interp1(this.Parent.wavenum(:),ynonnan,gridx);
                 yfft = abs(fft(gridy));
                 yfft = yfft(1:numel(yfft)/2);
                 Lmax = 1/4/(gridx(2)-gridx(1));
