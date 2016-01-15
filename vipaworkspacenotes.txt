@@ -20,3 +20,5 @@ VIPA Workspace TODO List:
 - Add table option in fits to input initial conditions.
 
 - Make spectrum browser its own object
+
+- Enable live spectrum acquire

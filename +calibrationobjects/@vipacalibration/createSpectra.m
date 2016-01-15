@@ -8,7 +8,7 @@ function [wavenum,returnSpectra,spectraTime] = createSpectra(self,returnImages,t
         % Check to see if there are any reference images. Add one if not
         if sum(refImageBoolean) == 0
             returnImages = cat(3,self.refImage,returnImages);
-            refImagesBoolean = [true refImagesBoolean];
+            refImageBoolean = [true refImageBoolean];
         end
         
         returnImages = permute(returnImages,[2 1 3]);
@@ -109,7 +109,7 @@ function [wavenum,returnSpectra,spectraTime] = createSpectra(self,returnImages,t
             % Set the references to NaN
             refIndex(refImageBoolean) = NaN;
     
-        returnSpectra = returnSpectra(:,:,~isnan(refIndex))./returnSpectra(:,:,refIndex(~isnan(refIndex)));
+        returnSpectra = -log(returnSpectra(:,:,~isnan(refIndex))./returnSpectra(:,:,refIndex(~isnan(refIndex))));
         spectraTime = time(~isnan(refIndex));
         wavenum = self.xAxis_wavenumber;
 end
