@@ -260,7 +260,7 @@ classdef VIPAdataBrowser < handle
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
-            showColumn(obj.fitspectraWorkspaceView,'Value');
+            hideColumn(obj.fitspectraWorkspaceView,'Value');
             hideColumn(obj.fitspectraWorkspaceView,'Class');
             hideColumn(obj.fitspectraWorkspaceView,'Size');
             hideColumn(obj.fitspectraWorkspaceView,'Bytes');
@@ -318,7 +318,7 @@ classdef VIPAdataBrowser < handle
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
-            showColumn(obj.fitsWorkspaceView,'Value');
+            hideColumn(obj.fitsWorkspaceView,'Value');
             hideColumn(obj.fitsWorkspaceView,'Class');
             hideColumn(obj.fitsWorkspaceView,'Size');
             hideColumn(obj.fitsWorkspaceView,'Bytes');

@@ -119,6 +119,7 @@ classdef ImagesList < handle
             this.LocalWorkspace.clear(plantname);
             this.enabledWSListener = true;
             this.PlantNames(id) = [];
+            delete(this.NUPData.(plantname));
             this.NUPData = rmfield(this.NUPData, plantname);
             notify(this, 'PlantsEvent', pidtool.desktop.pidtuner.tc.PlantsEventData(false, id, false));
         end

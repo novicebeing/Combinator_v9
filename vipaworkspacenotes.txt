@@ -10,3 +10,13 @@ VIPA Workspace TODO List:
 - Add code for "save all" button
 
 - Add polynomial baseline object
+
+- Add "Gaussian Inst Linewidth" and "Lorentzian Inst Linewidth" to fitting panel
+
+- Delete objects upon removal from workspace. Add a new "remove" item to accomplish this
+
+- Add simbiology simulation option to "fit analysis" panel
+
+- Add table option in fits to input initial conditions.
+
+- Add correct icons to figure functions

@@ -18,6 +18,18 @@ classdef imagesobject < handle
             obj.time = [];
             obj.images = [];
         end
+        function delete(obj)
+            % Remove deleted plot handles
+            if ~isempty(obj.plotHandles)
+                obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
+            else
+                obj.plotHandles = {};
+            end
+            
+            for i = 1:numel(obj.plotHandles)
+                delete(obj.plotHandles{i});
+            end
+        end
         function updatePlots(obj)
             % Remove deleted plot handles
             if ~isempty(obj.plotHandles)

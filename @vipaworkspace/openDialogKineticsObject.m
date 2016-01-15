@@ -5,7 +5,7 @@ function openDialogKineticsObject(this)
        'Pick a file', ...
        'MultiSelect', 'on');
 
-    if filename == 0 && filepath == 0
+    if filepath == 0
         return
     end
    
@@ -15,15 +15,17 @@ function openDialogKineticsObject(this)
     end
     
     % Iterate over files and import them one by one
+    hwait = waitbar(0,'Loading Files...', 'WindowStyle', 'modal');
     for i = 1:numel(filename)
         % Load in the data file
         [fname,~,ext] = fileparts(filename{i});
         if strcmp(ext,'.mat')
             h = kineticsobject(fullfile(filepath,filename{i}));
-            h.name
             this.SpectraList.addItem(h,0,0,strrep(h.name,' ','_'));
         else
             error('Unsupported file type');
         end 
+        waitbar(i/numel(filename),hwait);
     end
+    close(hwait);
 end

@@ -3,28 +3,39 @@ classdef figuretab < handle
        vipadesktop
        TPComponent
        Panel
-       OpenButton
-       FileSection
+       MenuAndToolbarsSection
    end
    events
        OpenButtonPressed
    end
    methods
-       function this = figuretab(vipadesktop)
+       function this = figuretab(vipadesktopobj)
             % Add home tab
             this.TPComponent = toolpack.desktop.ToolTab('VIPAworkspaceFigureTab', 'Figure');
             
-            % Add open button
-            this.FileSection = toolpack.desktop.ToolSection('menuandtoolbars','Menu and Toolbars');
-            this.OpenButton = toolpack.component.TSButton('Zoom',toolpack.component.Icon.OPEN_24);
-            addlistener(this.OpenButton,'ActionPerformed',@(~,~) zoom);
-            this.FileSection.add(this.OpenButton);
+            % Add Toolbar Section
+            this.MenuAndToolbarsSection = toolpack.desktop.ToolSection('menuandtoolbars','Menu and Toolbars');
+            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
+            this.MenuAndToolbarsSection.add(panel);
+            
+            zoomInButton = vipadesktop.TSButton('Zoom In',toolpack.component.Icon.ZOOM_IN_16);
+            addlistener(zoomInButton,'ActionPerformed',@(~,~) zoom);
+            panel.add(zoomInButton,'xy(1,2)');
+            zoomInButton = vipadesktop.TSButton('Zoom Out',toolpack.component.Icon.ZOOM_OUT_16);
+            addlistener(zoomInButton,'ActionPerformed',@(~,~) zoom);
+            panel.add(zoomInButton,'xy(3,2)');
+            panButton = vipadesktop.TSButton('Pan',toolpack.component.Icon.PAN_16);
+            addlistener(panButton,'ActionPerformed',@(~,~) pan);
+            panel.add(panButton,'xy(5,2)');
+            datatipButton = vipadesktop.TSButton('Data Cursor',toolpack.component.Icon.EDIT);
+            addlistener(datatipButton,'ActionPerformed',@(~,~) datacursormode);
+            panel.add(datatipButton,'xy(7,2)');
             
             % Add File Section
-            this.TPComponent.add(this.FileSection);
+            this.TPComponent.add(this.MenuAndToolbarsSection);
             
             %this.TPComponent = toolpack.desktop.ToolSection('Plant',pidtool.utPIDgetStrings('cst','strPlant'));
-            this.vipadesktop = vipadesktop;
+            this.vipadesktop = vipadesktopobj;
             %this.layout();
        end
         function layout(this)

@@ -1,7 +1,7 @@
 function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,fitoptions)
     % Check the input arguments
     if ~isa(spectrumobject,'kineticsobject') && ~isa(spectrumobject,'spectraobjects.spectraobject')
-        error('Spectra object must be of "kineticsobject" type');
+        error('Spectra object must be of "kineticsobject" or "spectraobjects.spectraobject" type');
     end
 %     if ~isa(fitspectrumobjects,'fitspectraobjects.linelist')
 %         if iscell(fitspectrumobjects)
@@ -70,7 +70,7 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,fito
     end
     
     % Construct the fit object
-    fitobjectout = kineticsfitobject();
+    fitobjectout = fitsobjects.fitsobject();
     fitobjectout.name = spectrumobject.name;
     fitobjectout.y = spectrumobject.yavg;
     fitobjectout.yError = spectrumobject.ystderror;

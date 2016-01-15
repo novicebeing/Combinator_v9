@@ -5,7 +5,7 @@ function openDialog(this)
            'Pick a file', ...
            'MultiSelect', 'on');
 
-    if filename == 0 && filepath == 0
+    if filepath == 0
         return
     end
        

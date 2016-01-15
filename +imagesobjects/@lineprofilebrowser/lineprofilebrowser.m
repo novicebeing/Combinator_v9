@@ -65,6 +65,10 @@ classdef lineprofilebrowser < handle
                 delete(this);
             end
         end
+        function delete(obj)
+            % Remove figure handles
+            delete(obj.figureHandle);
+        end
         function Update(this)
             % Save the previous value
             oldSliderValue = round(get(this.sliderHandle,'Value'));
