@@ -18,7 +18,3 @@ VIPA Workspace TODO List:
 - Add simbiology simulation option to "fit analysis" panel
 
 - Add table option in fits to input initial conditions.
-
-- Make spectrum browser its own object
-
-- Enable live spectrum acquire

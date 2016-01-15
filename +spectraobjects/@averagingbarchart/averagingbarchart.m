@@ -16,7 +16,7 @@ classdef averagingbarchart < handle
     end
     
     methods
-        function this = spectrumsimulationbrowser(ParentObject)
+        function this = averagingbarchart(ParentObject)
             this.Parent = ParentObject;
             
             % Construct the figure
@@ -49,8 +49,8 @@ classdef averagingbarchart < handle
             % Sort t,averageError
             [~,isort] = sort(tplot);
 
-            obj.blackBarHandle = bar(1./averageStdMean(isort),'k','Parent',obj.figureHandle); hold on;
-            obj.blueBarHandle = bar(1./averageErrorPlot(isort),'b','Parent',obj.figureHandle); hold off;
+            obj.blackBarHandle = bar(1./averageStdMean(isort),'k','Parent',obj.axesHandle); hold(obj.axesHandle,'on');
+            obj.blueBarHandle = bar(1./averageErrorPlot(isort),'b','Parent',obj.axesHandle); hold(obj.axesHandle,'off');
         end
         function updateImagePlot(obj)
             % Gather the errors

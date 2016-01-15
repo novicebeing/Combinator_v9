@@ -18,10 +18,10 @@ function openDialogKineticsObject(this)
     hwait = waitbar(0,'Loading Files...', 'WindowStyle', 'modal');
     for i = 1:numel(filename)
         % Load in the data file
-        [fname,~,ext] = fileparts(filename{i});
+        [~,fname,ext] = fileparts(filename{i});
         if strcmp(ext,'.mat')
-            h = kineticsobject(fullfile(filepath,filename{i}));
-            this.SpectraList.addItem(h,0,0,strrep(h.name,' ','_'));
+            h = spectraobjects.spectraobject(fullfile(filepath,filename{i}));
+            this.SpectraList.addItem(h,0,0,strrep(fname,' ','_'));
         else
             error('Unsupported file type');
         end 

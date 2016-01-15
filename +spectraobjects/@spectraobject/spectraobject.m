@@ -150,71 +150,12 @@ classdef spectraobject < handle
                 obj.ystderror(:,:,i) = sqrt(1./wsum);
             end
         end
-        function [h,herrorplus,herrorminus] = plot(obj,ax,ind,options)
-            if isempty(obj.yavg)
-                obj.averageSpectra();
-            end
-            plotcolor = [0,0,0];
-            errorcolor = [0,0,0]+0.90;
-            %h = plot(ax,obj.wavenum,reshape(obj.yavg(:,:,ind),[],1),'Color',plotcolor); hold(ax,'on');
-            herrorplus = plot(ax,obj.wavenum(:),reshape(obj.yavg(:,:,ind)+obj.ystderror(:,:,ind),[],1),'Color',errorcolor);hold(ax,'on');
-            herrorminus = plot(ax,obj.wavenum(:),reshape(obj.yavg(:,:,ind)-obj.ystderror(:,:,ind),[],1),'Color',errorcolor);
-            h = plot(ax,obj.wavenum(:),reshape(obj.yavg(:,:,ind),[],1),'Color',plotcolor);
-            hold(ax,'off');
-            
-            if strcmp(options,'fft')
-                xlabel(ax,'Etalon Length [cm]');
-                ylabel(ax,'FFT Amplitude');
-            else
-                xlabel(ax,'Wavenumber [1/cm]');
-                ylabel(ax,'Absorbance');
-            end
-        end
+
         function [h,herrorplus,herrorminus] = plotall(obj,ax,ind)
             h = plot(ax,obj.wavenum(:),reshape(obj.ysum(:,:,ind)./obj.wsum(:,:,ind),[],1)); hold(ax,'on');
             herrorplus = plot(ax,obj.wavenum(:),reshape(obj.ysum(:,:,ind)./obj.wsum(:,:,ind)+1./sqrt(obj.wsum(:,:,ind)),[],1));
             herrorminus = plot(ax,obj.wavenum(:),reshape(obj.ysum(:,:,ind)./obj.wsum(:,:,ind)-1./sqrt(obj.wsum(:,:,ind)),[],1));
             hold(ax,'off');
-        end
-        function h = updatePlot(obj,ax,h,herrorplus,herrorminus,ind,options)
-            if isempty(obj.yavg)
-                obj.averageSpectra();
-            end
-            if isempty(options)
-                set(h,'XData',obj.wavenum(:));
-                set(h,'YData',reshape(obj.yavg(:,:,ind),[],1));
-                set(herrorplus,'XData',obj.wavenum(:));
-                set(herrorplus,'YData',reshape(obj.yavg(:,:,ind)+obj.ystderror(:,:,ind),[],1));
-                set(herrorminus,'XData',obj.wavenum(:));
-                set(herrorminus,'YData',reshape(obj.yavg(:,:,ind)-obj.ystderror(:,:,ind),[],1));
-            elseif strcmp(options,'fft')
-                gridx = linspace(min(obj.wavenum(:)),max(obj.wavenum(:)),10000);
-                ynonnan = reshape(obj.yavg(:,:,ind),[],1);
-                ynonnan(isnan(ynonnan)) = 0;
-                gridy = interp1(obj.wavenum(:),ynonnan,gridx);
-                yfft = abs(fft(gridy));
-                yfft = yfft(1:numel(yfft)/2);
-                Lmax = 1/4/(gridx(2)-gridx(1));
-                xfft = linspace(0,Lmax,5000);
-                set(h,'XData',xfft);
-                set(h,'YData',yfft);
-                set(herrorplus,'XData',[]);
-                set(herrorplus,'YData',[]);
-                set(herrorminus,'XData',[]);
-                set(herrorminus,'YData',[]);
-            elseif strcmp(options,'interp')
-                gridx = linspace(min(obj.wavenum(:)),max(obj.wavenum(:)),10000);
-                ynonnan = reshape(obj.yavg(:,:,ind),[],1);
-                ynonnan(isnan(ynonnan)) = 0;
-                gridy = interp1(obj.wavenum(:),ynonnan,gridx);
-                set(h,'XData',gridx);
-                set(h,'YData',gridy);
-                set(herrorplus,'XData',[]);
-                set(herrorplus,'YData',[]);
-                set(herrorminus,'XData',[]);
-                set(herrorminus,'YData',[]);
-            end
-            title(ax,sprintf('T = %i us',obj.tavg(ind)));
         end
         function h = updatePlotAll(obj,ax,h,herrorplus,herrorminus,ind)
             set(h,'XData',obj.wavenum);
@@ -247,17 +188,6 @@ classdef spectraobject < handle
             %uimenu('Parent',axmenu,'Label','Fit All Using Template','Callback',@(s,e) obj.fitAllUsingTemplate(ax));
         end
         function hf = plotbrowser(obj,varargin)
-            if isempty(obj.name)
-                hf = figure;
-            else
-                hf = figure('Name',obj.name,'NumberTitle','off');
-            end
-            cursorMode = datacursormode(hf);
-            set(cursorMode,'UpdateFcn',@(o,e) obj.datatipUpdateFunction(o,e));
-            ax = axes('Parent',hf,'position',[0.13 0.20 0.79 0.72]);
-            axmenu = uicontextmenu();
-            set(ax,'UIContextMenu',axmenu);
-            
             % Set plot options
             if nargin == 2
                 options = varargin{1};
@@ -265,35 +195,19 @@ classdef spectraobject < handle
                 options = '';
             end
             
-            [hp,hplus,hminus] = obj.plot(ax,1,options);
-            obj.updatePlot(ax,hp,hplus,hminus,round(1),options);
-            b = uicontrol('Parent',hf,'Style','slider','Position',[81,10,419,23],...
-              'value',1, 'min',1, 'max',numel(obj.tavg),'sliderstep',[1/numel(obj.tavg) 10/numel(obj.tavg)]);
-            set(b,'Callback',@(es,ed) obj.updatePlot(ax,hp,hplus,hminus,round(get(es,'Value')),options));
-            if strcmp(options,'fft')
-                uimenu('Parent',axmenu,'Label','Zero Brushed Etalons','Callback',@(s,e) obj.zeroBrushedEtalons(ax,hp,hplus,hminus,b,options));
-                uimenu('Parent',axmenu,'Label','Reset Spectra','Callback',@(s,e) obj.resetSpectra(ax,hp,hplus,hminus,b,options));
-                uimenu('Parent',axmenu,'Label','Plot Browser','Callback',@(s,e) obj.plotbrowser());
+            if ~isempty(obj.plotHandles)
+                obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
             else
-                uimenu('Parent',axmenu,'Label','Save As...','Callback',@(s,e) obj.savegui());
-                uimenu('Parent',axmenu,'Label','Generate DOCO Experiment Report','Callback',@(s,e) obj.performDOCOTemplateFit());
-                uimenu('Parent',axmenu,'Label','Copy Current Spectrum to Clipboard','Callback',@(s,e) obj.copyCurrentSpectrum(hp,b));
-                uimenu('Parent',axmenu,'Label','Add Template Spectrum from Clipboard','Callback',@(s,e) obj.addTemplateSpectrumFromClipboard());
-                uimenu('Parent',axmenu,'Label','FFT Plot Browser','Callback',@(s,e) obj.plotbrowser('fft'));
-                uimenu('Parent',axmenu,'Label','Add This Spectrum as Template','Callback',@(s,e) obj.addTemplateSpectrumFromPlotBrowser(b));
-                uimenu('Parent',axmenu,'Label','Clear Spectrum Templates','Callback',@(s,e) obj.clearSpectrumTemplatesFromPlotBrowser());
-                uimenu('Parent',axmenu,'Label','Perform Template Fit','Callback',@(s,e) obj.performTemplateFit());
-                uimenu('Parent',axmenu,'Label','Plot Data Cursor Peak','Callback',@(s,e) obj.plotDataCursorPeak());
-                uimenu('Parent',axmenu,'Label','Fit Gaussian Template to Cursor Peak','Callback',@(s,e) obj.plotDataCursorPeakGaussian(ax,b));
-                uimenu('Parent',axmenu,'Label','Fit All Using Template','Callback',@(s,e) obj.fitAllUsingTemplate(ax));
-                uimenu('Parent',axmenu,'Label','Add Datatip Position','Callback',@(s,e) obj.addDatatipPosition());
-                uimenu('Parent',axmenu,'Label','Reset Datatip Positions','Callback',@(s,e) obj.resetDatatipPositions());
-                uimenu('Parent',axmenu,'Label','Fit Gaussian Template to Cursor Peaks','Callback',@(s,e) obj.plotDataCursorPeakGaussians(ax,b));
-                uimenu('Parent',axmenu,'Label','Fit All Using Template Peaks','Callback',@(s,e) obj.fitAllUsingTemplatePeaks(ax));
+                obj.plotHandles = {};
             end
-            
-            % Force figure menubar
-            set( hf, 'menubar', 'figure' );
+            if ~isempty(obj.plotHandles)
+                n = numel(obj.plotHandles);
+                obj.plotHandles{n+1} = spectraobjects.spectrabrowser(obj,options);
+                hf = obj.plotHandles{n+1}.figureHandle;
+            else
+                obj.plotHandles = {spectraobjects.spectrabrowser(obj,options)};
+                hf = obj.plotHandles{1}.figureHandle;
+            end
         end
         function savegui(obj)
             % Get save path
@@ -534,14 +448,6 @@ classdef spectraobject < handle
             for i = 1:numel(x0s)
                 y = y + as(i)*G(FWHMs(i),x0s(i),x);
             end
-        end
-        
-        function savedata(obj,filename)
-            wavenum = obj.wavenum;
-            ysum = obj.ysum;
-            wsum = obj.wsum;
-            t = obj.t;
-            save(filename,'wavenum','ysum','wsum','t');
         end
     end
 end
