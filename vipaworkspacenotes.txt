@@ -19,4 +19,4 @@ VIPA Workspace TODO List:
 
 - Add table option in fits to input initial conditions.
 
-- Add correct icons to figure functions
+- Add correct function for kinetics camera acquire

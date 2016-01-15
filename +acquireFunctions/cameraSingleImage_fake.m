@@ -1,4 +1,4 @@
-function [imageOut,timeOut,acquireTypeOut] = cameraSingleImage_fake()
+function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraSingleImage_fake()
     load vipaImagesForBen.mat
     
     % Get bkg Image
@@ -12,4 +12,5 @@ function [imageOut,timeOut,acquireTypeOut] = cameraSingleImage_fake()
     imageOut = testImage' + 100*rand(size(testImage'));
     timeOut = 0;
     acquireTypeOut = 'image';
+    referenceImagesBoolean = false;
 end

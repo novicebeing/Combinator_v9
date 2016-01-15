@@ -1,4 +1,4 @@
-function [imageOut,timeOut,acquireTypeOut] = cameraSingleImage()
+function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraSingleImage()
     % Start Acquisition thread
     CAM_width = 320;
     CAM_height = 256;
@@ -25,4 +25,5 @@ function [imageOut,timeOut,acquireTypeOut] = cameraSingleImage()
     imageOut = sigImage - bkgImage;
     timeOut = 0;
     acquireTypeOut = 'image';
+    referenceImagesBoolean = false;
 end
