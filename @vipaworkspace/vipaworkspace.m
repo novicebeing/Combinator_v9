@@ -176,14 +176,11 @@ classdef vipaworkspace < handle
         function open(this)
             %OPEN
             this.TPComponent.open;
-%             groupwidth = this.PIDTuner.TabGC.FrameWidth;
-%             this.MD = com.mathworks.mlservices.MatlabDesktopServices.getDesktop;
-%             loc = com.mathworks.widgets.desk.DTLocation.createExternal( int16(100), int16(100), int16(groupwidth), int16(710));
-%             this.MD.setGroupLocation(this.TPComponent.Name, loc);
+            
+            % Connect to statusbar
 %             Frame = this.MD.getFrameContainingGroup(this.GroupName);
 %             this.StatusBar = ctrluis.toolstrip.StatusMessage(Frame);
-%             this.PIDTuner.TC.StatusBar = this.StatusBar;
-%             this.PlantList.StatusBar = this.StatusBar;
+
 %             if ~strcmp(this.Type, 'MATLAB')
 %                 this.SimulinkGateway.StatusBar = this.StatusBar;
 %             end

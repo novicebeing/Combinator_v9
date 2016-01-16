@@ -16,3 +16,7 @@ VIPA Workspace TODO List:
 - Check output of acquire functions
 
 - Allow for setting of the approximate calibration function
+
+- Correct "clear all" problem
+
+- Add live spectrum averaging
