@@ -13,4 +13,6 @@ VIPA Workspace TODO List:
 
 - Add table option in fits to input initial conditions.
 
-- Add kinetics image fake
+- Check output of acquire functions
+
+- Allow for setting of the approximate calibration function

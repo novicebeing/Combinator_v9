@@ -105,6 +105,7 @@ classdef spectrabrowser < handle
             if isempty(this.Parent.yavg)
                 this.Parent.averageSpectra();
             end
+            
             if isempty(this.options)
                 set(this.h,'XData',this.Parent.wavenum(:));
                 set(this.h,'YData',reshape(this.Parent.yavg(:,:,ind),[],1));

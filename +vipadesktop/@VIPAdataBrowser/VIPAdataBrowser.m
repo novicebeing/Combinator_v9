@@ -47,9 +47,11 @@ classdef VIPAdataBrowser < handle
             obj.Model.add(tc);
             tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'fitspectra';
+            tc.NewVariableFunction = @fitspectraobjects.linelist;
             obj.Model.add(tc);
             tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'fits';
+            tc.NewVariableFunction = @fitsobjects.fitsobject;
             obj.Model.add(tc);
             
             % Set View Parameters

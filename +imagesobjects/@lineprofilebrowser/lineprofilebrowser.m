@@ -107,8 +107,11 @@ classdef lineprofilebrowser < handle
 
             this.Update();
         end
-        function hp = lineProfilePlot(this)
+        function lineProfilePlot(this)
             ind = round(get(this.sliderHandle,'Value'));
+            if ishandle(this.plotHandle)
+                delete(this.plotHandle)
+            end
             
             indcs = sub2ind(size(this.Parent.images),this.lineProfileIndicesX,this.lineProfileIndicesY,ind*ones(size(this.lineProfileIndicesX)));
             x = 1:numel(this.lineProfileIndicesX);
@@ -116,7 +119,7 @@ classdef lineprofilebrowser < handle
             if this.highPassOn == true
                 y = y - smooth(y,20);
             end
-            hp = plot(x,y,'Parent',this.axesHandle);
+            this.plotHandle = plot(x,y,'Parent',this.axesHandle);
             ylim([0 6000]);
         end
         function updateLineProfilePlot(this)
