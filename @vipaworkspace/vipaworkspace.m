@@ -30,6 +30,8 @@ classdef vipaworkspace < handle
         fitanalysistab
         figuretab
         
+        stopAcquireBoolean = false;
+        
         % Image Acquire Functions Library
         acquireOperations
         acquireFunctions
@@ -145,6 +147,7 @@ classdef vipaworkspace < handle
             
             % Add Spectrum acquire listener
             addlistener(this.acquiretab,'AcquireButtonPressed',@(~,~) this.acquire());
+            addlistener(this.acquiretab,'StopAcquireButtonPressed',@(~,~) this.stopAcquire());
             
             %=====================================================================================================(PID Tuner)
             %this.PIDTuner = pidtool.desktop.PIDTuner(this, desiredtype, baselinecontroller);
@@ -178,8 +181,9 @@ classdef vipaworkspace < handle
             this.TPComponent.open;
             
             % Connect to statusbar
-%             Frame = this.MD.getFrameContainingGroup(this.GroupName);
-%             this.StatusBar = ctrluis.toolstrip.StatusMessage(Frame);
+             this.MD = com.mathworks.mlservices.MatlabDesktopServices.getDesktop;
+             Frame = this.MD.getFrameContainingGroup(this.GroupName);
+             this.StatusBar = ctrluis.toolstrip.StatusMessage(Frame);
 
 %             if ~strcmp(this.Type, 'MATLAB')
 %                 this.SimulinkGateway.StatusBar = this.StatusBar;

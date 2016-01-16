@@ -1,9 +1,12 @@
 function acquire(obj)
-    h = msgbox('Acquiring Spectra','Acquiring...');%,'modal');
+
+    % Set acquire buttons
+    obj.acquiretab.AcquireButton.Enabled = false;
+    obj.acquiretab.StopAcquireButton.Enabled = true;
     
     n = 0;
     lastAcquire = now;
-    while ishandle(h)
+    while ~obj.stopAcquireBoolean
         [images,time,acquireType,refImagesBoolean] = obj.acquireFunction();
         acqTimeDiff = now - lastAcquire;
         lastAcquire = now;
@@ -56,9 +59,20 @@ function acquire(obj)
         end
         
         pause(0.1);
-        if ishandle(h)
-            h.Children(2).Children.String = sprintf('Acquired %i Spectra, %.1f Hz...',n,1/(acqTimeDiff*24*3600));
-        end
+%         if ishandle(h)
+%             h.Children(2).Children.String = sprintf('Acquired %i Spectra, %.1f Hz...',n,1/(acqTimeDiff*24*3600));
+%         end
+        statusString = sprintf('Acquired %i Spectra, %.1f Hz...',n,1/(acqTimeDiff*24*3600));
+        obj.StatusBar.setText(statusString,[],'west');
         n = n+1;
     end
+    
+    % Reset the status
+    statusString = sprintf('');
+    obj.StatusBar.setText(statusString,[],'west');
+    
+    % Reset the acquire buttons
+    obj.stopAcquireBoolean = false;
+    obj.acquiretab.AcquireButton.Enabled = true;
+    obj.acquiretab.StopAcquireButton.Enabled = false;
 end

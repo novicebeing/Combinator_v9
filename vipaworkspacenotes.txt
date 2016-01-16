@@ -1,8 +1,6 @@
 VIPA Workspace TODO List:
 -------------------------
 
-- Use statusbar for acquire notes
-
 - Add polynomial baseline object
 
 - Add "Gaussian Inst Linewidth" and "Lorentzian Inst Linewidth" to fitting panel

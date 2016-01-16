@@ -83,6 +83,7 @@ classdef acquiretab < handle
             panel.add( this.AcquireButton, 'xy(1,2)' );
             addlistener(this.AcquireButton,'ActionPerformed',@(~,~) notify(this,'AcquireButtonPressed'));
             this.StopAcquireButton = toolpack.component.TSButton('Stop',toolpack.component.Icon.END_24);
+            this.StopAcquireButton.Enabled = false;
             panel.add( this.StopAcquireButton, 'xy(3,2)' );
             addlistener(this.StopAcquireButton,'ActionPerformed',@(~,~) notify(this,'StopAcquireButtonPressed'));
             this.TPComponent.add(this.AcquireSection);
