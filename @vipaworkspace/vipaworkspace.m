@@ -141,6 +141,7 @@ classdef vipaworkspace < handle
             addlistener(this.hometab,'NewButtonPressed',@(~,~) this.newDialog());
             addlistener(this.hometab,'OpenButtonPressed',@(~,~) this.openDialog());
             addlistener(this.hometab,'OpenButtonKineticsObjectPressed',@(~,~) this.openDialogKineticsObject());
+            addlistener(this.hometab,'SaveAllButtonPressed',@(~,~) this.saveAllDialog());
             
             % Add Spectrum acquire listener
             addlistener(this.acquiretab,'AcquireButtonPressed',@(~,~) this.acquire());

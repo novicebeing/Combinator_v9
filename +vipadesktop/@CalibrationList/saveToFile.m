@@ -1,4 +1,4 @@
-function saveToFile(this, plantids)
+function saveToFile(this, plantids,varargin)
     % Get the spectra objects
     if isempty(plantids)
         return
@@ -17,8 +17,13 @@ function saveToFile(this, plantids)
     % Make the save structure
     plantsSave = cell2struct(this.Plants(idx),this.PlantNames(idx));
     
-    % Select a file
-    [file,path] = uiputfile('*.mat','Save Calibrations As...');
+    if numel(varargin) > 0
+        [path,fname,ext] = fileparts(varargin{1});
+        file = sprintf('%s%s',fname,ext);
+    else
+        % Select a file
+        [file,path] = uiputfile('*.mat','Save Calibrations As...');
+    end
 
     % Save the file
     save(fullfile(path,file),'-struct','plantsSave');

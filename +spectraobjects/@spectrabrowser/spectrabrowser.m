@@ -75,7 +75,7 @@ classdef spectrabrowser < handle
                 this.sliderHandle.Visible = 'on';
             end
 
-            this.updateImagePlot(this.plotHandle,round(get(this.sliderHandle,'Value')));
+            this.updateImagePlot();
         end
         
         % Internal Functions

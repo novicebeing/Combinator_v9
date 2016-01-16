@@ -16,6 +16,7 @@ classdef hometab < handle
        NewButtonPressed
        OpenButtonPressed
        OpenButtonKineticsObjectPressed
+       SaveAllButtonPressed
    end
    methods
        function this = hometab(vipadesktop)

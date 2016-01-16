@@ -9,6 +9,9 @@ classdef imagebrowser < handle
         axesHandle
         plotHandle
         sliderHandle
+        
+        % No Image Boolean
+        noImageBoolean = false
     end
     
     methods
@@ -24,11 +27,12 @@ classdef imagebrowser < handle
             
             % Construct the plot and axes
             this.axesHandle = axes('Parent',this.figureHandle,'position',[0.13 0.20 0.79 0.72]);
-            this.plotHandle = this.imagePlot(1);
-            this.updateImagePlot(this.plotHandle,round(1));
+
             this.sliderHandle = uicontrol('Parent',this.figureHandle,'Style','slider','Position',[81,10,419,23],...
-              'value',1, 'min',1, 'max',numel(this.Parent.time),'sliderstep',[1/numel(this.Parent.time) 10/numel(this.Parent.time)]);
-            set(this.sliderHandle,'Callback',@(es,ed) this.updateImagePlot(this.plotHandle,round(get(es,'Value'))));
+              'value',1, 'min',1, 'max',1,'sliderstep',[1 1],'Visible','off');
+            set(this.sliderHandle,'Callback',@(es,ed) this.updateImagePlot());
+            this.imagePlot();
+            this.Update();
             
             % Figure Close Function
             function figCloseFunction(src,callbackdata)
@@ -47,6 +51,10 @@ classdef imagebrowser < handle
 
             % Reset the slider bounds
             newSliderMax = numel(this.Parent.time);
+            if newSliderMax == 0
+                newSliderMax = 1;
+            end
+            
             if oldSliderMax == oldSliderValue || oldSliderValue > newSliderMax
                 newSliderValue = newSliderMax;
             else
@@ -65,16 +73,37 @@ classdef imagebrowser < handle
                 this.sliderHandle.Visible = 'on';
             end
 
-            this.updateImagePlot(this.plotHandle,round(get(this.sliderHandle,'Value')));
+            this.updateImagePlot();
         end
         
         % Internal Functions
-        function hp = imagePlot(obj,ind)
-            hp = imagesc(obj.Parent.images(:,:,ind),'Parent',obj.axesHandle);
+        function imagePlot(this)
+            ind = round(get(this.sliderHandle,'Value'));
+            if ishandle(this.plotHandle)
+                delete(this.plotHandle)
+            end
+            
+            if isempty(this.Parent.time)
+                this.plotHandle = imagesc(NaN,'Parent',this.axesHandle);
+                this.noImageBoolean = true;
+            else
+                this.plotHandle = imagesc(this.Parent.images(:,:,ind),'Parent',this.axesHandle);
+                this.noImageBoolean = false;
+            end
         end
-        function updateImagePlot(this,hp,ind)
-            set(hp,'CData',this.Parent.images(:,:,ind));
-            title(this.axesHandle,sprintf('Image %i,T = %i',ind,this.Parent.time(ind)));
+        function updateImagePlot(this)
+            ind = round(get(this.sliderHandle,'Value'));
+            if isempty(this.Parent.time)
+                set(this.plotHandle,'CData',NaN);
+                title(this.axesHandle,'No Image');
+                this.noImageBoolean = true;
+            else
+                if this.noImageBoolean == true
+                    this.imagePlot();
+                end
+                set(this.plotHandle,'CData',this.Parent.images(:,:,ind));
+                title(this.axesHandle,sprintf('Image %i,T = %i',ind,this.Parent.time(ind)));
+            end
         end
     end
 end

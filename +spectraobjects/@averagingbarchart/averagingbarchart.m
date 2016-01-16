@@ -38,7 +38,7 @@ classdef averagingbarchart < handle
             end
         end
         function Update(this)
-            this.updateImagePlot(this.plotHandle,round(get(this.sliderHandle,'Value')));
+            this.updateImagePlot();
         end
         
         % Internal Functions

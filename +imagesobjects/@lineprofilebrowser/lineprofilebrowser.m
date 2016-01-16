@@ -45,14 +45,14 @@ classdef lineprofilebrowser < handle
 
             % Construct the plot and axes
             this.axesHandle = axes('Parent',this.figureHandle,'position',[0.13 0.20 0.79 0.72]);
-            this.plotHandle = this.lineProfilePlot(1);
-            this.updateLineProfilePlot(round(1));
             this.sliderHandle = uicontrol('Parent',this.figureHandle,'Style','slider','Position',[81,10,419,23],...
               'value',1, 'min',1, 'max',numel(this.Parent.time),'sliderstep',[1/numel(this.Parent.time) 10/numel(this.Parent.time)]);
+            this.lineProfilePlot();
+            this.updateLineProfilePlot();
             if numel(this.Parent.time) == 1
                 this.sliderHandle.Visible = 'off';
             end
-            set(this.sliderHandle,'Callback',@(es,ed) this.updateLineProfilePlot(round(get(es,'Value'))));
+            set(this.sliderHandle,'Callback',@(es,ed) this.updateLineProfilePlot());
             
             % Add a menu for the axes
             this.axesmenu = uicontextmenu();
@@ -94,7 +94,7 @@ classdef lineprofilebrowser < handle
                 this.sliderHandle.Visible = 'on';
             end
             
-            this.updateLineProfilePlot(round(get(this.sliderHandle,'Value')));
+            this.updateLineProfilePlot();
         end
         
         % Internal Functions
@@ -107,7 +107,9 @@ classdef lineprofilebrowser < handle
 
             this.Update();
         end
-        function hp = lineProfilePlot(this,ind)
+        function hp = lineProfilePlot(this)
+            ind = round(get(this.sliderHandle,'Value'));
+            
             indcs = sub2ind(size(this.Parent.images),this.lineProfileIndicesX,this.lineProfileIndicesY,ind*ones(size(this.lineProfileIndicesX)));
             x = 1:numel(this.lineProfileIndicesX);
             y = this.Parent.images(indcs);
@@ -117,7 +119,9 @@ classdef lineprofilebrowser < handle
             hp = plot(x,y,'Parent',this.axesHandle);
             ylim([0 6000]);
         end
-        function updateLineProfilePlot(this,ind)
+        function updateLineProfilePlot(this)
+            ind = round(get(this.sliderHandle,'Value'));
+            
             indcs = sub2ind(size(this.Parent.images),this.lineProfileIndicesX,this.lineProfileIndicesY,ind*ones(size(this.lineProfileIndicesX)));
             x = 1:numel(this.lineProfileIndicesX);
             y = this.Parent.images(indcs);

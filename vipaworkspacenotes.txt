@@ -1,13 +1,7 @@
 VIPA Workspace TODO List:
 -------------------------
 
-- Make sub-menus
-
-- Allow for "no images" case in images object
-
 - Use statusbar for acquire notes
-
-- Add code for "save all" button
 
 - Add polynomial baseline object
 
@@ -18,3 +12,5 @@ VIPA Workspace TODO List:
 - Add simbiology simulation option to "fit analysis" panel
 
 - Add table option in fits to input initial conditions.
+
+- Add kinetics image fake
