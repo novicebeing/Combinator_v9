@@ -110,6 +110,7 @@ function [wavenum,returnSpectra,spectraTime] = createSpectra(self,returnImages,t
             % Set the references to NaN
             refIndex(refImageBoolean) = NaN;
     
+        returnSpectra(returnSpectra<0) = NaN;
         returnSpectra = -log(returnSpectra(:,:,~isnan(refIndex))./returnSpectra(:,:,refIndex(~isnan(refIndex))));
         spectraTime = time(~isnan(refIndex));
         wavenum = self.xAxis_wavenumber;

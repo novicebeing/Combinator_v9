@@ -3,13 +3,20 @@ function obj = averageSpectrum(obj,specWavenum,specY,specYerror,t)
     %     Uses: t,wavenum,ysum,wsum
     
     % Check for proper dimensions
-    if ~ismatrix(specWavenum) || ~ismatrix(specY) || ~ismatrix(specYerror)
+    if ~ismatrix(specWavenum) || ndims(specY)>3 || ~ismatrix(specYerror)
+        ismatrix(specWavenum)
+        ndims(specY)
+        ismatrix(specYerror)
        error('Too many dimensions'); 
     end
     
     % Assign errors if necessary
     if isempty(specYerror)
-       [yout,specYerror] = obj.assignyerror(specWavenum,specY);
+       yout = zeros(size(specY));
+       specYerror = zeros(size(specY));
+       for i = 1:size(specY,3)
+           [yout(:,:,i),specYerror(:,:,i)] = obj.assignyerror(specWavenum,specY(:,:,i));
+       end
     end
     
     % Calculate weights from errors
@@ -34,35 +41,24 @@ function obj = averageSpectrum(obj,specWavenum,specY,specYerror,t)
         obj.wsum = wadd;
         obj.t = t;
     else
-        ind = find(t == obj.t);
-        if isempty(ind)
-            ind = numel(obj.t)+1;
-            obj.t(ind) = t;
-            obj.ysum(:,:,ind) = zeros([size(obj.ysum,1) size(obj.ysum,2)]);
-            obj.wsum(:,:,ind) = zeros([size(obj.wsum,1) size(obj.wsum,2)]);
-        else
-            ind = ind(1);
+        for i = 1:numel(t)
+            ind = find(t(i) == obj.t);
+            if isempty(ind)
+                ind = numel(obj.t)+1;
+                obj.t(ind) = t(i);
+                obj.ysum(:,:,ind) = zeros([size(obj.ysum,1) size(obj.ysum,2)]);
+                obj.wsum(:,:,ind) = zeros([size(obj.wsum,1) size(obj.wsum,2)]);
+            else
+                ind = ind(1);
+            end
+            obj.ysum(:,:,ind) = obj.ysum(:,:,ind)+yadd(:,:,i).*wadd(:,:,i);
+            obj.wsum(:,:,ind) = obj.wsum(:,:,ind)+wadd(:,:,i);
         end
-        obj.ysum(:,:,ind) = obj.ysum(:,:,ind)+yadd.*wadd;
-        obj.wsum(:,:,ind) = obj.wsum(:,:,ind)+wadd;
     end
     
-    debugging = 0;
-    if debugging == 1
-        figure(10);
-        ax = gca;
-        h = plot(ax,specWavenum,reshape(yout,[],1)); hold(ax,'on');
-        herrorplus = plot(ax,specWavenum,reshape(yout+1./sqrt(w),[],1));
-        herrorminus = plot(ax,specWavenum,reshape(yout-1./sqrt(w),[],1));
-        hold(ax,'off');
-        
-        figure(11);
-        ax = gca;
-        [tplot,averageErrorPlot] = obj.averageError(2682,2686);
-        
-        % Sort t,averageError
-        [~,isort] = sort(tplot);
-        
-        bar(1./averageErrorPlot(isort));
-    end
+    % Average the spectra
+    obj.averageSpectra();
+    
+    % Update the plots
+    obj.updatePlots();
 end

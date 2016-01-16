@@ -1,4 +1,4 @@
-function hfig = averageSpectra(this, plantids,wavenum,spectra,time)
+function hfig = averageSpectra(this, plantids,wavenum,spectra,spectraError,time)
     % Get the spectra objects
     if isempty(plantids)
         return
@@ -16,6 +16,6 @@ function hfig = averageSpectra(this, plantids,wavenum,spectra,time)
 
     % Open the plot browsers
     for i = 1:length(plants)
-        hfig = plants{i}.averageSpectrum(wavenum,spectra,[],time);
+        hfig = plants{i}.averageSpectrum(wavenum,spectra,spectraError,time);
     end
 end
