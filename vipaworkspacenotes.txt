@@ -16,3 +16,5 @@ VIPA Workspace TODO List:
 - Check output of acquire functions
 
 - Allow for setting of the approximate calibration function
+
+- remove yavg, tavg from spectraobject as they are no longer necessary
