@@ -13,6 +13,8 @@ classdef spectrabrowser < handle
         herrorminus
         herrorplus
         
+        noImageBoolean
+        
         options
     end
     
@@ -35,9 +37,9 @@ classdef spectrabrowser < handle
             % Construct the plot and axes
             this.axesHandle = axes('Parent',this.figureHandle,'position',[0.13 0.20 0.79 0.72]);
             this.sliderHandle = uicontrol('Parent',this.figureHandle,'Style','slider','Position',[81,10,419,23],...
-              'value',1, 'min',1, 'max',numel(this.Parent.tavg),'sliderstep',[1/numel(this.Parent.tavg) 10/numel(this.Parent.tavg)]);
+              'value',1, 'min',1, 'max',1,'sliderstep',[1 1]);
             this.imagePlot();
-            this.updateImagePlot();
+            this.Update();
             set(this.sliderHandle,'Callback',@(es,ed) this.updateImagePlot());
             
             % Figure Close Function
@@ -57,6 +59,9 @@ classdef spectrabrowser < handle
 
             % Reset the slider bounds
             newSliderMax = numel(this.Parent.tavg);
+            if newSliderMax == 0
+                newSliderMax = 1;
+            end
             if oldSliderMax == oldSliderValue || oldSliderValue > newSliderMax
                 newSliderValue = newSliderMax;
             else
@@ -81,66 +86,86 @@ classdef spectrabrowser < handle
         % Internal Functions
         function imagePlot(this)
             ind = round(this.sliderHandle.Value);
-            if isempty(this.Parent.yavg)
-                this.Parent.averageSpectra();
+            if ishandle(this.plotHandle)
+                delete(this.plotHandle)
             end
-            plotcolor = [0,0,0];
-            errorcolor = [0,0,0]+0.90;
-            %h = plot(ax,obj.wavenum,reshape(obj.yavg(:,:,ind),[],1),'Color',plotcolor); hold(ax,'on');
-            this.herrorplus = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.yavg(:,:,ind)+this.Parent.ystderror(:,:,ind),[],1),'Color',errorcolor);hold(this.axesHandle,'on');
-            this.herrorminus = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.yavg(:,:,ind)-this.Parent.ystderror(:,:,ind),[],1),'Color',errorcolor);
-            this.h = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.yavg(:,:,ind),[],1),'Color',plotcolor);
-            hold(this.axesHandle,'off');
             
-            if strcmp(this.options,'fft')
-                xlabel(this.axesHandle,'Etalon Length [cm]');
-                ylabel(this.axesHandle,'FFT Amplitude');
+            if isempty(this.Parent.t)
+                this.plotHandle = plot(NaN,NaN,'Parent',this.axesHandle);
+                this.noImageBoolean = true;
             else
-                xlabel(this.axesHandle,'Wavenumber [1/cm]');
-                ylabel(this.axesHandle,'Absorbance');
+                if isempty(this.Parent.yavg)
+                    this.Parent.averageSpectra();
+                end
+                plotcolor = [0,0,0];
+                errorcolor = [0,0,0]+0.90;
+                %h = plot(ax,obj.wavenum,reshape(obj.yavg(:,:,ind),[],1),'Color',plotcolor); hold(ax,'on');
+                this.herrorplus = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.yavg(:,:,ind)+this.Parent.ystderror(:,:,ind),[],1),'Color',errorcolor);hold(this.axesHandle,'on');
+                this.herrorminus = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.yavg(:,:,ind)-this.Parent.ystderror(:,:,ind),[],1),'Color',errorcolor);
+                this.h = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.yavg(:,:,ind),[],1),'Color',plotcolor);
+                hold(this.axesHandle,'off');
+
+                if strcmp(this.options,'fft')
+                    xlabel(this.axesHandle,'Etalon Length [cm]');
+                    ylabel(this.axesHandle,'FFT Amplitude');
+                else
+                    xlabel(this.axesHandle,'Wavenumber [1/cm]');
+                    ylabel(this.axesHandle,'Absorbance');
+                end
+                this.noImageBoolean = false;
             end
         end
         function updateImagePlot(this)
             ind = round(this.sliderHandle.Value);
-            if isempty(this.Parent.yavg)
-                this.Parent.averageSpectra();
-            end
             
-            if isempty(this.options)
-                set(this.h,'XData',this.Parent.wavenum(:));
-                set(this.h,'YData',reshape(this.Parent.yavg(:,:,ind),[],1));
-                set(this.herrorplus,'XData',this.Parent.wavenum(:));
-                set(this.herrorplus,'YData',reshape(this.Parent.yavg(:,:,ind)+this.Parent.ystderror(:,:,ind),[],1));
-                set(this.herrorminus,'XData',this.Parent.wavenum(:));
-                set(this.herrorminus,'YData',reshape(this.Parent.yavg(:,:,ind)-this.Parent.ystderror(:,:,ind),[],1));
-            elseif strcmp(this.options,'fft')
-                gridx = linspace(min(this.Parent.wavenum(:)),max(this.Parent.wavenum(:)),10000);
-                ynonnan = reshape(this.Parent.yavg(:,:,ind),[],1);
-                ynonnan(isnan(ynonnan)) = 0;
-                gridy = interp1(this.Parent.wavenum(:),ynonnan,gridx);
-                yfft = abs(fft(gridy));
-                yfft = yfft(1:numel(yfft)/2);
-                Lmax = 1/4/(gridx(2)-gridx(1));
-                xfft = linspace(0,Lmax,5000);
-                set(this.h,'XData',xfft);
-                set(this.h,'YData',yfft);
-                set(this.herrorplus,'XData',[]);
-                set(this.herrorplus,'YData',[]);
-                set(this.herrorminus,'XData',[]);
-                set(this.herrorminus,'YData',[]);
-            elseif strcmp(this.options,'interp')
-                gridx = linspace(min(this.Parent.wavenum(:)),max(this.Parent.wavenum(:)),10000);
-                ynonnan = reshape(this.Parent.yavg(:,:,ind),[],1);
-                ynonnan(isnan(ynonnan)) = 0;
-                gridy = interp1(this.Parent.wavenum(:),ynonnan,gridx);
-                set(this.h,'XData',gridx);
-                set(this.h,'YData',gridy);
-                set(this.herrorplus,'XData',[]);
-                set(this.herrorplus,'YData',[]);
-                set(this.herrorminus,'XData',[]);
-                set(this.herrorminus,'YData',[]);
+            if isempty(this.Parent.t)
+                set(this.plotHandle,'XData',NaN);
+                set(this.plotHandle,'YData',NaN);
+                title(this.axesHandle,'No Spectra');
+                this.noImageBoolean = true;
+            else
+                if this.noImageBoolean == true
+                    this.imagePlot();
+                elseif isempty(this.Parent.yavg)
+                    this.Parent.averageSpectra();
+                end
+                
+                if isempty(this.options)
+                    set(this.h,'XData',this.Parent.wavenum(:));
+                    set(this.h,'YData',reshape(this.Parent.yavg(:,:,ind),[],1));
+                    set(this.herrorplus,'XData',this.Parent.wavenum(:));
+                    set(this.herrorplus,'YData',reshape(this.Parent.yavg(:,:,ind)+this.Parent.ystderror(:,:,ind),[],1));
+                    set(this.herrorminus,'XData',this.Parent.wavenum(:));
+                    set(this.herrorminus,'YData',reshape(this.Parent.yavg(:,:,ind)-this.Parent.ystderror(:,:,ind),[],1));
+                elseif strcmp(this.options,'fft')
+                    gridx = linspace(min(this.Parent.wavenum(:)),max(this.Parent.wavenum(:)),10000);
+                    ynonnan = reshape(this.Parent.yavg(:,:,ind),[],1);
+                    ynonnan(isnan(ynonnan)) = 0;
+                    gridy = interp1(this.Parent.wavenum(:),ynonnan,gridx);
+                    yfft = abs(fft(gridy));
+                    yfft = yfft(1:numel(yfft)/2);
+                    Lmax = 1/4/(gridx(2)-gridx(1));
+                    xfft = linspace(0,Lmax,5000);
+                    set(this.h,'XData',xfft);
+                    set(this.h,'YData',yfft);
+                    set(this.herrorplus,'XData',[]);
+                    set(this.herrorplus,'YData',[]);
+                    set(this.herrorminus,'XData',[]);
+                    set(this.herrorminus,'YData',[]);
+                elseif strcmp(this.options,'interp')
+                    gridx = linspace(min(this.Parent.wavenum(:)),max(this.Parent.wavenum(:)),10000);
+                    ynonnan = reshape(this.Parent.yavg(:,:,ind),[],1);
+                    ynonnan(isnan(ynonnan)) = 0;
+                    gridy = interp1(this.Parent.wavenum(:),ynonnan,gridx);
+                    set(this.h,'XData',gridx);
+                    set(this.h,'YData',gridy);
+                    set(this.herrorplus,'XData',[]);
+                    set(this.herrorplus,'YData',[]);
+                    set(this.herrorminus,'XData',[]);
+                    set(this.herrorminus,'YData',[]);
+                end
+                title(this.axesHandle,sprintf('T = %i us',this.Parent.tavg(ind)));
             end
-            title(this.axesHandle,sprintf('T = %i us',this.Parent.tavg(ind)));
         end
     end
 end

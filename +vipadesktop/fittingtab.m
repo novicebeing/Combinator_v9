@@ -1,11 +1,17 @@
 classdef fittingtab < handle
-   properties 
+   properties
+       % Connection back to vipadesktop
        vipadesktop
+       
+       % ToolTab component
        TPComponent
-       Panel
-       OpenButton
-       OpenButtonKineticsObject
-       FileSection
+       
+       % Sections
+       InstrumentParametersSection
+       
+       % Text Fields
+       instrumentGaussianFWHMTextField
+       instrumentLorentzianFWHMTextField
    end
    events
        OpenButtonPressed
@@ -15,31 +21,28 @@ classdef fittingtab < handle
             % Add home tab
             this.TPComponent = toolpack.desktop.ToolTab('VIPAworkspaceFittingTab', 'Fitting');
             
-            % Add open button
-            this.FileSection = toolpack.desktop.ToolSection('File','File');
-            this.OpenButton = toolpack.component.TSButton('Open',toolpack.component.Icon.OPEN_24);
-            addlistener(this.OpenButton,'ActionPerformed',@(~,~) notify(this,'OpenButtonPressed'));
-            this.FileSection.add(this.OpenButton);
+            % Add Instrument Parameters Section
+            this.InstrumentParametersSection = toolpack.desktop.ToolSection('instrumentparameters','Inst. Parameters');
+            panel = toolpack.component.TSPanel('7px, f:p, 4px, f:p, 7px','3px, 20px, 4px, 20px, 4px, 22px');
+            this.InstrumentParametersSection.add(panel);
+            l = toolpack.component.TSLabel('Inst. Gaussian FWHM [cm-1]');
+            panel.add(l,'xy(2,2,''r,c'')');
+            l = toolpack.component.TSLabel('Inst. Lorentz FWHM [cm-1]');
+            panel.add(l,'xy(2,4,''r,c'')');
+            l = toolpack.component.TSLabel('');
+            panel.add(l,'xy(2,6,''r,c'')');
+            this.instrumentGaussianFWHMTextField = toolpack.component.TSTextField('0',8);
+            this.instrumentGaussianFWHMTextField.Editable = true;
+            %addlistener(this.instrumentGaussianFWHMTextField,'ActionPerformed',@(~,~) setTextFieldText(this.imageDestTextField,'none'));
+            panel.add(this.instrumentGaussianFWHMTextField,'xywh(4,2,1,1)');
+            this.instrumentLorentzianFWHMTextField = toolpack.component.TSTextField('0.02997',8);
+            this.instrumentLorentzianFWHMTextField.Editable = true;
+            %addlistener(this.calibrationTextField,'ActionPerformed',@(~,~) setTextFieldText(this.calibrationTextField,'none'));
+            panel.add(this.instrumentLorentzianFWHMTextField,'xywh(4,4,1,1)');
+            this.TPComponent.add(this.InstrumentParametersSection);
             
-            % Add File Section
-            this.TPComponent.add(this.FileSection);
-            
-            %this.TPComponent = toolpack.desktop.ToolSection('Plant',pidtool.utPIDgetStrings('cst','strPlant'));
             this.vipadesktop = vipadesktop;
-            %this.layout();
        end
-        function layout(this)
-            %LAYOUT
-            
-            panel = toolpack.component.TSPanel('7px, f:p, 7px','5px, 12px, 2px, 20px, 4px, 22px');
-            plantLabel = toolpack.component.TSLabel([pidtool.utPIDgetStrings('cst','strPlant') ':']);
-            panel.add(plantLabel,'xywh(2,2,1,1)');
-            %panel.add(this.PlantSelector.ButtonTPComponent,'xywh(2,4,1,1)');
-            this.InspectPlantButton = toolpack.component.TSButton(pidtool.utPIDgetStrings('cst','strInspect'),toolpack.component.Icon.SEARCH_16);
-            panel.add(this.InspectPlantButton,'xywh(2,6,1,1)');
-            this.TPComponent.add(panel);
-            this.Panel = panel;
-        end
         function val = getPanelWidth(this)
             val = this.Panel.Peer.getPreferredSize.getWidth;
         end

@@ -7,6 +7,15 @@ function [wavenum,returnSpectra,spectraTime] = createSpectra(self,returnImages,t
         
         % Check to see if there are any reference images. Add one if not
         if sum(refImageBoolean) == 0
+            % Check to see if we actually have a reference image
+            if isempty(self.refImage)
+                errordlg('Calibration Reference Image is not set','Calibration Error','modal');
+                wavenum = [];
+                returnSpectra = [];
+                spectraTime = [];
+                return
+            end
+                
             returnImages = cat(3,self.refImage,returnImages);
             refImageBoolean = [true refImageBoolean];
             time = [NaN time];

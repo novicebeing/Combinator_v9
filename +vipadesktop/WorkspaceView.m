@@ -254,6 +254,9 @@ actionInfo = cell(data.actionInfo);
 try
     switch upper(action)
         case 'DELETE'
+            for i = 1:numel(actionInfo)
+                delete(ws.getValue(actionInfo{i}));
+            end
             ws.clear(actionInfo{:});
         case 'RENAME'
             % This get called after adding a new variable?

@@ -1,18 +1,12 @@
 VIPA Workspace TODO List:
 -------------------------
 
-- Add polynomial baseline object
-
-- Add "Gaussian Inst Linewidth" and "Lorentzian Inst Linewidth" to fitting panel
-
-- Delete objects upon removal from workspace. Add a new "remove" item to accomplish this
-
 - Add simbiology simulation option to "fit analysis" panel
 
 - Add table option in fits to input initial conditions.
 
-- Check output of acquire functions
-
 - Allow for setting of the approximate calibration function
 
 - remove yavg, tavg from spectraobject as they are no longer necessary
+
+- Add code for "instrument linewidth" panel items

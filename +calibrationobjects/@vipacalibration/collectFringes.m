@@ -129,7 +129,7 @@ function self = collectFringes(self)
             self.fringeY);
         
         % Flipping indices
-        warning('Careful Here - I am flipping the indices!!!');
+        %warning('Careful Here - I am flipping the indices!!!');
         self.spectrumIndcs = flipud(self.spectrumIndcs);
         self.xAxis_wavenumber = 1:numel(self.spectrumIndcs);
 %         self.spectrumX = reshape(1e4./(1:numel(self.spectrumIdcs)),size(self.spectrumIdcs));
