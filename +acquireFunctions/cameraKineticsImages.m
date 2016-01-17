@@ -72,7 +72,8 @@ function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraKineti
         imageOut(:,:,i) = A;
     end
     
-    referenceImagesBoolean = (timestampLabel(indOut) == -1);
+    %referenceImagesBoolean = (timestampLabel(indOut) == -1);
+    referenceImagesBoolean = false(size(indOut));
     timeOut = timeDelay;
     acquireTypeOut = 'image';
 end

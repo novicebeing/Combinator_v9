@@ -17,8 +17,8 @@ function [wavenum,returnSpectra,spectraTime] = createSpectra(self,returnImages,t
             end
                 
             returnImages = cat(3,self.refImage,returnImages);
-            refImageBoolean = [true refImageBoolean];
-            time = [NaN time];
+            refImageBoolean = [true; refImageBoolean(:)];
+            time = [NaN; time(:)];
         end
         
         returnImages = permute(returnImages,[2 1 3]);
