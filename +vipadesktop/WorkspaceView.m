@@ -262,7 +262,14 @@ try
             % This get called after adding a new variable?
             ws.rename(actionInfo{1},actionInfo{2});
         case 'CREATE'
-            varname = workspacefunc('getnewname',ws.who);
+            counter = 0;
+            new_base = ws.NewVariableBaseName;
+            varname = new_base;
+            while localAlreadyExists(varname, ws.getWho)
+                counter = counter + 1;
+                proposed_number_string = num2str(counter);
+                varname = [new_base proposed_number_string];
+            end
             createfunction = ws.NewVariableFunction;
             ws.assignin(varname,createfunction());
         case 'DUPLICATE'
@@ -277,6 +284,15 @@ try
 catch E
     msgbox(E.message,ctrlMsgUtils.message('Controllib:databrowser:ComponentError','Workspace',upper(action)),'warn','modal');
 end
+end
+
+function result = localAlreadyExists(name, who_output)
+    result = false;
+    counter = 1;
+    while ~result && counter <= length(who_output)
+        result = strcmp(name, who_output{counter});
+        counter = counter + 1;
+    end
 end
 
 function TransferEventsProcessing(source,data,varargin) %#ok<INUSL>

@@ -36,22 +36,27 @@ classdef VIPAdataBrowser < handle
             tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'images';
             tc.NewVariableFunction = @imagesobjects.imagesobject;
+            tc.NewVariableBaseName = 'images';
             obj.Model.add(tc);
             tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'calibration';
             tc.NewVariableFunction = @calibrationobjects.vipacalibration;
+            tc.NewVariableBaseName = 'calibration';
             obj.Model.add(tc);
             tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'spectra';
             tc.NewVariableFunction = @spectraobjects.spectraobject;
+            tc.NewVariableBaseName = 'spectra';
             obj.Model.add(tc);
             tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'fitspectra';
             tc.NewVariableFunction = @fitspectraobjects.linelist;
+            tc.NewVariableBaseName = 'linelist';
             obj.Model.add(tc);
             tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
             tc.Name = 'fits';
             tc.NewVariableFunction = @fitsobjects.fitsobject;
+            tc.NewVariableBaseName = 'fits';
             obj.Model.add(tc);
             
             % Set View Parameters

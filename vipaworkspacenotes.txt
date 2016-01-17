@@ -1,10 +1,6 @@
 VIPA Workspace TODO List:
 -------------------------
 
-- Add simbiology simulation option to "fit analysis" panel
-
-- Add table option in fits to input initial conditions.
-
 - Allow for setting of the approximate calibration function
 
 - remove yavg, tavg from spectraobject as they are no longer necessary

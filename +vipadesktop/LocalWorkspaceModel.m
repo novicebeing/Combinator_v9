@@ -47,6 +47,7 @@ classdef LocalWorkspaceModel < toolpack.AbstractAtomicComponent
     end
     properties (Access = public)
         NewVariableFunction = @() 0;
+        NewVariableBaseName = 'unnamed';
     end
     
     %% ------ MODEL CONSTRUCTION
