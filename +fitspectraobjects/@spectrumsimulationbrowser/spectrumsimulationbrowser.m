@@ -15,6 +15,7 @@ classdef spectrumsimulationbrowser < handle
         figureHandle
         axesHandle
         plotHandle
+        axesmenu
     end
     
     methods
@@ -32,7 +33,12 @@ classdef spectrumsimulationbrowser < handle
             this.axesHandle = axes('Parent',this.figureHandle,'position',[0.13 0.20 0.79 0.72]);
             this.plotHandle = this.imagePlot();
             this.updateImagePlot();
-            
+
+            % Add a menu for the axes
+            this.axesmenu = uicontextmenu();
+            uimenu('Parent',this.axesmenu,'Label','Set Simulation Range','Callback',@(s,e) this.setSimulationRange());
+            set(this.axesHandle,'UIContextMenu',this.axesmenu);
+
             % Figure Close Function
             function figCloseFunction(src,callbackdata)
                 delete(gcf);
@@ -44,6 +50,15 @@ classdef spectrumsimulationbrowser < handle
         end
         
         % Internal Functions
+        function setSimulationRange(this)
+            data = inputdlg({'Min Wavenum','Max Wavenum','Num Points'},'Set Range',[1; 1; 1],{num2str(this.wavenumMin),num2str(this.wavenumMax),num2str(this.numPoints)});
+            if ~isempty(data)
+                this.wavenumMin = str2double(data{1});
+                this.wavenumMax = str2double(data{2});
+                this.numPoints = str2double(data{3});
+                this.updateImagePlot();
+            end
+        end
         function hp = imagePlot(obj)
             x = linspace(obj.wavenumMin,obj.wavenumMax,obj.numPoints);
             y = obj.Parent.createSpectrum(x,...
