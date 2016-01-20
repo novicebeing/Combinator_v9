@@ -1,6 +1,8 @@
 function self = fitSpectrumWavenumber(self)
     
     hfit = fitSpectrumXaxis_v3;
+    
+    %hfit.simFilename = './Spectrum Simulations/D2O_sim_gaussian_1GHz.simSpec';
 
     %hfit.simFilename = './Spectrum Simulations/D2O_sim_gaussian_1GHz.simSpec';
     disp('Warning: need to make fit spectrum number a variable')
