@@ -18,6 +18,7 @@ function obj = setSpectra(obj,specWavenum,specY,specYerror,t)
            [yout(:,:,i),specYerror(:,:,i)] = obj.assignyerror(specWavenum,specY(:,:,i));
        end
     end
+    yout = specY;
     
     % Calculate weights from errors
     w = 1./specYerror.^2;

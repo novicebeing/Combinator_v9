@@ -12,3 +12,7 @@ VIPA Workspace TODO List:
 - Add "new figure" capabilities
 
 - Add x and y labels to fits plots
+
+- Add "make spectra without reference"
+
+- Remove bg substraction when averaging spectra
