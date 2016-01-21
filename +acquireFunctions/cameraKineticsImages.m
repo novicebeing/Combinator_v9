@@ -1,9 +1,30 @@
 function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraKineticsImages()
     % Set the photolysis delay
-    photolysisOffset = 0;
+    photolysisOffset = randsample([-50 -25 0 10 20 30 40 50 75 100 125 150 200 250 300 400 500 750 1000 1500 2000 2500 3000],1);
     timeBetweenImages = 4000;
-    warning('Not actually setting the photolysis delay')
+    %warning('Not actually setting the photolysis delay')
 
+    % Set photolysis delay
+    % Create a GPIB object.
+    obj1 = instrfind('Type', 'gpib', 'BoardIndex', 1, 'PrimaryAddress', 4, 'Tag', '');
+
+    % Create the GPIB object if it does not exist
+    % otherwise use the object that was found.
+    if isempty(obj1)
+        obj1 = gpib('NI', 1, 4);
+    else
+        fclose(obj1);
+        obj1 = obj1(1);
+    end
+
+    % Connect to instrument object, obj1.
+    fopen(obj1);
+    
+    % Set the photolysis delay
+    % Communicating with instrument object, obj1.
+    timeDelaySetting = 201e-6 + photolysisOffset*1e-6;
+    fwrite(obj1, sprintf('DT 2,1,%f\r\n',timeDelaySetting));
+    
     % Start Acquisition thread
     CAM_width = 320;
     CAM_height = 256;
@@ -72,8 +93,8 @@ function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraKineti
         imageOut(:,:,i) = A;
     end
     
-    %referenceImagesBoolean = (timestampLabel(indOut) == -1);
-    referenceImagesBoolean = false(size(indOut));
+    referenceImagesBoolean = (timestampLabel(indOut) == -1);
+    %referenceImagesBoolean = false(size(indOut));
     timeOut = timeDelay;
     acquireTypeOut = 'image';
 end

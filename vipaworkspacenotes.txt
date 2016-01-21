@@ -16,3 +16,5 @@ VIPA Workspace TODO List:
 - Add "make spectra without reference"
 
 - Remove bg substraction when averaging spectra
+
+- "New" button and menu item should set image destination

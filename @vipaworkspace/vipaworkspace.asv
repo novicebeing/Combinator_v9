@@ -382,19 +382,18 @@ switch ed.Request
         end
         close(hwait);
     case 'imageslist_useasrefimage'
-        data = inputdlg({'Sig Image Num'},'Signal Image',[1],{'1'});
         calibrationobjid = {this.acquiretab.calibrationTextField.Text};
         [images,time] = this.ImagesList.getImages(ed.Variables(1));
-        this.CalibrationList.setRefImage(calibrationobjid,images(:,:,str2double(data{1})));
+        this.CalibrationList.setRefImage(calibrationobjid,images(:,:,1));
     case 'imageslist_averageimages'
         itemNames = this.ImagesList.getItemNames(ed.Variables(1));
         h = this.ImagesList.averageImages(ed.Variables(1));
         this.ImagesList.addItem(h,0,0,strrep(sprintf('%s_avg',itemNames),' ','_'));
     case 'imageslist_useassigimage'
-        data = inputdlg({'Sig Image Num'},'Signal Image',[1],{'1'});
+        intput
         calibrationobjid = {this.acquiretab.calibrationTextField.Text};
         [images,time] = this.ImagesList.getImages(ed.Variables(1));
-        this.CalibrationList.setSigImage(calibrationobjid,images(:,:,str2double(data{1})));
+        this.CalibrationList.setSigImage(calibrationobjid,images(:,:,1));
     case 'calibrationlist_exporttobaseworkspace'
         assignin('base','hobj',this.CalibrationList.Plants);
     case 'imageslist_exporttobaseworkspace'
