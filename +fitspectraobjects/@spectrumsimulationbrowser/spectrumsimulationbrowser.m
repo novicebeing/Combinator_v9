@@ -63,7 +63,7 @@ classdef spectrumsimulationbrowser < handle
             x = linspace(obj.wavenumMin,obj.wavenumMax,obj.numPoints);
             y = obj.Parent.createSpectrum(x,...
                 'instrumentLorentzianFWHM',obj.instrumentLorentzianFWHM,...
-                'instrumentGaussianFWHM',obj.instrumentLorentzianFWHM);
+                'instrumentGaussianFWHM',obj.instrumentGaussianFWHM);
             hp = plot(x,y,'Parent',obj.axesHandle);
         end
         function updateImagePlot(obj)

@@ -8,6 +8,11 @@ classdef linelist < handle
         lineposition;
         linestrength;
         
+        % Spectrum Cache
+        spectrumCacheParams = [];
+        spectrumCacheWavenum = [];
+        spectrumCacheCrossSection = [];
+        
         % Live Image Views
         plotHandles;
     end

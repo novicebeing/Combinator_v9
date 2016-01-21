@@ -24,6 +24,17 @@ function crossSection = createSpectrum(obj,wavenum, varargin)
     instrumentPhase = p.Results.instrumentPhase;
     lineshapeFunction = p.Results.lineshapeFunction;
     
+    % Check spectrum cache
+    cacheParams = p.Results;
+    if isequal(wavenum,obj.spectrumCacheWavenum) && ...
+            isequal(cacheParams,obj.spectrumCacheParams)
+        crossSection = obj.spectrumCacheCrossSection;
+        return
+    else
+        obj.spectrumCacheParams = [];
+        obj.spectrumCacheWavenum = [];
+        obj.spectrumCacheCrossSection = [];
+    end
     
     if isscalar(instrumentGaussianFWHM)
         instrumentGaussianFWHM = instrumentGaussianFWHM.*ones(size(obj.lineposition));
@@ -72,6 +83,11 @@ function crossSection = createSpectrum(obj,wavenum, varargin)
 % 
 %         crossSection = crossSection - reshape(ymean,size(crossSection));
 %     end
+
+    % Save to spectrum cache
+    obj.spectrumCacheParams = cacheParams;
+    obj.spectrumCacheWavenum = wavenum;
+    obj.spectrumCacheCrossSection = crossSection;
 end
 
 %---------- SPECTRUM GENERATION FUNCTIONS ----------------
