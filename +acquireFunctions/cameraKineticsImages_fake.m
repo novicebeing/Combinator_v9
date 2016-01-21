@@ -14,7 +14,7 @@ function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraKineti
     for i = 1:size(testImages,3)
         testImages(badPixelIndcs+size(testImages,1)*size(testImages,2)*(i-1)) = NaN;
     end
-    imageOut = permute(testImages + 1000*rand(size(testImages)),[2 1 3]);
+    imageOut = permute(testImages + 100*rand(size(testImages)),[2 1 3]);
     timeOut = (-1:12)*4000 + photolysisOffset;
     acquireTypeOut = 'image';
     referenceImagesBoolean = logical([1 0 0 0 0 0 0 0 0 0 0 0 0 0]);
