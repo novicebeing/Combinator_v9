@@ -17,9 +17,9 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,fito
 %     end
 
     % Warn that gaussian fwhm is hard coded
-    warning('Gaussian FWHM is hard coded...');
-    warning('kineticsobject averaging is hard coded...');
-    warning('nan removal with averaging is hard coded...');
+    %warning('Gaussian FWHM is hard coded...');
+    %warning('kineticsobject averaging is hard coded...');
+    %warning('nan removal with averaging is hard coded...');
     
     % Make sure that the kineticsobject spectrum is properly averaged
     spectrumobject.averageSpectra();
@@ -32,7 +32,7 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,fito
     fitArrayNum = 1;
     for i = 1:numel(fitspectrumobjects)
         for j = 1:numel(fitspectrumobjects{i})
-            y = fitspectrumobjects{i}(j).createSpectrum(x,'instrumentLorentzianFWHM',0.02997); %***
+            y = fitspectrumobjects{i}(j).createSpectrum(x,'instrumentLorentzianFWHM',0.06);%0.02997); %***
             k = kineticsobject(); %***
             k.averageSpectrum(x,y,[],0);
             yy = k.ysum./k.wsum;

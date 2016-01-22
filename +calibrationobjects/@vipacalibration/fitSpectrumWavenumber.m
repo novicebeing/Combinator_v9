@@ -7,7 +7,7 @@ function self = fitSpectrumWavenumber(self)
     %hfit.simFilename = './Spectrum Simulations/D2O_sim_gaussian_1GHz.simSpec';
     disp('Warning: need to make fit spectrum number a variable')
                 [~,plotSpectrum] = self.createSpectra(cat(3,self.refImage,self.sigImage),[0 0],[true false]);
-                polyBaselineFit = 0;
+                polyBaselineFit = 1;
                 if polyBaselineFit == 1
                     polydegree = 2;
                     for j = 1:size(plotSpectrum,2)

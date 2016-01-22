@@ -26,4 +26,6 @@ function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraSingle
     timeOut = 0;
     acquireTypeOut = 'image';
     referenceImagesBoolean = false;
+    
+    assignin('base','bkgImage',bkgImage);
 end

@@ -106,6 +106,7 @@ function [wavenum,returnSpectra,spectraTime] = createSpectra(self,returnImages,t
         end
         
         % Perform the log transformation
+        returnSpectra(returnSpectra<0) = NaN;
         returnSpectra = -log(returnSpectra);
         
         % Set some nice functions

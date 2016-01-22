@@ -18,3 +18,16 @@ VIPA Workspace TODO List:
 - Remove bg substraction when averaging spectra
 
 - "New" button and menu item should set image destination
+
+- Add real-time fitting of spectra
+
+
+
+VIPA Procedure:
+---------------
+
+1. Use OPO only to collect fringes, with vapor cell.
+
+2. Record a reference image with the vapor cell.
+
+3. Feed in methane and record a signal image with the vapor cell.
