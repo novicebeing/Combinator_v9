@@ -32,6 +32,6 @@ function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraSingle
     referenceImagesBoolean = false;
     
     assignin('base','bkgImage',bkgImage);
-    %figure(10);plot(1:size(bkgImage,2),bkgImage(100,:));
+    figure(10);plot(1:size(bkgImage,2),bkgImage(100,:));
     
 end
