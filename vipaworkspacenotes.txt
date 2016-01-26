@@ -21,6 +21,8 @@ VIPA Workspace TODO List:
 
 - Add real-time fitting of spectra
 
+- Add "import linelist"
+
 
 
 VIPA Procedure:
