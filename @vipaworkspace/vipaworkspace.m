@@ -412,6 +412,11 @@ switch ed.Request
     case 'fitspectralist_opensimulationbrowser'
         h = this.FitSpectraList.openSimulationBrowser(ed.Variables);
         this.TPComponent.addFigure(h);
+    case 'spectralist_useforwavenumcalibration'
+        data = inputdlg({'Calibration Spectrum Number'},'Calibration Spectrum',[1],{'1'});
+        calibrationobjid = {this.acquiretab.calibrationTextField.Text};
+        [spectra,time] = this.SpectraList.getSpectra(ed.Variables(1));
+        this.CalibrationList.setCalibrationSpectrum(calibrationobjid,spectra(:,:,str2double(data{1})));
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
 end

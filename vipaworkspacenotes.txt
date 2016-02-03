@@ -1,6 +1,8 @@
 VIPA Workspace TODO List:
 -------------------------
 
+- Allow for using acquired spectrum to calibrate
+
 - Allow for setting of the approximate calibration function
 
 - remove yavg, tavg from spectraobject as they are no longer necessary
@@ -19,21 +21,17 @@ VIPA Workspace TODO List:
 
 Cosmetic / Ease of use
 
-- "Save" option for all open figures, email as well.
-
 - Add normalization option in group plots
-
-- "New" button and menu item should set image destination
 
 - Add x and y labels to fits plots
 
+- Make averaging bar chart an object
 
-VIPA Procedure:
----------------
+DOCO Acquire Procedure:
+----------------------
 
-1. Use OPO only to collect fringes, with vapor cell.
+1. Acquire a cavity transmission image, use to fit fringes
 
-2. Record a reference image with the vapor cell.
+2. Acquire a OD+CO spectrum, use to fit D2O lines
 
-3. Feed in methane and record a signal image with the vapor cell.
-
+3. Acquire other data

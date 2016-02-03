@@ -226,26 +226,31 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)openfftplotbrowser(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,3);
+            s.Text = 'Use for Wavenum Calibration';
+            s.Name = 'spectralist_useforwavenumcalibration';
+            s.Callback = @(x)spectralist_useforwavenumcalibration(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,4);
             s.Text = 'Perform Spectral Fit';
             s.Name = 'performspectralfit';
             s.Callback = @(x)performspectralfit(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,4);
+            selectionPopupMenu.addMenuItem(s,5);
             s.Text = 'Save To File...';
             s.Name = 'spectralist_savetofile';
             s.Callback = @(x)spectralist_savetofile(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,5);
+            selectionPopupMenu.addMenuItem(s,6);
             s.Text = 'Export To Base Workspace';
             s.Name = 'spectralist_exporttobaseworkspace';
             s.Callback = @(x)spectralist_exporttobaseworkspace(obj,x);
             s.MultiSelection = false;
-            selectionPopupMenu.addMenuItem(s,6);
+            selectionPopupMenu.addMenuItem(s,7);
             s.Text = 'Open Averaging Bar Chart';
             s.Name = 'spectralist_openaveragingbarchart';
             s.Callback = @(x)spectralist_openaveragingbarchart(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,7);
+            selectionPopupMenu.addMenuItem(s,8);
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -484,4 +489,8 @@ end
 
 function spectralist_openaveragingbarchart(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_openaveragingbarchart',src.Variables));
+end
+
+function spectralist_useforwavenumcalibration(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_useforwavenumcalibration',src.Variables));
 end

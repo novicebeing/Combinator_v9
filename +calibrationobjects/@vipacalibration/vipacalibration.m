@@ -22,6 +22,7 @@ classdef vipacalibration < handle
         % X and Y axis calibration
         refImage;
         sigImage;
+        calibrationSpectrum;
         
         % X Axis Calibration
         xAxis_wavenumber;
