@@ -15,21 +15,27 @@ classdef figuretab < handle
             
             % Add Toolbar Section
             this.MenuAndToolbarsSection = toolpack.desktop.ToolSection('menuandtoolbars','Menu and Toolbars');
-            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
+            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
             this.MenuAndToolbarsSection.add(panel);
             
-            zoomInButton = vipadesktop.TSButton('Zoom In',toolpack.component.Icon.ZOOM_IN_16);
-            addlistener(zoomInButton,'ActionPerformed',@(~,~) zoom);
+            zoomInButton = vipadesktop.TSButton('Cursor',toolpack.component.Icon.SELECT_16);
+            addlistener(zoomInButton,'ActionPerformed',@(~,~) cursorallplots());
             panel.add(zoomInButton,'xy(1,2)');
-            zoomInButton = vipadesktop.TSButton('Zoom Out',toolpack.component.Icon.ZOOM_OUT_16);
-            addlistener(zoomInButton,'ActionPerformed',@(~,~) zoom);
+            zoomInButton = vipadesktop.TSButton('Zoom In',toolpack.component.Icon.ZOOM_IN_16);
+            addlistener(zoomInButton,'ActionPerformed',@(~,~) zoomallplots());
             panel.add(zoomInButton,'xy(3,2)');
+            zoomInButton = vipadesktop.TSButton('Zoom Out',toolpack.component.Icon.ZOOM_OUT_16);
+            addlistener(zoomInButton,'ActionPerformed',@(~,~) zoomallplots());
+            panel.add(zoomInButton,'xy(5,2)');
             panButton = vipadesktop.TSButton('Pan',toolpack.component.Icon.PAN_16);
-            addlistener(panButton,'ActionPerformed',@(~,~) pan);
-            panel.add(panButton,'xy(5,2)');
+            addlistener(panButton,'ActionPerformed',@(~,~) panallplots());
+            panel.add(panButton,'xy(7,2)');
             datatipButton = vipadesktop.TSButton('Data Cursor',toolpack.component.Icon.EDIT);
             addlistener(datatipButton,'ActionPerformed',@(~,~) datacursormode);
-            panel.add(datatipButton,'xy(7,2)');
+            panel.add(datatipButton,'xy(9,2)');
+            linkxaxesButton = vipadesktop.TSButton('Link X Axes',toolpack.component.Icon.EDIT);
+            addlistener(linkxaxesButton,'ActionPerformed',@(~,~) linkxaxes());
+            panel.add(linkxaxesButton,'xy(11,2)');
             
             % Add File Section
             this.TPComponent.add(this.MenuAndToolbarsSection);
@@ -57,4 +63,62 @@ classdef figuretab < handle
             this.Panel.Peer.setPreferredSize(java.awt.Dimension(val,79));
         end
    end
+end
+
+function linkxaxes()
+    hs = get(0,'Children');
+    has = [];
+    for i = 1:numel(hs)
+        hasa = get(hs(i),'Children');
+        for j = 1:numel(hasa)
+            if strcmp(get(hasa(j),'Type'),'axes')
+                if isempty(has)
+                    has = hasa(j);
+                else
+                    has(end+1) = hasa(j);
+                end
+            end
+        end
+    end
+    linkaxes(has,'x');
+end
+
+function cursorallplots()
+    hs = get(0,'Children');
+    has = [];
+    for i = 1:numel(hs)
+        hasa = get(hs(i),'Children');
+        for j = 1:numel(hasa)
+            if strcmp(get(hasa(j),'Type'),'axes')
+                zoom(hasa(j),'off');
+                pan(hasa(j),'off');
+            end
+        end
+    end
+end
+
+function zoomallplots()
+    hs = get(0,'Children');
+    has = [];
+    for i = 1:numel(hs)
+        hasa = get(hs(i),'Children');
+        for j = 1:numel(hasa)
+            if strcmp(get(hasa(j),'Type'),'axes')
+                zoom(hasa(j),'on');
+            end
+        end
+    end
+end
+
+function panallplots()
+    hs = get(0,'Children');
+    has = [];
+    for i = 1:numel(hs)
+        hasa = get(hs(i),'Children');
+        for j = 1:numel(hasa)
+            if strcmp(get(hasa(j),'Type'),'axes')
+                pan(hasa(j),'on');
+            end
+        end
+    end
 end

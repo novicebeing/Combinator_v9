@@ -7,7 +7,8 @@ classdef linelist < handle
         % Line List Parameters
         lineposition;
         linestrength;
-        
+    end
+    properties (Transient = false, Hidden = true)
         % Spectrum Cache
         spectrumCacheParams = [];
         spectrumCacheWavenum = [];
@@ -23,8 +24,16 @@ classdef linelist < handle
         areaNormVoigt;
     end
     methods
-        function obj = linelist(varargin)
+        function this = linelist(varargin)
+            % Check inputs
+            p = inputParser;
+            addParameter(p,'pgopherfile',[],@ischar);
+            parse(p,varargin{:});
             
+            % Load data from the pgopher file
+            if ~isempty(p.Results.pgopherfile)
+                this.pgopherLoad(p.Results.pgopherfile);
+            end
         end
         function updatePlots(obj)
             % Remove deleted plot handles

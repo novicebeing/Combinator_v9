@@ -37,7 +37,7 @@ function hs = plotGroupedFitCoefficients(this, plantids)
                 plotLabels{idx} = {};
                 set(h,'name',fitCoeffNames{j},'numbertitle','off')
             end
-            plot(time,fitCoeffs(j,:),'Parent',axesHandles(idx)); hold on;
+            plot(time,fitCoeffs(j,:),'.-','Parent',axesHandles(idx)); hold on;
             title(fitCoeffNames{j});
             
             plotLabels{idx} = {plotLabels{idx}{:},strrep(plantNames{i},'_','\_')};

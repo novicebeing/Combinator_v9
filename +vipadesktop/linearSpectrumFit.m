@@ -1,20 +1,16 @@
-function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,fitoptions)
+function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,varargin)
     % Check the input arguments
     if ~isa(spectrumobject,'kineticsobject') && ~isa(spectrumobject,'spectraobjects.spectraobject')
         error('Spectra object must be of "kineticsobject" or "spectraobjects.spectraobject" type');
     end
-%     if ~isa(fitspectrumobjects,'fitspectraobjects.linelist')
-%         if iscell(fitspectrumobjects)
-%             if sum(cellfun(@(x) isa(x,'fitspectraobjects.linelist'),fitspectrumobjects))>1
-%                 error('Spectra object must be of "fitspectraobjects.linelist" type or a cell array of that type');
-%             end
-%         else
-%             error('Spectra object must be of "fitspectraobjects.linelist" type or a cell array of that type');
-%         end
-%     end
-%     if ~isa(fitoptions,'vipadesktop.fitoptions')
-%         error('Spectra object must be of "vipadesktop.fitoptions" type');
-%     end
+
+    % Check inputs
+    p = inputParser;
+    addParameter(p,'instrumentGaussianFWHM',0,@isnumeric);
+    addParameter(p,'instrumentLorentzianFWHM',0.06,@isnumeric);
+    addParameter(p,'instrumentPhase',0,@isnumeric);
+    addParameter(p,'lineshapeFunction','pseudoVoigt',@ischar);
+    parse(p,varargin{:});
 
     % Warn that gaussian fwhm is hard coded
     %warning('Gaussian FWHM is hard coded...');
@@ -32,7 +28,7 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,fito
     fitArrayNum = 1;
     for i = 1:numel(fitspectrumobjects)
         for j = 1:numel(fitspectrumobjects{i})
-            y = fitspectrumobjects{i}(j).createSpectrum(x,'instrumentLorentzianFWHM',0.06);%0.02997); %***
+            y = fitspectrumobjects{i}(j).createSpectrum(x,varargin{:});%0.02997); %***
             k = kineticsobject(); %***
             k.averageSpectrum(x,y,[],0);
             yy = k.ysum./k.wsum;

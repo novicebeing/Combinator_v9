@@ -5,8 +5,6 @@ VIPA Workspace TODO List:
 
 - remove yavg, tavg from spectraobject as they are no longer necessary
 
-- Add code for "instrument linewidth" panel items
-
 - FFT x axis seems to be off by a factor of 2
 
 - Add "new figure" capabilities
@@ -17,10 +15,17 @@ VIPA Workspace TODO List:
 
 - Remove bg substraction when averaging spectra
 
-- "New" button and menu item should set image destination
-
 - Add real-time fitting of spectra
 
+Cosmetic / Ease of use
+
+- "Save" option for all open figures, email as well.
+
+- Add normalization option in group plots
+
+- "New" button and menu item should set image destination
+
+- Add x and y labels to fits plots
 
 
 VIPA Procedure:
@@ -31,3 +36,4 @@ VIPA Procedure:
 2. Record a reference image with the vapor cell.
 
 3. Feed in methane and record a signal image with the vapor cell.
+
