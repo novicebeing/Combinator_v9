@@ -1,4 +1,4 @@
-function fitobj = performSpectralFits(this, plantids, fitspectra, fitoptions)
+function fitobj = performSpectralFits(this, plantids, fitspectra, varargin)
     % Get the spectra objects
     if isempty(plantids)
         return
@@ -15,6 +15,6 @@ function fitobj = performSpectralFits(this, plantids, fitspectra, fitoptions)
 
     % Open the plot browsers
     for i = 1:length(plants)
-        fitobj = vipadesktop.linearSpectrumFit(plants{i},fitspectra,fitoptions);
+        fitobj = vipadesktop.linearSpectrumFit(plants{i},fitspectra,varargin{:});
     end
 end

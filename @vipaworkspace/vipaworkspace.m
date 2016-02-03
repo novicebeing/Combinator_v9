@@ -50,7 +50,8 @@ classdef vipaworkspace < handle
         Type = 'MATLAB'
         StatusBar
     end
-    properties(Access = private)
+    %properties(Access = private)
+    properties
         Listeners
         GroupName
         MD
@@ -351,7 +352,7 @@ switch ed.Request
         hwait = waitbar(0,'Fitting Spectra', 'WindowStyle', 'modal');
         itemNames = this.SpectraList.getItemNames(ed.Variables);
         for i = 1:numel(ed.Variables)
-            h = this.SpectraList.performSpectralFits(ed.Variables(i),this.FitSpectraList.Plants,0);
+            h = this.SpectraList.performSpectralFits(ed.Variables(i),this.FitSpectraList.Plants,'instrumentGaussianFWHM',str2double(this.fittingtab.instrumentGaussianFWHMTextField.Text),'instrumentLorentzianFWHM',str2double(this.fittingtab.instrumentLorentzianFWHMTextField.Text));
             this.FitsList.addItem(h,0,0,itemNames{i});
             waitbar(i/numel(ed.Variables),hwait);
         end

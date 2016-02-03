@@ -19,6 +19,9 @@ classdef fitsobject < handle
         initialConditionsNames;
         initialConditionsValues;
     end
+    properties (Transient = true, Visible = false)
+        plotHandles;
+    end
     
     methods
         function obj = fitsobject(varargin)
@@ -56,6 +59,32 @@ classdef fitsobject < handle
             obj.initialConditionsNames = {};
             obj.initialConditionsValues = [];
         end
+        function delete(obj)
+            % Remove deleted plot handles
+            if ~isempty(obj.plotHandles)
+                obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
+            else
+                obj.plotHandles = {};
+            end
+            
+            for i = 1:numel(obj.plotHandles)
+                delete(obj.plotHandles{i});
+            end
+        end
+        function updatePlots(obj)
+            % Remove deleted plot handles
+            if ~isempty(obj.plotHandles)
+                obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
+            else
+                obj.plotHandles = {};
+            end
+            
+            for i = 1:numel(obj.plotHandles)
+                obj.plotHandles{i}.Update();
+            end
+        end
+        
+        
         function [h,hfit,hresid] = plot(obj,ax,axbottom,ind,options)
             plotcolor = [0,0,0];
             fitcolor = 'r';
@@ -89,6 +118,7 @@ classdef fitsobject < handle
             end
             title(ax,sprintf('T = %i us',obj.t(ind)));
         end
+        
         function hf = plotbrowser(obj,varargin)
             if isempty(obj.name)
                 hf = figure;
@@ -138,23 +168,46 @@ classdef fitsobject < handle
                 pan(hf,'off');
             end
         end
-        function h = plotfitcoefficients(obj)
-            if isempty(obj.name)
-                h = figure;
+%         function h = plotfitcoefficients(obj)
+%             if isempty(obj.name)
+%                 h = figure;
+%             else
+%                 h = figure('Name',obj.name,'NumberTitle','off');
+%             end
+%             for i = 1:numel(obj.fitbNames)
+%                 ind = obj.fitbNamesInd(i);
+%                 %errorbar(obj.t,obj.fitb(ind,:),obj.fitbError(ind,:),'o');
+%                 plot(obj.t,obj.fitb(ind,:),'.-');
+%                 hold on;
+%             end
+%             xlabel('Time [\mus]');
+%             ylabel('Fit Coefficient');
+%             %title(sprintf('Multi Peak Fit: [%s]',sprintf('%g ',round(templateParams((npeaks+1):(2*npeaks))*100)/100)));    
+%             legend(obj.fitbNames);
+%         end
+        function hf = plotfitcoefficients(obj,varargin)
+            % Set plot options
+            if nargin == 2
+                options = varargin{1};
             else
-                h = figure('Name',obj.name,'NumberTitle','off');
+                options = '';
             end
-            for i = 1:numel(obj.fitbNames)
-                ind = obj.fitbNamesInd(i);
-                %errorbar(obj.t,obj.fitb(ind,:),obj.fitbError(ind,:),'o');
-                plot(obj.t,obj.fitb(ind,:),'.-');
-                hold on;
+            
+            if ~isempty(obj.plotHandles)
+                obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
+            else
+                obj.plotHandles = {};
             end
-            xlabel('Time [\mus]');
-            ylabel('Fit Coefficient');
-            %title(sprintf('Multi Peak Fit: [%s]',sprintf('%g ',round(templateParams((npeaks+1):(2*npeaks))*100)/100)));    
-            legend(obj.fitbNames);
+            if ~isempty(obj.plotHandles)
+                n = numel(obj.plotHandles);
+                obj.plotHandles{n+1} = fitsobjects.fitcoefficientsbrowser(obj,options);
+                hf = obj.plotHandles{n+1}.figureHandle;
+            else
+                obj.plotHandles = {fitsobjects.fitcoefficientsbrowser(obj,options)};
+                hf = obj.plotHandles{1}.figureHandle;
+            end
         end
+        
         function exportDOCOglobals(obj)
             global DOCOmodel_time
             global DOCOmodel_MoleculeConcs
