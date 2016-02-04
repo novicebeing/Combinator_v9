@@ -10,6 +10,7 @@ classdef acquiretab < handle
        CameraSection
        AcquireSection
        AcquireDestinationSection
+       AcquireDestinationSection2
        
        % Buttons
        AcquireButton
@@ -111,6 +112,32 @@ classdef acquiretab < handle
             addlistener(this.spectraDestTextField,'ActionPerformed',@(~,~) setTextFieldText(this.spectraDestTextField,'none'));
             panel.add(this.spectraDestTextField,'xywh(4,6,1,1)');
             this.TPComponent.add(this.AcquireDestinationSection);
+            
+%             % Add Acquire Destination Section
+%             this.AcquireDestinationSection2 = toolpack.desktop.ToolSection('acquiredestination','Acquire Destination');
+%             panel = toolpack.component.TSPanel('7px, f:p, 4px, f:p, 7px','3px, 20px, 4px, 20px, 4px, 22px');
+%             this.AcquireDestinationSection.add(panel);
+%             l = toolpack.component.TSLabel('Image Dest.');
+%             panel.add(l,'xy(2,2,''r,c'')');
+%             l = toolpack.component.TSLabel('Calibration');
+%             panel.add(l,'xy(2,4,''r,c'')');
+%             l = toolpack.component.TSLabel('Spectra Dest.');
+%             panel.add(l,'xy(2,6,''r,c'')');
+%             this.imageDestTextField = toolpack.component.TSTextField('none',15);
+%             this.imageDestTextField.Editable = false;
+%             addlistener(this.imageDestTextField,'ActionPerformed',@(~,~) setTextFieldText(this.imageDestTextField,'none'));
+%             panel.add(this.imageDestTextField,'xywh(4,2,1,1)');
+%             this.calibrationTextField = toolpack.component.TSTextField('none',15);
+%             this.calibrationTextField.Editable = false;
+%             addlistener(this.calibrationTextField,'ActionPerformed',@(~,~) setTextFieldText(this.calibrationTextField,'none'));
+%             panel.add(this.calibrationTextField,'xywh(4,4,1,1)');
+%             this.spectraDestTextField = toolpack.component.TSTextField('none',15);
+%             this.spectraDestTextField.Editable = false;
+%             addlistener(this.spectraDestTextField,'ActionPerformed',@(~,~) setTextFieldText(this.spectraDestTextField,'none'));
+%             panel.add(this.spectraDestTextField,'xywh(4,6,1,1)');
+%             this.TPComponent.add(this.AcquireDestinationSection);
+            
+            
             
             %this.TPComponent = toolpack.desktop.ToolSection('Plant',pidtool.utPIDgetStrings('cst','strPlant'));
             this.vipadesktop = vipadesktop;

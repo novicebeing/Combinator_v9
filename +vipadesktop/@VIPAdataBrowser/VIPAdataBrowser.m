@@ -17,6 +17,8 @@ classdef VIPAdataBrowser < handle
         fitspectraWorkspaceView
         calibrationWorkspace
         calibrationWorkspaceView
+        kineticsmodelsWorkspace
+        kineticsmodelsWorkspaceView
     end
     events
         ComponentRequest
@@ -58,6 +60,11 @@ classdef VIPAdataBrowser < handle
             tc.NewVariableFunction = @fitsobjects.fitsobject;
             tc.NewVariableBaseName = 'fits';
             obj.Model.add(tc);
+            tc = vipadesktop.LocalWorkspaceModel;%toolpack.databrowser.LocalWorkspaceModel;
+            tc.Name = 'kineticsmodels';
+            tc.NewVariableFunction = @kineticsmodelobjects.simbiologymodelobject;
+            tc.NewVariableBaseName = 'kineticsmodels';
+            obj.Model.add(tc);
             
             % Set View Parameters
             obj.View = vipadesktop.DataBrowserView(obj.Model);%toolpack.databrowser.DataBrowserView(obj.Model);
@@ -66,6 +73,7 @@ classdef VIPAdataBrowser < handle
             setTitle(getComponent(obj.View,'spectra'),'Spectra');
             setTitle(getComponent(obj.View,'fitspectra'),'Fit Spectra');
             setTitle(getComponent(obj.View,'fits'),'Fits');
+            setTitle(getComponent(obj.View,'kineticsmodels'),'Kinetics Models');
             reset(obj.View);
             
             % Set internal parameters
@@ -79,6 +87,8 @@ classdef VIPAdataBrowser < handle
             obj.fitspectraWorkspaceView = obj.View.getComponent('fitspectra');
             obj.fitsWorkspace = obj.Model.getComponent('fits');
             obj.fitsWorkspaceView = obj.View.getComponent('fits');
+            obj.kineticsmodelsWorkspace = obj.Model.getComponent('kineticsmodels');
+            obj.kineticsmodelsWorkspaceView = obj.View.getComponent('kineticsmodels');
             
             % Set Images popup parameters
             selectionPopupMenu = obj.imagesWorkspaceView.getSelectionPopupMenu;
@@ -339,6 +349,29 @@ classdef VIPAdataBrowser < handle
             hideColumn(obj.fitsWorkspaceView,'Class');
             hideColumn(obj.fitsWorkspaceView,'Size');
             hideColumn(obj.fitsWorkspaceView,'Bytes');
+            
+            % Set Kinetics Models Parameters
+            selectionPopupMenu = obj.kineticsmodelsWorkspaceView.getSelectionPopupMenu;
+            nonselectionPopupMenu = obj.kineticsmodelsWorkspaceView.getNoSelectionPopupMenu;
+            WarningState = warning('off','MATLAB:Containers:Map:NoKeyToRemove');
+            selectionPopupMenu.removeMenuItem('RecordCopyingMenuItem');
+            s.Text = 'Open Simulation Browser';
+            s.Name = 'kineticsmodelslist_opensimulationbrowser';
+            s.Callback = @(x)kineticsmodelslist_opensimulationbrowser(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,1);
+            s.Text = 'Save To File...';
+            s.Name = 'kineticsmodelslist_savetofile';
+            s.Callback = @(x)kineticsmodelslist_savetofile(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,2);
+            %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
+            nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
+            warning(WarningState);
+            hideColumn(obj.kineticsmodelsWorkspaceView,'Value');
+            hideColumn(obj.kineticsmodelsWorkspaceView,'Class');
+            hideColumn(obj.kineticsmodelsWorkspaceView,'Size');
+            hideColumn(obj.kineticsmodelsWorkspaceView,'Bytes');
         end
     end
 end
