@@ -1,4 +1,4 @@
-function outString = makeVariableName(this,inString)
+function outString = makeVariableName(inString)
     
     % Check the input
     if ischar(inString)

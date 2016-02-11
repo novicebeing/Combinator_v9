@@ -1,4 +1,4 @@
-classdef spectraobject < handle
+classdef spectraobject < handle & JavaVisible
     %kineticsobject
     
     properties

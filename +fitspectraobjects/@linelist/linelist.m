@@ -1,4 +1,4 @@
-classdef linelist < handle
+classdef linelist < handle & JavaVisible
     % Line List Class
     
     properties

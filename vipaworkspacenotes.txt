@@ -27,6 +27,10 @@ Cosmetic / Ease of use
 
 - Make averaging bar chart an object
 
+- Add instrument phase option
+
+- Add inspect option on objects
+
 DOCO Acquire Procedure:
 ----------------------
 

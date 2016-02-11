@@ -417,6 +417,12 @@ switch ed.Request
         calibrationobjid = {this.acquiretab.calibrationTextField.Text};
         [spectra,time] = this.SpectraList.getSpectra(ed.Variables(1));
         this.CalibrationList.setCalibrationSpectrum(calibrationobjid,spectra(:,:,str2double(data{1})));
+    case 'spectralist_inspect'
+        this.SpectraList.Inspect(ed.Variables);
+    case 'fitspectralist_inspect'
+        this.FitSpectraList.Inspect(ed.Variables);
+    case 'fitslist_inspect'
+        this.FitsList.Inspect(ed.Variables);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
 end

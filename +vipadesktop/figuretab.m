@@ -15,7 +15,7 @@ classdef figuretab < handle
             
             % Add Toolbar Section
             this.MenuAndToolbarsSection = toolpack.desktop.ToolSection('menuandtoolbars','Menu and Toolbars');
-            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
+            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
             this.MenuAndToolbarsSection.add(panel);
             
             zoomInButton = vipadesktop.TSButton('Cursor',toolpack.component.Icon.SELECT_16);
@@ -36,6 +36,15 @@ classdef figuretab < handle
             linkxaxesButton = vipadesktop.TSButton('Link X Axes',toolpack.component.Icon.EDIT);
             addlistener(linkxaxesButton,'ActionPerformed',@(~,~) linkxaxes());
             panel.add(linkxaxesButton,'xy(11,2)');
+            copyfigureButton = vipadesktop.TSButton('Copy Figure',toolpack.component.Icon.EDIT);
+            addlistener(copyfigureButton,'ActionPerformed',@(~,~) copyfigure());
+            panel.add(copyfigureButton,'xy(13,2)');
+            savefigureButton = vipadesktop.TSButton('Save Figure',toolpack.component.Icon.EDIT);
+            addlistener(savefigureButton,'ActionPerformed',@(~,~) savefigure());
+            panel.add(savefigureButton,'xy(15,2)');
+            newfigureButton = vipadesktop.TSButton('New Figure',toolpack.component.Icon.EDIT);
+            addlistener(newfigureButton,'ActionPerformed',@(~,~) newfigure());
+            panel.add(newfigureButton,'xy(17,2)');
             
             % Add File Section
             this.TPComponent.add(this.MenuAndToolbarsSection);
@@ -63,6 +72,18 @@ classdef figuretab < handle
             this.Panel.Peer.setPreferredSize(java.awt.Dimension(val,79));
         end
    end
+end
+
+function newfigure()
+    msgbox('New figure not implemented');
+end
+
+function savefigure()
+    msgbox('Figure saving not implemented');
+end
+
+function copyfigure()
+    editmenufcn(gcf,'EditCopyFigure');
 end
 
 function linkxaxes()

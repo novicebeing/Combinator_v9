@@ -160,6 +160,11 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)imageslist_exporttobaseworkspace(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,11);
+            s.Text = 'Inspect';
+            s.Name = 'imageslist_inspect';
+            s.Callback = @(x)imageslist_inspect(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,12);
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -208,6 +213,11 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)calibrationlist_calibrateyaxis(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,7);
+            s.Text = 'Inspect';
+            s.Name = 'calibrationlist_inspect';
+            s.Callback = @(x)calibrationlist_inspect(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,8);
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -261,6 +271,11 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)spectralist_openaveragingbarchart(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,8);
+            s.Text = 'Inspect';
+            s.Name = 'spectralist_inspect';
+            s.Callback = @(x)spectralist_inspect(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,9);
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -284,6 +299,11 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)fitspectralist_savetofile(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,2);
+            s.Text = 'Inspect';
+            s.Name = 'fitspectralist_inspect';
+            s.Callback = @(x)fitspectralist_inspect(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,3);
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -342,6 +362,11 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)fitslist_setinitialconditions(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,9);
+            s.Text = 'Inspect';
+            s.Name = 'fitslist_inspect';
+            s.Callback = @(x)fitslist_inspect(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,10);
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -526,4 +551,24 @@ end
 
 function spectralist_useforwavenumcalibration(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_useforwavenumcalibration',src.Variables));
+end
+
+function imageslist_inspect(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('imageslist_inspect',src.Variables));
+end
+
+function calibrationlist_inspect(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('calibrationlist_inspect',src.Variables));
+end
+
+function spectralist_inspect(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_inspect',src.Variables));
+end
+
+function fitspectralist_inspect(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitspectralist_inspect',src.Variables));
+end
+
+function fitslist_inspect(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fits_inspect',src.Variables));
 end

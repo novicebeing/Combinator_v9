@@ -19,7 +19,7 @@ classdef fitsobject < handle
         initialConditionsNames;
         initialConditionsValues;
     end
-    properties (Transient = true, Visible = false)
+    properties (Transient = true, Hidden)
         plotHandles;
     end
     
@@ -234,8 +234,16 @@ classdef fitsobject < handle
             end
             tableDose(zeroInd,:) = obj.initialConditionsValues(:);
             
+            varNames1 = vipadesktop.makeVariableName(obj.fitbNames);
+            varNames2 = vipadesktop.makeVariableName(obj.initialConditionsNames);
+            varUnits = {};
+            for i = 1:(numel(varNames1)+numel(varNames2))
+                varUnits{end+1} = 'molecule';
+            end
+            
             % Construct a table with the values from the fits
-            t = array2table([groupID.*ones(size(obj.t(:))) obj.t(:) obj.fitb(obj.fitbNamesInd,:)'/pathlength tableDose],'VariableNames',{'ID','time',obj.fitbNames{:},obj.initialConditionsNames{:}});
+            t = array2table([groupID.*ones(size(obj.t(:))) obj.t(:) obj.fitb(obj.fitbNamesInd,:)'/pathlength tableDose],'VariableNames',{'ID','time',varNames1{:},varNames2{:}});
+            t.Properties.VariableUnits = {'','microsecond',varUnits{:}};
         end
         function output_txt = datatipUpdateFunction(obj,evobj,event_obj)
             % Display the position of the data cursor
