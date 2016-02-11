@@ -20,8 +20,8 @@ function openDialogKineticsObject(this)
         % Load in the data file
         [~,fname,ext] = fileparts(filename{i});
         if strcmp(ext,'.mat')
-            %h = spectraobjects.spectraobject(fullfile(filepath,filename{i}));
-            h = kineticsobject(fullfile(filepath,filename{i}));
+            h = spectraobjects.spectraobject(fullfile(filepath,filename{i}));
+            %h = kineticsobject(fullfile(filepath,filename{i}));
             this.SpectraList.addItem(h,0,0,this.makeVariableName(fname));
         else
             error('Unsupported file type');
