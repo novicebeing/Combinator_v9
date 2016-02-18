@@ -29,7 +29,7 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,vara
     for i = 1:numel(fitspectrumobjects)
         for j = 1:numel(fitspectrumobjects{i})
             y = fitspectrumobjects{i}(j).createSpectrum(x,varargin{:});%0.02997); %***
-            k = kineticsobject(); %***
+            k = spectraobjects.spectraobject(); %***
             k.averageSpectrum(x,y,[],0);
             yy = k.ysum./k.wsum;
             yy(isnan(yy)) = 0;
