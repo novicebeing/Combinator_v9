@@ -207,7 +207,28 @@ classdef fitsobject < handle
                 hf = obj.plotHandles{1}.figureHandle;
             end
         end
-        
+        function hf = openfitbrowserwithcolors(obj,varargin)
+            % Set plot options
+            if nargin == 2
+                options = varargin{1};
+            else
+                options = '';
+            end
+            
+            if ~isempty(obj.plotHandles)
+                obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
+            else
+                obj.plotHandles = {};
+            end
+            if ~isempty(obj.plotHandles)
+                n = numel(obj.plotHandles);
+                obj.plotHandles{n+1} = fitsobjects.fitbrowserwithcolors(obj,options);
+                hf = obj.plotHandles{n+1}.figureHandle;
+            else
+                obj.plotHandles = {fitsobjects.fitbrowserwithcolors(obj,options)};
+                hf = obj.plotHandles{1}.figureHandle;
+            end
+        end
         function exportDOCOglobals(obj)
             global DOCOmodel_time
             global DOCOmodel_MoleculeConcs

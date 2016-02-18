@@ -423,6 +423,14 @@ switch ed.Request
         this.FitSpectraList.Inspect(ed.Variables);
     case 'fitslist_inspect'
         this.FitsList.Inspect(ed.Variables);
+    case 'fitslist_openfitbrowserwithcolors'
+        hwait = waitbar(0,'Opening Plot Browsers...', 'WindowStyle', 'modal');
+        for i = 1:numel(ed.Variables)
+            h = this.FitsList.openfitbrowserwithcolors(ed.Variables(i));
+            this.TPComponent.addFigure(h);
+            waitbar(i/numel(ed.Variables),hwait);
+        end
+        close(hwait);
     case 'spectralist_autocorrectdocoxaxis'
         hwait = waitbar(0,'Correcting DOCO X Axis...', 'WindowStyle', 'modal');
         for i = 1:numel(ed.Variables)
