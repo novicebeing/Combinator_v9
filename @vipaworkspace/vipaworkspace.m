@@ -423,6 +423,13 @@ switch ed.Request
         this.FitSpectraList.Inspect(ed.Variables);
     case 'fitslist_inspect'
         this.FitsList.Inspect(ed.Variables);
+    case 'spectralist_autocorrectdocoxaxis'
+        hwait = waitbar(0,'Correcting DOCO X Axis...', 'WindowStyle', 'modal');
+        for i = 1:numel(ed.Variables)
+            this.SpectraList.autocorrectdocoxaxis(ed.Variables(i));
+            waitbar(i/numel(ed.Variables),hwait);
+        end
+        close(hwait);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
 end
