@@ -39,3 +39,5 @@ DOCO Acquire Procedure:
 2. Acquire a OD+CO spectrum, use to fit D2O lines
 
 3. Acquire other data
+
+new note 
