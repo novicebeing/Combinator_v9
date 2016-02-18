@@ -333,46 +333,51 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)openfitbrowserwithresiduals(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,2);
+            s.Text = 'Open Fit Browser with colors';
+            s.Name = 'fitslist_openfitbrowserwithcolors';
+            s.Callback = @(x)fitslist_openfitbrowserwithcolors(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,3);
             s.Text = 'Plot Fit Coefficients';
             s.Name = 'plotfitcoefficients';
             s.Callback = @(x)plotfitcoefficients(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,3);
+            selectionPopupMenu.addMenuItem(s,4);
             s.Text = 'Plot Grouped Fit Coefficients';
             s.Name = 'plotgroupedfitcoefficients';
             s.Callback = @(x)plotgroupedfitcoefficients(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,4);
+            selectionPopupMenu.addMenuItem(s,5);
             s.Text = 'Export DOCO Globals';
             s.Name = 'exportDOCOglobals';
             s.Callback = @(x)exportDOCOglobals(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,5);
+            selectionPopupMenu.addMenuItem(s,6);
             s.Text = 'Export to SimBiology';
             s.Name = 'exportToSimbiology';
             s.Callback = @(x)exportToSimBiology(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,6);
+            selectionPopupMenu.addMenuItem(s,7);
             s.Text = 'Run Fit Analysis Function';
             s.Name = 'runfitanalysisfunction';
             s.Callback = @(x)runfitanalysisfunction(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,7);
+            selectionPopupMenu.addMenuItem(s,8);
             s.Text = 'Save To File...';
             s.Name = 'fitslist_savetofile';
             s.Callback = @(x)fitslist_savetofile(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,8);
+            selectionPopupMenu.addMenuItem(s,9);
             s.Text = 'Set Initial Conditions';
             s.Name = 'fitslist_setinitialconditions';
             s.Callback = @(x)fitslist_setinitialconditions(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,9);
+            selectionPopupMenu.addMenuItem(s,10);
             s.Text = 'Inspect';
             s.Name = 'fitslist_inspect';
             s.Callback = @(x)fitslist_inspect(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,10);
+            selectionPopupMenu.addMenuItem(s,11);
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -581,4 +586,8 @@ end
 
 function spectralist_autocorrectdocoxaxis(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_autocorrectdocoxaxis',src.Variables));
+end
+
+function fitslist_openfitbrowserwithcolors(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitslist_openfitbrowserwithcolors',src.Variables));
 end
