@@ -47,6 +47,11 @@ classdef linelist < handle & JavaVisible
                 obj.plotHandles{i}.Update();
             end
         end
+        function deleteCache(this)
+            this.spectrumCacheParams = [];
+            this.spectrumCacheWavenum = [];
+            this.spectrumCacheCrossSection = [];
+        end
         function hf = spectrumsimulationbrowser(obj)
             if ~isempty(obj.plotHandles)
                 obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
