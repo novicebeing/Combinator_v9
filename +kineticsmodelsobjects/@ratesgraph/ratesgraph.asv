@@ -1,0 +1,89 @@
+classdef ratesgraph < handle
+    % Line Profile Browser Class
+    properties
+        % Parent imagesobject
+        Parent
+        
+        % Variables
+        simbioModel
+        ratesMatrix
+        
+        % Handles
+        biographObject
+        sliderFigureObject
+    end
+    
+    methods
+        function this = ratesgraph(simbioModel,ratesMatrix)
+            
+            this.simbioModel = simbioModel;
+            this.ratesMatrix = ratesMatrix;
+            
+            this.ratesPlot();
+            
+            % Figure Close Function
+            function figCloseFunction(src,callbackdata)
+                delete(gcf);
+                delete(this);
+            end
+        end
+        function delete(obj)
+            % Remove figure handles
+            delete(obj.biographObject);
+        end
+        function Update(this)
+            % Save the previous value
+            oldSliderValue = round(get(this.sliderHandle,'Value'));
+            oldSliderMax = this.sliderHandle.Max;
+
+            % Reset the slider bounds
+            newSliderMax = numel(this.Parent.tavg);
+            if newSliderMax == 0
+                newSliderMax = 1;
+            end
+            if oldSliderMax == oldSliderValue || oldSliderValue > newSliderMax
+                newSliderValue = newSliderMax;
+            else
+                newSliderValue = oldSliderValue;
+            end
+
+            % Apply the slider bounds
+            this.sliderHandle.Value = newSliderValue;
+            this.sliderHandle.Max = newSliderMax;
+            this.sliderHandle.SliderStep = [1/newSliderMax 10/newSliderMax];
+
+            % Hide the slider if necessary
+            if newSliderMax == 1
+                this.sliderHandle.Visible = 'off';
+            else
+                this.sliderHandle.Visible = 'on';
+            end
+
+            this.updateImagePlot();
+        end
+        
+        % Internal Functions
+        function ratesPlot(this)
+            sm = getstoichmatrix(this.simbioModel);
+            vsection = repmat(this.ratesMatrix(1,:),size(sm,1),1);
+            cm = (sm.*vsection)*(sm)';
+            cm((1:size(cm,1))+((1:size(cm,1))-1)*size(cm,1))=0;
+            size(cm)
+            
+            %weights = 
+            %cm = [0 1 1 0 0;1 0 0 1 1;1 0 0 0 0;0 0 0 0 1;1 0 1 0 0];
+            %ids = {'M30931','L07625','K03454','M27323','M15390'};
+            ids = get(this.simbioModel.Species,'Name');
+            size(ids)
+            bgHandle = biograph(cm,ids,'ShowWeights','on');
+            for i = 1:numel(bgHandle.Nodes)
+                bgHandle.Nodes(i).Color = [1 1 1];
+                bgHandle.Nodes(i).LineColor = [1 1 1];
+            end
+            this.biographObject = view(bgHandle);
+        end
+        function updateRatesPlot(this)
+            this.biographObject.Edges(1).LineWidth = 9*rand+1;
+        end
+    end
+end

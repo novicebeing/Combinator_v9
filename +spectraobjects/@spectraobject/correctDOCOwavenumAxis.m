@@ -1,6 +1,7 @@
-function [] = correctDOCOwavenumAxis( obj, varargin )
+function [simPeaks,expPeaks] = correctDOCOwavenumAxis( obj, varargin )
 
     if numel(varargin) > 0
+        import mlreportgen.dom.*;
         DOCOreport = varargin{1};
     else
         DOCOreport = [];
@@ -29,13 +30,16 @@ function [] = correctDOCOwavenumAxis( obj, varargin )
     D2O_wavenum = D2O.data(:,1); % now in cm/mlc
 
     % Open the fitting figure
-    fitobj = VIPAxaxis(centerWavenum,vertScale,horizScale,fity);
+    fitobj = spectraobjects.VIPAxaxis(centerWavenum,vertScale,horizScale,fity);
     fitobj.setSimulationSpectrum(D2O_wavenum,D2O_S);
 
     % Fit the x axis
     fitobj.autoSelectPeaks();
     fitobj.findCorrespondingPeaks();
     fitobj.fitYaxis();
+    
+    % Display the x axis fitting on the report
+    [simPeaks,expPeaks] = fitobj.compareSimExpPeaks();
 
     % Get the x axis
     obj.wavenum = reshape(fitobj.getWavenum(),[],1);

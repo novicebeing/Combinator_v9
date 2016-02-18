@@ -276,6 +276,12 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)spectralist_inspect(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,9);
+            s.Text = 'Auto Correct DOCO X Axis';
+            s.Name = 'spectralist_autocorrectdocoxaxis';
+            s.Callback = @(x)spectralist_autocorrectdocoxaxis(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,10);
+            
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -571,4 +577,8 @@ end
 
 function fitslist_inspect(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fits_inspect',src.Variables));
+end
+
+function spectralist_autocorrectdocoxaxis(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_autocorrectdocoxaxis',src.Variables));
 end

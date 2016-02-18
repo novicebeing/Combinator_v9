@@ -72,6 +72,13 @@ function openDialog(this)
                         else
                             this.FitsList.addItem(h,0,0,this.makeVariableName(h.name));
                         end
+                    case 'fitsobjects.fitsobject'
+                        h = data.(fields{j});
+                        if isempty(h.name)
+                            this.FitsList.addItem(h,0,0,fields{j});
+                        else
+                            this.FitsList.addItem(h,0,0,this.makeVariableName(h.name));
+                        end
                     case 'imagesobjects.imagesobject'
                         h = data.(fields{j});
                         if isempty(h.name)
