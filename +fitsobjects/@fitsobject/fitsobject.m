@@ -18,6 +18,7 @@ classdef fitsobject < handle
         % Kinetics Initial Conditions
         initialConditionsNames;
         initialConditionsValues;
+        initialConditionsTable;
     end
     properties (Transient = true, Hidden)
         plotHandles;
@@ -58,6 +59,7 @@ classdef fitsobject < handle
             obj.fitbNames = {};
             obj.initialConditionsNames = {};
             obj.initialConditionsValues = [];
+            obj.initialConditionsTable = [];
         end
         function delete(obj)
             % Remove deleted plot handles

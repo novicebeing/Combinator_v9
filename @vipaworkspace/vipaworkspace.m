@@ -303,7 +303,7 @@ switch ed.Request
         
     % Other events
     case 'fitslist_setinitialconditions'
-        this.FitsList.setInitialConditions(ed.Variables);
+        this.FitsList.setInitialConcentrations(ed.Variables);
     
     % Other functions
     case 'openplotbrowser'
@@ -438,6 +438,13 @@ switch ed.Request
             waitbar(i/numel(ed.Variables),hwait);
         end
         close(hwait);
+    case 'fitslist_runfitanalysisfunction'
+%         hwait = waitbar(0,'Running Fit Analysis Function...', 'WindowStyle', 'modal');
+%         for i = 1:numel(ed.Variables)
+            this.FitsList.runfitanalysisfunction(ed.Variables,@defaultfitanalysisfunction);
+%             waitbar(i/numel(ed.Variables),hwait);
+%         end
+%         close(hwait);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
 end

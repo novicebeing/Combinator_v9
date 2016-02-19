@@ -469,7 +469,7 @@ function collectfringes(obj,src)
 end
 
 function runfitanalysisfunction(obj,src)
-    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('runfitanalysisfunction',src.Variables));
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitslist_runfitanalysisfunction',src.Variables));
 end
 
 function fitslist_savetofile(obj,src)
