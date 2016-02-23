@@ -15,16 +15,20 @@ function hfig = runfitanalysisfunction(this, plantids,fitanalysisfunction)
     plantnames = this.PlantNames(idx);
     dupids = [];
 
-    x = zeros(1,numel(plants));
-    y = zeros(1,numel(plants));
-    ODmean = zeros(1,numel(plants));
-    DOCOmean = zeros(1,numel(plants));
+%     x = zeros(1,numel(plants));
+%     y = zeros(1,numel(plants));
+%    ODmean = zeros(1,numel(plants));
+%    DOCOmean = zeros(1,numel(plants));
     O3 = zeros(1,numel(plants));
     CO = zeros(1,numel(plants));
     D2 = zeros(1,numel(plants));
     % Run the fit analysis function
     for i = 1:length(plants)
-        [x(i),y(i),ODmean(i),DOCOmean(i),O3(i),CO(i),D2(i)] = fitanalysisfunction(plantnames{i},plants{i});
+        if i == 1
+            [x,y,ODmean,DOCOmean,O3(i),CO(i),D2(i)] = fitanalysisfunction(plantnames{i},plants{i});
+        else
+            [x(i),y(i),ODmean(i),DOCOmean(i),O3(i),CO(i),D2(i)] = fitanalysisfunction(plantnames{i},plants{i});
+        end
         
     end
     
@@ -36,5 +40,16 @@ function hfig = runfitanalysisfunction(this, plantids,fitanalysisfunction)
     assignin('base','CO',CO);
     assignin('base','D2',D2);
     
-    figure(10);scatter(x,y);
+    xval = zeros(size(x));
+    xerr = zeros(size(x));
+    yval = zeros(size(x));
+    yerr = zeros(size(x));
+    for i = 1:numel(xval);
+        xval(i) = x(i).value;
+        xerr(i) = x(i).errorbar;
+        yval(i) = y(i).value;
+        yerr(i) = y(i).errorbar;
+    end
+    
+    figure(10);errorbarxy(xval,yval,xerr,yerr,{'ro', 'r', 'r'});
 end

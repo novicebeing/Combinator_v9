@@ -249,16 +249,16 @@ classdef fitsobject < handle
             end
             
             % Get initial conditions
-            tableDose = zeros(numel(obj.t),numel(obj.initialConditionsValues));
+            tableDose = zeros(numel(obj.t),numel(obj.initialConditionsTable));
             tableDose(:) = NaN;
             zeroInd = find(obj.t == 0);
             if isempty(zeroInd)
                 error('Need to handle no t=0 case...');
             end
-            tableDose(zeroInd,:) = obj.initialConditionsValues(:);
+            tableDose(zeroInd,:) = reshape(table2array(obj.initialConditionsTable),1,[]);
             
             varNames1 = vipadesktop.makeVariableName(obj.fitbNames);
-            varNames2 = vipadesktop.makeVariableName(obj.initialConditionsNames);
+            varNames2 = vipadesktop.makeVariableName(obj.initialConditionsTable.Properties.VariableNames);
             varUnits = {};
             for i = 1:(numel(varNames1)+numel(varNames2))
                 varUnits{end+1} = 'molecule';
