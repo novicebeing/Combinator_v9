@@ -115,13 +115,13 @@ classdef VIPAxaxis < handle
             % Find the peaks and add them
             for i = 1:numel(candidatePeakLocations)
                 % Find the max of the data within a 0.2 wavenum interval
-                ind = find(abs(x - candidatePeakLocations(i)) < 0.1);
+                ind = find(abs(x - candidatePeakLocations(i)) < 0.20);
                 y = reshape(obj.yIn,[],1);
                 [~,indMaxRel] = max(y(ind));
                 
                 maxWavenum = x(ind(indMaxRel));
                 
-                brushedIdcs = find(abs(reshape(x,[],1) - maxWavenum) < 0.015);
+                brushedIdcs = find(abs(reshape(x,[],1) - maxWavenum) < 0.02);
                 
                 % Find the centroid of the peaks
                 centroid = sum(brushedIdcs.*y(brushedIdcs))/sum(y(brushedIdcs));

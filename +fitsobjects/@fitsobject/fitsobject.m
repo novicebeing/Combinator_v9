@@ -251,7 +251,7 @@ classdef fitsobject < handle
             % Get initial conditions
             tableDose = zeros(numel(obj.t),numel(obj.initialConditionsTable));
             tableDose(:) = NaN;
-            zeroInd = find(obj.t == 0);
+            zeroInd = find((obj.t+50) == 0);
             if isempty(zeroInd)
                 error('Need to handle no t=0 case...');
             end
@@ -265,7 +265,7 @@ classdef fitsobject < handle
             end
             
             % Construct a table with the values from the fits
-            t = array2table([groupID.*ones(size(obj.t(:))) obj.t(:) obj.fitb(obj.fitbNamesInd,:)'/pathlength tableDose],'VariableNames',{'ID','time',varNames1{:},varNames2{:}});
+            t = array2table([groupID.*ones(size(obj.t(:))) (obj.t(:)+50) obj.fitb(obj.fitbNamesInd,:)'/pathlength tableDose],'VariableNames',{'ID','time',varNames1{:},varNames2{:}});
             t.Properties.VariableUnits = {'','microsecond',varUnits{:}};
         end
         function output_txt = datatipUpdateFunction(obj,evobj,event_obj)

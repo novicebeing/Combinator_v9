@@ -10,7 +10,7 @@ function [simPeaks,expPeaks] = correctDOCOwavenumAxis( obj, varargin )
     % Perform a spectral correction using D2O
 
     % First find 12 ms data
-    ind = find(obj.t > 12000);
+    ind = find(obj.t >= 12000);
     ind = ind(1);
 
     % Get the data

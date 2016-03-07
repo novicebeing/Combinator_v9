@@ -41,3 +41,5 @@ DOCO Acquire Procedure:
 3. Acquire other data
 
 new note dasdf
+
+add progress bars for saving
