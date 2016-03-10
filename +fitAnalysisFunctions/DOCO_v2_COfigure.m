@@ -1,15 +1,12 @@
-function defaultfitanalysisfunction(fitobjnames,fitobjs)
+function DOCO_v2_COfigure(fitobjnames,fitobjs)
     
 
     x = ezeros(size(fitobjs));
     y = ezeros(size(fitobjs));
     for ii = 1:numel(fitobjs)
         fitobject = fitobjs{ii};
-        
-        O3 = fitobject.initialConditionsTable.O3;
+
         CO = fitobject.initialConditionsTable.CO;
-        D2 = fitobject.initialConditionsTable.D2;%*7e16/50;
-        N2 = fitobject.initialConditionsTable.N2;
         % Evaluate a slope for the first two OD points
         ODidx = find(strcmp('OD',fitobject.fitbNames));
         DOCOidx = find(strcmp('trans-DOCO',fitobject.fitbNames));
@@ -39,7 +36,38 @@ function defaultfitanalysisfunction(fitobjnames,fitobjs)
         ODmean = (edouble(ODtrace(secondidx+i),ODtraceErr(secondidx+i))+edouble(ODtrace(firstidx+i),ODtraceErr(firstidx+i)))/2;
 
          y(ii) = dDOCOdt2/ODmean;
-         x(ii) = edouble(1,0)*N2;%ExtraRxns/ODmean/CO;
+         x(ii) = edouble(1,0)*CO;%ExtraRxns/ODmean/CO;
     end
-    figure;plot(x,y,'o');
+    
+    % Fit
+    [xData, yData, weights] = prepareCurveData( x.value(:), y.value(:), 1./y.errorbar(:).^2 );
+
+    % Set up fittype and options.
+    ft = fittype( 'poly2' );
+    opts = fitoptions( 'Method', 'LinearLeastSquares' );
+    opts.Lower = [-Inf -Inf 0];
+    opts.Upper = [Inf Inf 0];
+    opts.Weights = weights;
+
+    % Fit model to data.
+    [fitresult, gof] = fit( xData, yData, ft, opts );
+    
+    % Generate the fit line
+    xmin = min(x.value(:));
+    xrange = max(x.value(:))-min(x.value(:));
+    xfit = linspace(0,xmin+1.1*xrange,1000);
+    yfit = feval(fitresult,xfit);
+    ci = predint(fitresult,xfit);
+    
+    figure;plot(x,y,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+    xlabel('CO Concentration [mlc cm^{-3}]');
+    ylabel('DOCO Rate Relative to OD [s^{-1}]');
+    hold on;
+    plot(xfit,yfit,'Color','r','LineWidth',2);
+    plot(xfit,ci(:,1),'r--','LineWidth',1);
+    plot(xfit,ci(:,2),'r--','LineWidth',1);
+    set(gca,'FontSize',14);
+    
+    assignin('base','x',x);
+    assignin('base','y',y);
 end
