@@ -19,6 +19,7 @@ function hfig = setInitialConcentrations(this, plantids)
     % Open the plot browsers
     for i = 1:length(plants)
         t = plants{i}.initialConditionsTable;
+        %t=[];
         if isempty(t)
             varNames = {'O3','CO','D2','NO','N2'};
             rowNames = plantNames(i);
