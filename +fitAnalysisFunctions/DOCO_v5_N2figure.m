@@ -18,6 +18,11 @@ function DOCO_v5_N2figure(fitobjnames,fitobjs)
         fitobject = fitobjs{ii};
         
         N2 = fitobject.initialConditionsTable.N2;
+        if isfield(fitobject.initialConditionsTable,'intWindow')
+            intBox = fitobject.initialConditionsTable.intWindow;
+        else
+            intBox = 50;
+        end
         
         % Evaluate a slope for the first two OD points
         ODidx = find(strcmp('OD',fitobject.fitbNames));
@@ -34,20 +39,22 @@ function DOCO_v5_N2figure(fitobjnames,fitobjs)
         time2 = time;
         time2(firstidx) = NaN;
         [~,secondidx] = nanmin(time2);
+        secondidx = secondidx+1;
         dt = (time(secondidx) - time(firstidx))/1e6;
 
         % Calculate the simulated data
         data = runsimbiologyscanincurrentworkspace(fitobject.getTable(1,14700),variants);
         [t,ysim,names] = getdata(data(1));
-        t = t-50;
+        t = t-intBox;
         
         ysimbox = zeros(size(ysim));
+        %intBox = 10;
         for i = 1:numel(names)
             yyy = ysim(:,i);
             [~,ind,~] = unique(t);
             xint = linspace(min(t),max(t),1e6);
             yint = interp1(t(ind),yyy(ind),xint);
-            windowSize = round(50/(xint(2)-xint(1)));
+            windowSize = round(intBox/(xint(2)-xint(1)));
             yintbox = filter((1/windowSize)*ones(1,windowSize),1,yint);
             ysimbox(:,i) = interp1(xint,yintbox,t);
         end
@@ -59,15 +66,39 @@ function DOCO_v5_N2figure(fitobjnames,fitobjs)
         [~,ind,~] = unique(t);
         DOCOsim1 = interp1(t(ind),ysimbox(ind,docosimInd),-25);
         DOCOsim2 = interp1(t(ind),ysimbox(ind,docosimInd),0);
-        dDOCOdtsim = (interp1(t(ind),ysimbox(ind,docosimInd),time(secondidx))-interp1(t(ind),ysimbox(ind,docosimInd),time(firstidx)))/dt;
+        
+        indcs = [firstidx secondidx secondidx+1];
+        [xData, yData] = prepareCurveData( time(indcs), interp1(t(ind),ysimbox(ind,docosimInd),time(indcs)));
+        ft = fittype( 'poly1' );
+        opts = fitoptions( 'Method', 'LinearLeastSquares' );
+        %opts.Weights = weights;
+        
+        [fitresult, gof] = fit( xData, yData, ft, opts );
+        
+        dDOCOdtsim = fitresult.p1*1e6;
+        %dDOCOdtsim = (interp1(t(ind),ysimbox(ind,docosimInd),time(secondidx))-interp1(t(ind),ysimbox(ind,docosimInd),time(firstidx)))/dt
         dDOCOdt2sim = (1/(50e-6)^2*DOCOsim2+1/(25e-6)^2*DOCOsim1)*100e-6/2;
         ODsim1 = interp1(t(ind),ysimbox(ind,odsimInd),time(firstidx));
         ODsim2 = interp1(t(ind),ysimbox(ind,odsimInd),time(secondidx));
-        ODmeansim = (ODsim1+ODsim2)/2;
+        ODsim3 = interp1(t(ind),ysimbox(ind,odsimInd),time(secondidx+1));
+        ODmeansim = (ODsim1+ODsim2+ODsim3)/2;
         
         
         % Calculate and print the DOCO slope
         dDOCOdt = (edouble(DOCOtrace(secondidx),DOCOtraceErr(secondidx))-edouble(DOCOtrace(firstidx),DOCOtraceErr(firstidx)))/dt;
+        % Fit
+        indcs = [firstidx secondidx secondidx+1];
+        [xData, yData, weights] = prepareCurveData( time(indcs), DOCOtrace(indcs), 1./DOCOtraceErr(indcs).^2 );
+
+        % Set up fittype and options.
+        ft = fittype( 'poly1' );
+        opts = fitoptions( 'Method', 'LinearLeastSquares' );
+        opts.Weights = weights;
+        
+        [fitresult, gof] = fit( xData, yData, ft, opts );
+        ci = confint(fitresult);
+        dDOCOdt = edouble(fitresult.p1,0)*1e6
+        
         dDOCOdt2 = (1/(50e-6)^2*edouble(DOCOtrace(3),DOCOtraceErr(3))+1/(25e-6)^2*edouble(DOCOtrace(2),DOCOtraceErr(2)))*100e-6/2;
         
         i = 0;
@@ -77,11 +108,12 @@ function DOCO_v5_N2figure(fitobjnames,fitobjs)
         dODdt2 = (1/(50e-6)^2*edouble(ODtrace(3),ODtraceErr(3))+1/(25e-6)^2*edouble(ODtrace(2),ODtraceErr(2)))*100e-6/2;
         DOCOmean = (edouble(DOCOtrace(secondidx),DOCOtraceErr(secondidx))+edouble(DOCOtrace(firstidx),DOCOtraceErr(firstidx)))/2;
 
-        ODmean = (edouble(ODtrace(secondidx+i),ODtraceErr(secondidx+i))+edouble(ODtrace(firstidx+i),ODtraceErr(firstidx+i)))/2;
+        ODmean = (edouble(ODtrace(secondidx+1),ODtraceErr(secondidx+1))+edouble(ODtrace(secondidx+i),ODtraceErr(secondidx+i))+edouble(ODtrace(firstidx+i),ODtraceErr(firstidx+i)))/3;
+        %ODmean = (edouble(ODtrace(secondidx+i),ODtraceErr(secondidx+i))+edouble(ODtrace(firstidx+i),ODtraceErr(firstidx+i)))/2;
         
          xxsim(ii) = N2;
-         yysim(ii) = (dDOCOdtsim+dDOCOdt2sim)/2/ODmeansim;
-         y(ii) = dDOCOdt2/ODmean;
+         yysim(ii) = dDOCOdtsim/ODmeansim;
+         y(ii) = dDOCOdt/ODmean;
          x(ii) = edouble(1,0)*N2;%ExtraRxns/ODmean/CO;
          
          waitbar(ii/numel(fitobjs),hwait);
@@ -108,7 +140,11 @@ function DOCO_v5_N2figure(fitobjnames,fitobjs)
     yfit = feval(fitresult,xfit);
     ci = predint(fitresult,xfit);
     
-    figure;plot(x,y,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+    figure;
+    for i =1:numel(x)
+        plot(x(i),y(i),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+        hold on;
+    end
     xlabel('N_2 Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
     hold on;

@@ -21,7 +21,7 @@ function hfig = setInitialConcentrations(this, plantids)
         t = plants{i}.initialConditionsTable;
         %t=[];
         if isempty(t)
-            varNames = {'O3','CO','D2','NO','N2'};
+            varNames = {'O3','CO','D2','NO','N2','intWindow'};
             rowNames = plantNames(i);
             data = num2cell(zeros(1,numel(varNames)));
             t = table(data{:},'RowNames',rowNames,'VariableNames',varNames);

@@ -6,7 +6,7 @@ cs = getconfigset(modelobj,'active');
 % Define the variants
 variants = sbiovariant('fvariant');
 addcontent(variants, {'parameter', 'f', 'value', 0.164});
-addcontent(variants, {'parameter', 'ODscale', 'value', 0.12});
+addcontent(variants, {'parameter', 'ODscale', 'value', 0.35+0*0.12});
 addcontent(variants, {'parameter', 'DOCOscale', 'value', 0.35});
 addcontent(variants, {'parameter', 'D2Oscale', 'value', 1});
 addcontent(variants, {'parameter', 'tpump', 'value', 25000});
@@ -123,6 +123,7 @@ taskResults.TaskInfo = taskInfo;
 
 % Construct a plot of conc vs time
 this = fitobjs{1};
+intBox = this.initialConditionsTable.intWindow;
     figh = 400;
     figw = 800;
     figure('Position', [100, 100, figw,figh]);
@@ -149,12 +150,12 @@ this = fitobjs{1};
         [scaleout, fitcolor, legendtext] = getscalingfactor(names{i});
         if ~isempty(fitcolor)
             legnames = {legnames{:},legendtext};
-            x = t-50;
+            x = t-intBox;
             y = scaleout*ysim(:,i);
             [~,ind,~] = unique(x);
             xint = linspace(min(x),max(x),1e6);
             yint = interp1(x(ind),y(ind),xint);
-            windowSize = round(50/(xint(2)-xint(1)));
+            windowSize = round(intBox/(xint(2)-xint(1)));
             yintbox = filter((1/windowSize)*ones(1,windowSize),1,yint);
             yprime = interp1(xint,yintbox,x);
             plot(x,yprime,'-','Color',fitcolor);
