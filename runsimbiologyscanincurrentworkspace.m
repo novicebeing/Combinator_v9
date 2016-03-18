@@ -45,6 +45,7 @@ groupNames = getGroupNames(dataToFit, groupVar);
 % Initialize the output.
 data = cell(length(groupNames), 1);
 
+hwait = waitbar(0,'Running Simulations...', 'WindowStyle', 'modal');
 for j = 1:length(groupNames)
     % Simulate the next individual in the data set.
     groupName = groupNames{j};
@@ -86,7 +87,9 @@ for j = 1:length(groupNames)
     warning('off','SimBiology:DimAnalysisNotDone_MatlabFcn');
     data{j} = sbiosimulate(modelobj, cs, variants, doseObjs);
     warning('on','SimBiology:DimAnalysisNotDone_MatlabFcn');
+    waitbar(j/length(groupNames),hwait);
 end
+close(hwait);
 
 % Convert the results into an array.
 data = [data{:}]';
