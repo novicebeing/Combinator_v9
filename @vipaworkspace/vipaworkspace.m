@@ -446,6 +446,8 @@ switch ed.Request
         close(hwait);
     case 'fitslist_runfitanalysisfunction'
             this.FitsList.runfitanalysisfunction(ed.Variables,this.fitAnalysisFunction);
+    case 'spectralist_usexaxisforallspectra'
+            this.SpectraList.usexaxisforallspectra(ed.Variables);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
 end

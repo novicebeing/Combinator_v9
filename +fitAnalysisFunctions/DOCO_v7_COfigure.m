@@ -9,6 +9,7 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
     addcontent(variants, {'parameter', 'tpump', 'value', 25000});
     addcontent(variants, {'parameter', 'HOCO_LOSS.k', 'value', 0});
 
+    intTimes = zeros(size(fitobjs));
     x = ezeros(size(fitobjs));
     y = ezeros(size(fitobjs));
     xxsim = zeros(size(fitobjs));
@@ -95,6 +96,11 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
         %dDOCOdt3 = (edouble(DOCOtrace(ind3(2)),DOCOtraceErr(ind3(2)))-edouble(DOCOtrace(ind3(1)),DOCOtraceErr(ind3(1))))/(time(ind3(2))-time(ind3(1)))*1e6;
         %dDOCOdt3 = dDOCOdt3.value(:);
         
+        xxxsim = linspace(min(time(ind3)),max(time(ind3)),100);
+        figure; plot(time,DOCOtrace/1e12); hold on;
+        plot(xxxsim,feval(fitresult,xxxsim));
+        xlim([-25 60]);
+        
         i = 1;
         dt = (time(secondidx+i) - time(firstidx+i))/1e6;
         
@@ -108,6 +114,7 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
          yysim(ii) = dDOCOdtsim/ODmeansim;
          y(ii) = dDOCOdt3/ODmean*edouble(1,0.01);
          x(ii) = edouble(1,0)*CO;%ExtraRxns/ODmean/CO;
+         intTimes(ii) = intBox;
          
          waitbar(ii/numel(fitobjs),hwait);
     end
@@ -134,10 +141,11 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
     yfit = feval(fitresult,xfit);
     ci = predint(fitresult,xfit);
     
-    figure;plot(x,y,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+    figure;plot(x(intTimes==50),y(intTimes==50),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
     xlabel('CO Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
     hold on;
+    plot(x(intTimes==10),y(intTimes==10),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
     plot(xfit,yfit,'Color','r','LineWidth',2);
     plot(xfit,ci(:,1),'r--','LineWidth',1);
     plot(xfit,ci(:,2),'r--','LineWidth',1);

@@ -281,6 +281,11 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)spectralist_autocorrectdocoxaxis(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,10);
+            s.Text = 'Use X Axis for all spectra';
+            s.Name = 'spectralist_usexaxisforallspectra';
+            s.Callback = @(x)spectralist_usexaxisforallspectra(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,11);
             
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
@@ -590,4 +595,8 @@ end
 
 function fitslist_openfitbrowserwithcolors(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitslist_openfitbrowserwithcolors',src.Variables));
+end
+
+function spectralist_usexaxisforallspectra(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_usexaxisforallspectra',src.Variables));
 end

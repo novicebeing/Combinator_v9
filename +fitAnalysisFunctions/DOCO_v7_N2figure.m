@@ -1,4 +1,4 @@
-function DOCO_v7_COfigure(fitobjnames,fitobjs)
+function DOCO_v7_N2figure(fitobjnames,fitobjs)
     
     % Define the variants
     variants = sbiovariant('fvariant');
@@ -18,7 +18,7 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
     for ii = 1:numel(fitobjs)
         fitobject = fitobjs{ii};
         
-        CO = fitobject.initialConditionsTable.CO;
+        N2 = fitobject.initialConditionsTable.N2;
         
         try
             intBox = fitobject.initialConditionsTable.intWindow;
@@ -96,6 +96,11 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
         %dDOCOdt3 = (edouble(DOCOtrace(ind3(2)),DOCOtraceErr(ind3(2)))-edouble(DOCOtrace(ind3(1)),DOCOtraceErr(ind3(1))))/(time(ind3(2))-time(ind3(1)))*1e6;
         %dDOCOdt3 = dDOCOdt3.value(:);
         
+        xxxsim = linspace(min(time(ind3)),max(time(ind3)),100);
+        %figure; plot(time,DOCOtrace/1e12); hold on;
+        %plot(xxxsim,feval(fitresult,xxxsim));
+        %xlim([-25 60]);
+        
         i = 1;
         dt = (time(secondidx+i) - time(firstidx+i))/1e6;
         
@@ -105,10 +110,10 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
 
         ODmean = (edouble(ODtrace(secondidx+i),ODtraceErr(secondidx+i))+edouble(ODtrace(firstidx+i),ODtraceErr(firstidx+i)))/2;
         
-         xxsim(ii) = CO;
+         xxsim(ii) = N2;
          yysim(ii) = dDOCOdtsim/ODmeansim;
          y(ii) = dDOCOdt3/ODmean*edouble(1,0.01);
-         x(ii) = edouble(1,0)*CO;%ExtraRxns/ODmean/CO;
+         x(ii) = edouble(1,0)*N2;%ExtraRxns/ODmean/CO;
          intTimes(ii) = intBox;
          
          waitbar(ii/numel(fitobjs),hwait);
@@ -119,10 +124,10 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
     [xData, yData, weights] = prepareCurveData( x.value(:), y.value(:), 1./y.errorbar(:).^2 );
 
     % Set up fittype and options.
-    ft = fittype( 'poly2' );
+    ft = fittype( 'poly1' );
     opts = fitoptions( 'Method', 'LinearLeastSquares' );
-    opts.Lower = [-Inf -inf 0];
-    opts.Upper = [Inf inf 0];
+    opts.Lower = [-Inf -inf];
+    opts.Upper = [Inf inf];
     opts.Weights = weights;
 
     % Fit model to data.
@@ -136,10 +141,11 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
     yfit = feval(fitresult,xfit);
     ci = predint(fitresult,xfit);
     
-    figure;plot(x(intTimes==,y,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
-    xlabel('CO Concentration [mlc cm^{-3}]');
+    figure;plot(x(intTimes==50),y(intTimes==50),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+    xlabel('N2 Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
     hold on;
+    plot(x(intTimes==10),y(intTimes==10),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
     plot(xfit,yfit,'Color','r','LineWidth',2);
     plot(xfit,ci(:,1),'r--','LineWidth',1);
     plot(xfit,ci(:,2),'r--','LineWidth',1);
