@@ -1,4 +1,4 @@
-function DOCO_v7_N2figure(fitobjnames,fitobjs)
+function DOCO_v7_O3figure(fitobjnames,fitobjs)
     
     % Define the variants
     variants = sbiovariant('fvariant');
@@ -18,7 +18,7 @@ function DOCO_v7_N2figure(fitobjnames,fitobjs)
     for ii = 1:numel(fitobjs)
         fitobject = fitobjs{ii};
         
-        N2 = fitobject.initialConditionsTable.N2;
+        O3 = fitobject.initialConditionsTable.O3;
         
         try
             intBox = fitobject.initialConditionsTable.intWindow;
@@ -115,10 +115,10 @@ function DOCO_v7_N2figure(fitobjnames,fitobjs)
 
         ODmean = (edouble(ODtrace(secondidx+i),ODtraceErr(secondidx+i))+edouble(ODtrace(firstidx+i),ODtraceErr(firstidx+i)))/2;
         
-         xxsim(ii) = N2;
+         xxsim(ii) = O3;
          yysim(ii) = dDOCOdtsim/ODmeansim;
-         y(ii) = dDOCOdt3/ODmean;
-         x(ii) = edouble(1,0)*N2;%ExtraRxns/ODmean/CO;
+         y(ii) = dDOCOdt3/ODmean*edouble(1,0.01);
+         x(ii) = edouble(1,0)*O3;%ExtraRxns/ODmean/CO;
          intTimes(ii) = intBox;
          
          waitbar(ii/numel(fitobjs),hwait);
@@ -152,7 +152,7 @@ function DOCO_v7_N2figure(fitobjnames,fitobjs)
     ci = predint(fitresult,xfit);
     
     figure;plot(x(intTimes==50),y(intTimes==50),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
-    xlabel('N2 Concentration [mlc cm^{-3}]');
+    xlabel('O3 Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
     hold on;
     plot(x(intTimes==10),y(intTimes==10),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');

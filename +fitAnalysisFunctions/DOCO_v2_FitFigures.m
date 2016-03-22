@@ -2,8 +2,9 @@ function DOCO_v2_FitFigures(fitobjnames,fitobjs)
     this = fitobjs{1};
 
     % Params for spectral plots
-    xlims = [2665 2695];
-    ylims = [-0.02 0.02];
+    xlims = [2660 2710];
+    ylims = [-0.005 0.005];
+    expoffset = -0.0045;
     fitoffset = 0.001;
     figh = 400;
     figw = 800;
@@ -27,7 +28,7 @@ function DOCO_v2_FitFigures(fitobjnames,fitobjs)
     expplotcolor = [0.247 0.247 0.247];
     
     % Set top, middle, bottom indices
-    indbottom = 3;
+    indbottom = 1;
     indmiddle = 10;
     indtop = 26;
     
@@ -35,7 +36,7 @@ function DOCO_v2_FitFigures(fitobjnames,fitobjs)
     axes(htop);
     ind = indtop;
     atop.String = sprintf('%i \\mus',this.t(ind));
-    plot(this.wavenum(:),reshape(this.y(:,:,ind),[],1)-min(reshape(this.y(:,:,ind),[],1)),'Color',expplotcolor,'LineWidth',plotlinewidth);
+    plot(this.wavenum(:),expoffset+reshape(this.y(:,:,ind),[],1)-min(reshape(this.y(:,:,ind),[],1)),'Color',expplotcolor,'LineWidth',plotlinewidth);
     hold(gca,'on');
     co = [  1 1 1;...
             0    0.4470    0.7410;...
@@ -66,7 +67,7 @@ function DOCO_v2_FitFigures(fitobjnames,fitobjs)
     axes(hmiddle);
     ind = indmiddle;
     amiddle.String = sprintf('%i \\mus',this.t(ind));
-    plot(this.wavenum(:),reshape(this.y(:,:,ind),[],1)-min(reshape(this.y(:,:,ind),[],1)),'Color',expplotcolor,'LineWidth',plotlinewidth);
+    plot(this.wavenum(:),expoffset+reshape(this.y(:,:,ind),[],1)-min(reshape(this.y(:,:,ind),[],1)),'Color',expplotcolor,'LineWidth',plotlinewidth);
     hold(gca,'on');
     co = [  1 1 1;...
             0    0.4470    0.7410;...
@@ -97,7 +98,7 @@ function DOCO_v2_FitFigures(fitobjnames,fitobjs)
     axes(hbottom);
     ind = indbottom;
     abottom.String = sprintf('%i \\mus',this.t(ind));
-    plot(this.wavenum(:),reshape(this.y(:,:,ind),[],1)-min(reshape(this.y(:,:,ind),[],1)),'Color',expplotcolor,'LineWidth',plotlinewidth);
+    plot(this.wavenum(:),expoffset+reshape(this.y(:,:,ind),[],1)-min(reshape(this.y(:,:,ind),[],1)),'Color',expplotcolor,'LineWidth',plotlinewidth);
     hold(gca,'on');
     co = [  1 1 1;...
             0    0.4470    0.7410;...
@@ -126,7 +127,7 @@ function DOCO_v2_FitFigures(fitobjnames,fitobjs)
     %legend({'Experiment',this.fitbNames{:}});
     %tightfig
     xlabel 'Wavenumber [cm^{-1}]';
-    legend({['Exp                 ' char(30)],legnames{:}},'Orientation','horizontal','Box','off','Position',[0.33 0.302 0.514 0.08]);
+    %legend({['Exp                 ' char(30)],legnames{:}},'Orientation','horizontal','Box','off','Position',[0.33 0.302 0.514 0.08]);
     
     set(hbottom,'FontSize',13);
     set(hmiddle,'FontSize',13);
@@ -160,8 +161,8 @@ function DOCO_v2_FitFigures(fitobjnames,fitobjs)
     function [scaleout, fitcolor, legendtext] = getscalingfactor(fitname)
         switch fitname
             case 'trans-DOCO'
-                scaleout = 4;
-                legendtext = 'trans-DOCO (x4)';
+                scaleout = 1;
+                legendtext = 'trans-DOCO';
                 fitcolor = [0.871    0.49    0.0];
             case 'D2O'
                 scaleout = 1;

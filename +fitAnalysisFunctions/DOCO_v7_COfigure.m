@@ -61,6 +61,9 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
             windowSize = round(50/(xint(2)-xint(1)));
             yintbox = filter((1/windowSize)*ones(1,windowSize),1,yint);
             ysimbox(:,i) = interp1(xint,yintbox,t);
+            %set(gca,'FontSize',14);
+            %xlabel('Time (\mus)');
+            %ylabel('DOCO Concentration (mlc cm^{-3})');
         end
         
         % Get the proper indices for the data
@@ -89,17 +92,75 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
         %ft = fittype( 'a+b*x+c*x^2+delta*0', 'independent', 'x', 'dependent', 'y','problem','delta' );
         %ft = fittype( 'b*(x+delta/2)+delta*0', 'independent', 'x', 'dependent', 'y','problem','delta' );
         opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
-        [fitresult, gof] = fit( xData, yData, ft, opts,'problem',intBox );
+        opts.weights = 1./(DOCOtraceErr(ind3)/1e12).^2;
+%         [fitresult, gof, output] = fit( xData, yData, ft, opts,'problem',intBox );
+%         ci = confint(fitresult,0.68);
+%         output.Jacobian
+%         %gof
+%         return
+%         rmse = sqrt(gof.sse/gof.dfe);
+%         dDOCOdt3 = edouble(fitresult.b,(ci(1)-fitresult.b)/rmse)*1e12*1e6;
         
-        dDOCOdt3 = fitresult.b*1e12*1e6;
+        % Fit the data in a different manner
+        M = [(xData+intBox/2) (xData.^2+intBox.*xData+intBox.^2/3)];
+        [b,stdb,mse] = lscov(M,DOCOtrace(ind3)'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
+        
+        dDOCOdt3 = edouble(b(1),stdb(1)*sqrt(1/mse))*1e12*1e6;
         %dDOCOdt3 = (DOCOtrace(ind3(2))-DOCOtrace(ind3(1)))/(time(ind3(2))-time(ind3(1)))*1e6;
         %dDOCOdt3 = (edouble(DOCOtrace(ind3(2)),DOCOtraceErr(ind3(2)))-edouble(DOCOtrace(ind3(1)),DOCOtraceErr(ind3(1))))/(time(ind3(2))-time(ind3(1)))*1e6;
         %dDOCOdt3 = dDOCOdt3.value(:);
         
-        xxxsim = linspace(min(time(ind3)),max(time(ind3)),100);
-        figure; plot(time,DOCOtrace/1e12); hold on;
-        plot(xxxsim,feval(fitresult,xxxsim));
-        xlim([-25 60]);
+        if ii == 1
+            figh = 400;
+            figw = 600;
+            smallplotlinewidth = 1;
+            figure('Position', [100, 100, figw,figh]); 
+            subplot(2,1,1); htop = gca;
+            subplot(2,1,2); hbottom = gca;
+            set(htop,'Position',[0.157094594594595 0.583837209302326 0.814189189189189 0.341162790697675]);
+            set(hbottom,'Position',[0.157094594594595 0.2 0.812500000000001 0.341162790697674]);
+        end
+        if strcmp(fitobjnames{ii},'v_20160210_CO_1')
+            % Plot DOCO
+            xxxsim = linspace(min(time(ind3)),max(time(ind3)),100)';
+            Mxxx = [(xxxsim+intBox/2) (xxxsim.^2+intBox.*xxxsim+intBox.^2/3)];
+            indxxx = find(time<100 & time>=0);
+            axes(htop); errorbar(time(indxxx),DOCOtrace(indxxx)/1e12,DOCOtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','50 \mus','Color',[0 0.447 0.741]); hold on;
+            plot(xxxsim,(b')*(Mxxx'),'LineWidth',smallplotlinewidth,'DisplayName','50 \mus fit','Color',[0 0.447 0.741]);
+            xlim([-5 80]);
+            ylim([-0.02 0.45]);
+            set(gca,'FontSize',12);
+            set(gca,'XTickLabel',[]);
+            % Plot OD
+            axes(hbottom); errorbar(time(indxxx),ODtrace(indxxx)/1e12,ODtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'Color',[0 0.447 0.741]); hold on;
+            xlim([-5 80]);
+            ylim([0 4]);
+            set(gca,'FontSize',12);
+            linkaxes([htop hbottom],'x');
+        end
+        
+        if strcmp(fitobjnames{ii},'v_20160315_ShortInt1')
+            % Plot DOCO
+            xxxsim = linspace(min(time(ind3)),max(time(ind3)),100)';
+            Mxxx = [(xxxsim+intBox/2) (xxxsim.^2+intBox.*xxxsim+intBox.^2/3)];
+            indxxx = find(time<100 & time>=0);
+            axes(htop); errorbar(time(indxxx),DOCOtrace(indxxx)/1e12,DOCOtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','10 \mus','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]); hold on;
+            plot(xxxsim,(b')*(Mxxx'),'LineWidth',smallplotlinewidth,'DisplayName','10 \mus fit','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
+            xlim([-5 80]);
+            %xlabel('Time (\mus)');
+            ylabel({'[DOCO]\times10^{-12}','(mlc cm{-3})'});
+            legend1 = legend(htop,'show');
+            set(legend1,...
+                'Position',[0.315867121915692 0.59672838996836 0.62837837012233 0.0617283936635947],...
+                'Orientation','horizontal',...
+                'EdgeColor',[1 1 1]);
+            % Plot OD
+            axes(hbottom); errorbar(time(indxxx),ODtrace(indxxx)/1e12,ODtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'Color',[0.850980392156863 0.325490196078431 0.0980392156862745]); hold on;
+            xlim([-5 80]);
+            xlabel('Time (\mus)');
+            ylabel({'[OD]\times10^{-12}';'(mlc cm{-3})'});
+            annotation(gcf,'rectangle',[0.261000000000001 0.3875 0.169 0.125],'LineStyle','--');
+        end
         
         i = 1;
         dt = (time(secondidx+i) - time(firstidx+i))/1e6;
@@ -133,19 +194,28 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
     % Fit model to data.
     [fitresult, gof] = fit( xData, yData, ft, opts );
     fitresult
+    bs = coeffvalues(fitresult);
+    dbs = coeffstderrors(fitresult,gof);
+    bout = edouble(bs,dbs);
+    bout(1)
+    bout(2)
+%     % Fit the data in a different manner
+%     M = [xData xData.^2];
+%     [b,stdb,mse] = lscov(M,yData',weights);
     
     % Generate the fit line
     xmin = min(x.value(:));
     xrange = max(x.value(:))-min(x.value(:));
-    xfit = linspace(xmin-0.1*xrange,xmin+1.1*xrange,1000);
+    xfit = linspace(0,xmin+1.1*xrange,1000);
     yfit = feval(fitresult,xfit);
     ci = predint(fitresult,xfit);
     
     figure;plot(x(intTimes==50),y(intTimes==50),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
-    xlabel('CO Concentration [mlc cm^{-3}]');
-    ylabel('DOCO Rate Relative to OD [s^{-1}]');
+    xlabel('CO Concentration (mlc cm^{-3})');
+    ylabel('DOCO Rate Relative to OD (s^{-1})');
     hold on;
     plot(x(intTimes==10),y(intTimes==10),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
+    plot(x(intTimes==25),y(intTimes==25),'go','MarkerFaceColor','g','MarkerEdgeColor','g');
     plot(xfit,yfit,'Color','r','LineWidth',2);
     plot(xfit,ci(:,1),'r--','LineWidth',1);
     plot(xfit,ci(:,2),'r--','LineWidth',1);

@@ -289,14 +289,13 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     N2val = mean(xN2.value(COdataIndcs));
     COliney = b(1)*COlinex.^2 + b(2)*COlinex*N2val;
     
-    indcs50 = COdataIndcs(intTimes(COdataIndcs)==50);
-    indcs25 = COdataIndcs(intTimes(COdataIndcs)==25);
-    indcs10 = COdataIndcs(intTimes(COdataIndcs)==10);
+    incs50 = COdataIndcs(intTimes(COdataIndcs)==50);
+    ind
     
     figure;
-    plot(xCO(indcs50),y(indcs50),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+    plot(xCO(COdataIndcs(intTimes(COdataIndcs)==50)),y(COdataIndcs(COdataIndcs(intTimes(COdataIndcs)==50))),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
     hold on;
-    plot(xCO(indcs10),y(indcs10),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
+    plot(xCO(COdataIndcs(intTimes(COdataIndcs)==25)),y(COdataIndcs(COdataIndcs(intTimes(COdataIndcs)==25))),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
     xlabel('N2 Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
     plot(COlinex,COliney,'r');

@@ -49,20 +49,27 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,vara
     for i = 1:size(spectrumobject.yavg,3)
         % Get the data
         dataY = reshape(spectrumobject.yavg(:,:,i),size(spectrumobject.yavg,1)*size(spectrumobject.yavg,2),1);
+        dataYerr = reshape(spectrumobject.ystderror(:,:,i),size(spectrumobject.ystderror,1)*size(spectrumobject.ystderror,2),1);
         
         % Remove the NaN Values
         nonnanvals = ~isnan(dataY) & ~isnan(sum(fitMatrix,2));
         dataYnonnan = dataY(nonnanvals);
+        dataYerrnonnan = dataYerr(nonnanvals);
         nonnanvalsFitMatrix = repmat(reshape(nonnanvals,[],1),1,size(fitMatrix,2));
         fitMatrixnonnan = reshape(fitMatrix(nonnanvalsFitMatrix),[],size(fitMatrix,2));
 
         % Perform the matrix division
         Y = dataYnonnan;
+        Yerr = dataYerrnonnan;
         M = fitMatrixnonnan;
-        alpha = 0.05;
+        alpha = 0.32;
         [b,bError] = regress(Y,M./repmat(nanmean(fitMatrixnonnan,1),size(fitMatrixnonnan,1),1),alpha);
+        bStdErr = (bError(:,2)-bError(:,1))/2;
+        %[b,stdx,mse] = lscov(M./repmat(nanmean(fitMatrixnonnan,1),size(fitMatrixnonnan,1),1),Y,1./Yerr.^2);
+        %bStdErr./(stdx/sqrt(mse))
+        %bStdErr = stdx*sqrt(1/mse);
         beta(:,i) = b./reshape(nanmean(fitMatrixnonnan,1),[],1);
-        betaError(:,i) = (bError(:,2)-bError(:,1))/2./reshape(nanmean(fitMatrixnonnan,1),[],1);
+        betaError(:,i) = bStdErr./reshape(nanmean(fitMatrixnonnan,1),[],1);
     end
     
     % Construct the fit object

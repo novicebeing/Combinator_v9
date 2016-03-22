@@ -16,13 +16,19 @@ function saveToFile(this, plantids,varargin)
     
     % Make the save structure
     plantsSave = cell2struct(this.Plants(idx),this.PlantNames(idx));
+    if numel(idx) == 1
+        defaultname = this.PlantNames{idx};
+    else
+        defaultname = 'spectra.mat';
+    end
     
     if numel(varargin) > 0
         [path,fname,ext] = fileparts(varargin{1});
         file = sprintf('%s%s',fname,ext);
     else
         % Select a file
-        [file,path] = uiputfile('*.mat','Save Spectra As...');
+        
+        [file,path] = uiputfile('*.mat','Save Spectra As...',defaultname);
     end
         
     % Save the file

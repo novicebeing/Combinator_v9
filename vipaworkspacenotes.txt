@@ -21,6 +21,8 @@ VIPA Workspace TODO List:
 
 Cosmetic / Ease of use
 
+- Add fixed with left sidebar
+
 - Add normalization option in group plots
 
 - Add x and y labels to fits plots
