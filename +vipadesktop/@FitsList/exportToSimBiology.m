@@ -23,8 +23,9 @@ function hfig = exportToSimBiology(this, plantids)
     for i = 1:length(plants)
         if i == 1
             t = plants{i}.getTable(1,pathlength);
+        else
+            t = union(t,plants{i}.getTable(i,pathlength));
         end
-        t = union(t,plants{i}.getTable(i,pathlength));
         %plants{i}.exportDOCOglobals();
     end
     assignin('base',baseVariableName,t);

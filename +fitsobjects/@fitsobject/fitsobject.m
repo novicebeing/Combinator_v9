@@ -18,6 +18,7 @@ classdef fitsobject < handle
         % Kinetics Initial Conditions
         initialConditionsNames;
         initialConditionsValues;
+        initialConditionsTable;
     end
     properties (Transient = true, Hidden)
         plotHandles;
@@ -58,6 +59,7 @@ classdef fitsobject < handle
             obj.fitbNames = {};
             obj.initialConditionsNames = {};
             obj.initialConditionsValues = [];
+            obj.initialConditionsTable = [];
         end
         function delete(obj)
             % Remove deleted plot handles
@@ -247,23 +249,23 @@ classdef fitsobject < handle
             end
             
             % Get initial conditions
-            tableDose = zeros(numel(obj.t),numel(obj.initialConditionsValues));
+            tableDose = zeros(numel(obj.t),numel(obj.initialConditionsTable));
             tableDose(:) = NaN;
-            zeroInd = find(obj.t == 0);
+            zeroInd = find((obj.t+50) == 0);
             if isempty(zeroInd)
                 error('Need to handle no t=0 case...');
             end
-            tableDose(zeroInd,:) = obj.initialConditionsValues(:);
+            tableDose(zeroInd,:) = reshape(table2array(obj.initialConditionsTable),1,[]);
             
             varNames1 = vipadesktop.makeVariableName(obj.fitbNames);
-            varNames2 = vipadesktop.makeVariableName(obj.initialConditionsNames);
+            varNames2 = vipadesktop.makeVariableName(obj.initialConditionsTable.Properties.VariableNames);
             varUnits = {};
             for i = 1:(numel(varNames1)+numel(varNames2))
                 varUnits{end+1} = 'molecule';
             end
             
             % Construct a table with the values from the fits
-            t = array2table([groupID.*ones(size(obj.t(:))) obj.t(:) obj.fitb(obj.fitbNamesInd,:)'/pathlength tableDose],'VariableNames',{'ID','time',varNames1{:},varNames2{:}});
+            t = array2table([groupID.*ones(size(obj.t(:))) (obj.t(:)+50) obj.fitb(obj.fitbNamesInd,:)'/pathlength tableDose],'VariableNames',{'ID','time',varNames1{:},varNames2{:}});
             t.Properties.VariableUnits = {'','microsecond',varUnits{:}};
         end
         function output_txt = datatipUpdateFunction(obj,evobj,event_obj)

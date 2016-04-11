@@ -14,6 +14,9 @@ function saveToFile(this, plantids, varargin)
     plants = this.Plants(idx);
     dupids = [];
     
+    % Saving to file
+    hwait = waitbar(0,'Saving to file...', 'WindowStyle', 'modal');
+    
     % Make the save structure
     plantsSave = cell2struct(this.Plants(idx),this.PlantNames(idx));
     
@@ -27,4 +30,5 @@ function saveToFile(this, plantids, varargin)
     
     % Save the file
     save(fullfile(path,file),'-struct','plantsSave');
+    close(hwait);
 end

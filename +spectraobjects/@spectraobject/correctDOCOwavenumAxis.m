@@ -10,12 +10,13 @@ function [simPeaks,expPeaks] = correctDOCOwavenumAxis( obj, varargin )
     % Perform a spectral correction using D2O
 
     % First find 12 ms data
-    ind = find(obj.t > 12000);
+    ind = find(obj.t >= 12000);
     ind = ind(1);
 
     % Get the data
     fitx = obj.wavenum;
     fity = obj.ysum(:,:,ind)./obj.wsum(:,:,ind);
+    fity((fitx > 2658.54) & (fitx < 2658.86)) = NaN;
 
     % Get the relevant fitting parameters
     fitx = reshape(fitx,size(fity));

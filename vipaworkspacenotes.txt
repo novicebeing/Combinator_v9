@@ -21,6 +21,8 @@ VIPA Workspace TODO List:
 
 Cosmetic / Ease of use
 
+- Add fixed with left sidebar
+
 - Add normalization option in group plots
 
 - Add x and y labels to fits plots
@@ -41,3 +43,7 @@ DOCO Acquire Procedure:
 3. Acquire other data
 
 new note dasdf
+
+add progress bars for saving
+
+drag drop command line?

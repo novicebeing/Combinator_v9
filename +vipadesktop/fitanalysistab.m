@@ -21,9 +21,11 @@ classdef fitanalysistab < handle
        imageDestComboBox
        calibrationComboBox
        spectraDestComboBox
+       fitAnalysisFunctionComboBox
    end
    events
        OpenButtonPressed
+       fitAnalysisFunctionBoxAction
    end
    methods
        function this = fitanalysistab(vipadesktop,fitAnalysisFunctions)
@@ -45,8 +47,9 @@ classdef fitanalysistab < handle
             panel.add(singleImageFunctionLabel,'xy(2,2,''r,c'')');
             kineticsImagesFunctionLabel = toolpack.component.TSLabel('Kinetics Images');
             panel.add(kineticsImagesFunctionLabel,'xy(2,4,''r,c'')');
-            this.singleImageComboBox = toolpack.component.TSComboBox(fitAnalysisFunctionStrings);
-            panel.add(this.singleImageComboBox,'xywh(4,2,1,1)');
+            this.fitAnalysisFunctionComboBox = toolpack.component.TSComboBox(fitAnalysisFunctionStrings);
+            addlistener(this.fitAnalysisFunctionComboBox,'ActionPerformed',@(~,~) notify(this,'fitAnalysisFunctionBoxAction'));
+            panel.add(this.fitAnalysisFunctionComboBox,'xywh(4,2,1,1)');
 %             this.kineticsImagesComboBox = toolpack.component.TSComboBox(kineticsImagesAcquireFunctionStrings);
 %             panel.add(this.kineticsImagesComboBox,'xywh(4,4,1,1)');
             this.TPComponent.add(this.CameraSection);

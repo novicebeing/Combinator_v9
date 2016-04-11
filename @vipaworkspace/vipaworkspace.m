@@ -137,8 +137,11 @@ classdef vipaworkspace < handle
             
             this.fittingtab = vipadesktop.fittingtab(this.TPComponent);
             this.TPComponent.add(this.fittingtab.TPComponent);
+            
             this.fitanalysistab = vipadesktop.fitanalysistab(this.TPComponent,this.fitAnalysisFunctions);
             this.TPComponent.add(this.fitanalysistab.TPComponent);
+            addlistener(this.fitanalysistab,'fitAnalysisFunctionBoxAction',@(~,~) this.setFitAnalysisFunction(this.fitanalysistab.fitAnalysisFunctionComboBox.SelectedItem));
+            
             this.figuretab = vipadesktop.figuretab(this.TPComponent);
             this.TPComponent.add(this.figuretab.TPComponent);
             addlistener(this.hometab,'NewButtonPressed',@(~,~) this.newDialog());
@@ -263,6 +266,9 @@ classdef vipaworkspace < handle
         end
         
         % Get Set functions
+        function setFitAnalysisFunction(this,functionString)
+            this.fitAnalysisFunction = str2func(sprintf('%s.%s','fitAnalysisFunctions',functionString));
+        end
         function setAcquireFunction(this,acquireFunctionString)
             this.acquireFunction = str2func(sprintf('%s.%s','acquireFunctions',acquireFunctionString));
         end
@@ -303,7 +309,7 @@ switch ed.Request
         
     % Other events
     case 'fitslist_setinitialconditions'
-        this.FitsList.setInitialConditions(ed.Variables);
+        this.FitsList.setInitialConcentrations(ed.Variables);
     
     % Other functions
     case 'openplotbrowser'
@@ -438,6 +444,10 @@ switch ed.Request
             waitbar(i/numel(ed.Variables),hwait);
         end
         close(hwait);
+    case 'fitslist_runfitanalysisfunction'
+            this.FitsList.runfitanalysisfunction(ed.Variables,this.fitAnalysisFunction);
+    case 'spectralist_usexaxisforallspectra'
+            this.SpectraList.usexaxisforallspectra(ed.Variables);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
 end
