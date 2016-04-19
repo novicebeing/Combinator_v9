@@ -92,9 +92,9 @@ function DOCO_v7_N2figure(fitobjnames,fitobjs)
 %         [fitresult, gof] = fit( xData, yData, ft, opts,'problem',intBox );
         
         M = [(xData+intBox/2) (xData.^2+intBox.*xData+intBox.^2/3)];
-        [b,stdb,mse] = lscov(M,DOCOtrace(ind3)'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
+        [b,stdb,mse] = lscov(M,(DOCOtrace(ind3))'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
         
-        dDOCOdt3 = edouble(b(1),stdb(1)*sqrt(1/mse))*1e12*1e6;
+        dDOCOdt3 = edouble(b(1),stdb(1)/min(1,sqrt(mse)))*1e12*1e6;
         
 %         dDOCOdt3 = fitresult.b*1e12*1e6;
         %dDOCOdt3 = (DOCOtrace(ind3(2))-DOCOtrace(ind3(1)))/(time(ind3(2))-time(ind3(1)))*1e6;
@@ -143,6 +143,8 @@ function DOCO_v7_N2figure(fitobjnames,fitobjs)
     bout = edouble(bs,dbs);
     bout(1)
     bout(2)
+    gof.sse
+    numel(xData)
     
     % Generate the fit line
     xmin = min(x.value(:));

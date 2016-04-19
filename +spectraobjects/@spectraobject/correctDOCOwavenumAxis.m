@@ -17,6 +17,7 @@ function [simPeaks,expPeaks] = correctDOCOwavenumAxis( obj, varargin )
     fitx = obj.wavenum;
     fity = obj.ysum(:,:,ind)./obj.wsum(:,:,ind);
     fity((fitx > 2658.54) & (fitx < 2658.86)) = NaN;
+    fity(fitx<2680) = NaN;
 
     % Get the relevant fitting parameters
     fitx = reshape(fitx,size(fity));

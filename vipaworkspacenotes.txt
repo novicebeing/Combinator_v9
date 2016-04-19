@@ -46,4 +46,4 @@ new note dasdf
 
 add progress bars for saving
 
-drag drop command line?
+drag drop command line? other workspace?

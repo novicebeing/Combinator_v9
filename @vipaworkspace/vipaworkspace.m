@@ -268,6 +268,16 @@ classdef vipaworkspace < handle
         % Get Set functions
         function setFitAnalysisFunction(this,functionString)
             this.fitAnalysisFunction = str2func(sprintf('%s.%s','fitAnalysisFunctions',functionString));
+            
+%             fitAnalysisFunctionsPackage = what('fitAnalysisFunctions');
+%             this.fitAnalysisFunctions = {};
+%             for i = 1:numel(fitAnalysisFunctionsPackage.m)
+%                 [~,b,~] = fileparts(fitAnalysisFunctionsPackage.m{i});
+%                 this.fitAnalysisFunctions{end+1} = str2func(sprintf('%s.%s','fitAnalysisFunctions',b));
+%             end
+%             if numel(this.fitAnalysisFunctions) > 0
+%                 this.fitAnalysisFunction = this.fitAnalysisFunctions{1};
+%             end
         end
         function setAcquireFunction(this,acquireFunctionString)
             this.acquireFunction = str2func(sprintf('%s.%s','acquireFunctions',acquireFunctionString));

@@ -59,12 +59,19 @@ function crossSection = createSpectrum(obj,wavenum, varargin)
     gaussianBroad = instrumentGaussianFWHM;
     lorentzianBroad = instrumentLorentzianFWHM;
     
+     b =     0.02401;
+    b1 =     0.07449;
+    x1 = 0.02114;
+    d =        1.91;
+    strangeLineshape = @(wavenum) (areaNormGaussian(wavenum,b)+d*areaNormGaussian(wavenum+x1,b1))/(1+d);
+    
     for i = 1:numel(wavenum)
         idx = abs(obj.lineposition - wavenum(i)) < 1;
         %crossSection(i) = sum(transitionStrength(idx).*areaNormalizedGaussian(wavenum(i),transitionWavenum(idx),gaussianBroad(idx)));
         %crossSection(i) = sum(transitionStrength(idx).*areaNormalizedLorentzian(wavenum(i),transitionWavenum(idx),lorentzianBroad(idx)));
         %crossSection(i) = sum(transitionStrength(idx).*areaNormVoigt(wavenum(i)-transitionWavenum(idx),gaussianBroad(idx),lorentzianBroad(idx)));
         crossSection(i) = sum(obj.linestrength(idx).*areaNormPseudoVoigt(wavenum(i)-obj.lineposition(idx),gaussianBroad(idx),lorentzianBroad(idx)));
+        %crossSection(i) = sum(obj.linestrength(idx).*strangeLineshape(wavenum(i)-obj.lineposition(idx)));
     end
     
 %     if numel(varargin) > 0

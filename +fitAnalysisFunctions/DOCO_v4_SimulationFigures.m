@@ -6,14 +6,14 @@ cs = getconfigset(modelobj,'active');
 % Define the variants
 variants = sbiovariant('fvariant');
 addcontent(variants, {'parameter', 'f', 'value', 0.164});
-addcontent(variants, {'parameter', 'ODscale', 'value', 0.35+0*0.12});
-addcontent(variants, {'parameter', 'DOCOscale', 'value', 0.35});
+addcontent(variants, {'parameter', 'ODscale', 'value', 0.12});
+addcontent(variants, {'parameter', 'DOCOscale', 'value', 0.12});
 addcontent(variants, {'parameter', 'D2Oscale', 'value', 1});
 addcontent(variants, {'parameter', 'tpump', 'value', 25000});
 addcontent(variants, {'parameter', 'HOCO_LOSS.k', 'value', 0});%20000});
 
 % Define the fit data
-pathlength = 14700;
+pathlength = 5348;
 for i = 1:length(fitobjs)
     if i == 1
         dataToFit = fitobjs{i}.getTable(1,pathlength);

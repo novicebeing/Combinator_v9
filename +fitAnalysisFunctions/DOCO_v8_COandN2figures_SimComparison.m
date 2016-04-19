@@ -1,4 +1,4 @@
-function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
+function DOCO_v8_COandN2figures_SimComparison(fitobjnames,fitobjs)
     
     % Define the variants
     variants = sbiovariant('fvariant');
@@ -65,20 +65,20 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
         dt = (time(secondidx) - time(firstidx))/1e6;
 
         % Calculate the simulated data
-        %data = runsimbiologyscanincurrentworkspace(fitobject.getTable(1,14700),variants);
-        %[t,ysim,names] = getdata(data(ii));
-        t=time;
-        ysim = zeros(numel(time),2);
+        data = runsimbiologyscanincurrentworkspace(fitobject.getTable(1,14700),variants);
+        [tsim,ysim,names] = getdata(data(1));
+        %t=time;
+        %ysim = zeros(numel(time),2);
         names = {'ODscaled','DOCOscaled'};
-        %t = t-50;
-        
+
+        t = tsim-intBox;
         ysimbox = zeros(size(ysim));
         for i = 1:numel(names)
             yyy = ysim(:,i);
             [~,ind,~] = unique(t);
             xint = linspace(min(t),max(t),2e5);
             yint = interp1(t(ind),yyy(ind),xint);
-            windowSize = round(50/(xint(2)-xint(1)));
+            windowSize = round(intBox/(xint(2)-xint(1)));
             yintbox = filter((1/windowSize)*ones(1,windowSize),1,yint);
             ysimbox(:,i) = interp1(xint,yintbox,t);
         end
@@ -94,7 +94,10 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
         dDOCOdt2sim = (1/(50e-6)^2*DOCOsim2+1/(25e-6)^2*DOCOsim1)*100e-6/2;
         ODsim1 = interp1(t(ind),ysimbox(ind,odsimInd),time(firstidx));
         ODsim2 = interp1(t(ind),ysimbox(ind,odsimInd),time(secondidx));
-        ODmeansim = (ODsim1+ODsim2)/2;
+        ODmeansim = (interp1(t(ind),ysimbox(ind,odsimInd),10)+...
+            interp1(t(ind),ysimbox(ind,odsimInd),20))/2;
+        ODmeansimTrue = interp1(t(ind),ysim(ind,odsimInd),1.5);
+        dDOCOdtsimTrue = (interp1(tsim(ind),ysim(ind,docosimInd),2)-interp1(tsim(ind),ysim(ind,docosimInd),1))/1e-6;
         
         
         % Calculate and print the DOCO slope
@@ -110,10 +113,12 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
          %opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
          %[fitresult, gof] = fit( xData, yData, ft, opts,'problem',intBox );
         
-        M = [(xData+intBox/2) (xData.^2+intBox.*xData+intBox.^2/3)];
-        [b,stdb,mse] = lscov(M,(DOCOtrace(ind3))'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
-        chisqr = sum((DOCOtrace(ind3)/1e12-b'*M').^2./(DOCOtraceErr(ind3)/1e12).^2)/(5-2-1)
-        dDOCOdt3 = edouble(b(1),stdb(1)/min(1,sqrt(mse)))*1e12*1e6;
+        M = [(xData+intBox/2) (xData.^2+intBox.*xData+intBox.^2/3)];% 0.25*(-xData.^4+(intBox+xData).^4)];
+        [b,stdb,mse] = lscov(M,DOCOtrace(ind3)'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
+        bsim = lscov(M,interp1(t(ind),ysimbox(ind,docosimInd),xData,'spline',0)/1e12);
+        
+        dDOCOdt3 = edouble(b(1),stdb(1)*sqrt(1/mse))*1e12*1e6;
+        dDOCOdt3sim = bsim(1)*1e12*1e6;
         
         i = 1;
         dt = (time(secondidx+i) - time(firstidx+i))/1e6;
@@ -125,7 +130,7 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
         ODmean = (edouble(ODtrace(secondidx+i),ODtraceErr(secondidx+i))+edouble(ODtrace(firstidx+i),ODtraceErr(firstidx+i)))/2;
         
          xxsim(ii) = CO;
-         yysim(ii) = (dDOCOdt2sim*2 + 0*dDOCOdtsim)/2/ODmeansim;
+         yysim(ii) = (dDOCOdt3sim/ODmeansim)/(dDOCOdtsimTrue/ODmeansimTrue);
          y(ii) = dDOCOdt3/ODmean;
          %y(ii) = DOCOmean;
          xCO(ii) = edouble(1,0)*CO;
@@ -144,25 +149,17 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     %[xData, yData, weights] = prepareCurveData( x.value(:), y.value(:), 1./y.errorbar(:).^2 );
 
     % Set up fittype and options.
-    X = [xCO.value(:).^2 xCO.value(:).*xN2.value(:)];% yDOCO_LOSS*1e16];
+    X = [xCO.value(:).^2 xCO.value(:).*xN2.value(:) xCO.value(:).*xO3.value(:) xCO.value(:).*1e32./xO3.value(:)];% yDOCO_LOSS*1e16];
     Xplot = [xCO.value(:) xCO.value(:)];
     [b,bstd,mse] = lscov(X,y.value(:),1./y.errorbar(:).^2);
-    
-    
+    %b(3) = 5e-11/1e16;
     
     fprintf('b = \n');
     for i=1:numel(b)
-        fprintf('%g +- %g\n',b(i),bstd(i));
+        fprintf('%g +- %g\n',b(i),bstd(i)/sqrt(mse));
     end
-    fprintf('mse = %g\n',sqrt(mse));
-    
+
     ysim = b'*X';
-    b(3) = 0;
-    bstd(3) = 0;
-    b(4) = 0;
-    bstd(4) = 0;
-    
-    redChiSqr = sum((y.value(:)'-ysim).^2./y.errorbar(:)'.^2)/(numel(y)-2-1)
     
     %ft = fittype( 'poly2' );
     %opts = fitoptions( 'Method', 'LinearLeastSquares' );
@@ -181,11 +178,11 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     %yfit = feval(fitresult,xfit);
     %ci = predint(fitresult,xfit);
     
-    figure;plot(xCO,y,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+    figure;plot(xCO,yysim,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
     xlabel('CO Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
-    hold on;
-    plot(xCO,ysim,'ro');
+    %hold on;
+    %plot(xCO,ysim,'ro');
     %plot(xCOfit,yCOfit,'Color','r','LineWidth',2);
     %plot(xfit,ci(:,1),'r--','LineWidth',1);
     %plot(xfit,ci(:,2),'r--','LineWidth',1);
@@ -193,11 +190,11 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     set(gca,'FontSize',14);
     
     %% Generate N2 Plot
-    figure;plot(xN2,y,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+    figure;plot(xN2,yysim,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
     xlabel('N2 Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
-    hold on;
-    plot(xN2,ysim,'ro');
+    %hold on;
+    %plot(xN2,ysim,'ro');
     %plot(xfit,yfit,'Color','r','LineWidth',2);
     %plot(xfit,ci(:,1),'r--','LineWidth',1);
     %plot(xfit,ci(:,2),'r--','LineWidth',1);
@@ -205,11 +202,11 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     set(gca,'FontSize',14);
     
     %% Generate O3 Plot
-    figure;plot(xO3,y,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+    figure;plot(xO3,yysim,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
     xlabel('O3 Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
-    hold on;
-    plot(xO3,ysim,'ro');
+    %hold on;
+    %plot(xO3,ysim,'ro');
     %plot(xfit,yfit,'Color','r','LineWidth',2);
     %plot(xfit,ci(:,1),'r--','LineWidth',1);
     %plot(xfit,ci(:,2),'r--','LineWidth',1);
@@ -217,11 +214,11 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     set(gca,'FontSize',14);
     
     %% Generate D2 Plot
-    figure;plot(xD2,y,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+    figure;plot(xD2,yysim,'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
     xlabel('D2 Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
-    hold on;
-    plot(xD2,ysim,'ro');
+    %hold on;
+    %plot(xD2,ysim,'ro');
     %plot(xfit,yfit,'Color','r','LineWidth',2);
     %plot(xfit,ci(:,1),'r--','LineWidth',1);
     %plot(xfit,ci(:,2),'r--','LineWidth',1);
@@ -307,7 +304,7 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     plot(xCO(indcs50),y(indcs50),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
     hold on;
     plot(xCO(indcs10),y(indcs10),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
-    xlabel('CO Concentration [mlc cm^{-3}]');
+    xlabel('N2 Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
     plot(COlinex,COliney,'r');
     %plot(xfit,yfit,'Color','r','LineWidth',2);
@@ -316,7 +313,6 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     %scatter(xD2,yysim,'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
     set(gca,'FontSize',14);
     
-    return
     %% Generate another O3 Plot with only O3 scans
     O3dataNames = {...
         'v_20160216_O3_1',...
@@ -357,11 +353,11 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     
     %% D2 Analysis
     
-    v_20160212_D2_1
-    v_20160212_D2_2
-    v_20160212_D2_3
-    v_20160212_D2_4
-    v_20160212_D2_5
+%     v_20160212_D2_1
+%     v_20160212_D2_2
+%     v_20160212_D2_3
+%     v_20160212_D2_4
+%     v_20160212_D2_5
 
 end
 

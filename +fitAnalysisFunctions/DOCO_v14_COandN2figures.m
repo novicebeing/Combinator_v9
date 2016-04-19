@@ -1,4 +1,4 @@
-function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
+function DOCO_v14_COandN2figures(fitobjnames,fitobjs)
     
     % Define the variants
     variants = sbiovariant('fvariant');
@@ -111,9 +111,10 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
          %[fitresult, gof] = fit( xData, yData, ft, opts,'problem',intBox );
         
         M = [(xData+intBox/2) (xData.^2+intBox.*xData+intBox.^2/3)];
-        [b,stdb,mse] = lscov(M,DOCOtrace(ind3)'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
-        
-        dDOCOdt3 = edouble(b(1),stdb(1)*sqrt(1/mse))*1e12*1e6;
+        [b,stdb,mse] = lscov(M,(DOCOtrace(ind3))'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
+        chisqr = sum((DOCOtrace(ind3)/1e12-b'*M').^2./(DOCOtraceErr(ind3)/1e12).^2)/(5-2-1)
+        dDOCOdt3 = edouble(b(1),stdb(1)/min(1,sqrt(mse)))*1e12*1e6;
+        %dDOCOdt3 = edouble(b(1),stdb(1)/sqrt(mse))*1e12*1e6;
         
         i = 1;
         dt = (time(secondidx+i) - time(firstidx+i))/1e6;
@@ -144,17 +145,25 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     %[xData, yData, weights] = prepareCurveData( x.value(:), y.value(:), 1./y.errorbar(:).^2 );
 
     % Set up fittype and options.
-    X = [xCO.value(:).^2 xCO.value(:).*xN2.value(:) xCO.value(:).*xO3.value(:) xCO.value(:).*1e32./xO3.value(:)];% yDOCO_LOSS*1e16];
+    X = [xCO.value(:).^2 xCO.value(:).*xN2.value(:)];% yDOCO_LOSS*1e16];
     Xplot = [xCO.value(:) xCO.value(:)];
     [b,bstd,mse] = lscov(X,y.value(:),1./y.errorbar(:).^2);
-    %b(3) = 5e-11/1e16;
+    
+    
     
     fprintf('b = \n');
     for i=1:numel(b)
-        fprintf('%g +- %g\n',b(i),bstd(i)/sqrt(mse));
+        fprintf('%g +- %g\n',b(i),bstd(i));
     end
-
+    fprintf('mse = %g\n',sqrt(mse));
+    
     ysim = b'*X';
+    b(3) = 0;
+    bstd(3) = 0;
+    b(4) = 0;
+    bstd(4) = 0;
+    
+    redChiSqr = sum((y.value(:)'-ysim).^2./y.errorbar(:)'.^2)/(numel(y)-2-1)
     
     %ft = fittype( 'poly2' );
     %opts = fitoptions( 'Method', 'LinearLeastSquares' );
@@ -246,16 +255,54 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     COval = mean(xCO.value(N2dataIndcs));
     N2liney = b(1)*COval.^2 + b(2)*N2linex*COval + b(3)*mean(xO3.value(N2dataIndcs));
 
-    figure;plot(xN2(N2dataIndcs),y(N2dataIndcs),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
-    xlabel('N2 Concentration [mlc cm^{-3}]');
-    ylabel('DOCO Rate Relative to OD [s^{-1}]');
+    figure;plot(xN2(N2dataIndcs)./1e17,y(N2dataIndcs)./1e4,'ko','MarkerFaceColor','none','MarkerEdgeColor','k','LineWidth',1);
+    xlabel('[N2] \times 10^{-17} (molecule cm^{-3})');
+    ylabel('(d[DOCO]_0/dt)/[OD]_0 \times 10^{-4} (s^{-1})');
     hold on;
-    plot(N2linex,N2liney,'r');
+    plot(N2linex./1e17,N2liney./1e4,'r');
     %plot(xfit,yfit,'Color','r','LineWidth',2);
     %plot(xfit,ci(:,1),'r--','LineWidth',1);
     %plot(xfit,ci(:,2),'r--','LineWidth',1);
     %scatter(xD2,yysim,'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
     set(gca,'FontSize',14);
+    
+    %% Generate another N2 Plot with only N2 scans
+    N2dataNames = {...
+        'v_20160307_N2_1',...
+        'v_20160307_N2_2',...
+        'v_20160307_N2_3',...
+        'v_20160307_N2_4',...
+        'v_20160307_N2_5',...
+        'v_20160307_N2_6',...
+        'v_20160307_N2_7',...
+        'v_20160307_N2_8',...
+        'v_20160322_HighN2_1',...
+        'v_20160322_HighN2_2',...
+        'v_20160322_HighN2_3',...
+        };
+    N2dataIndcs = [];
+    for i = 1:numel(N2dataNames)
+        tempind = find(strcmp(N2dataNames{i},fitobjnames));
+        if ~isempty(tempind)
+            N2dataIndcs(end+1) = tempind(1);
+        end
+    end
+    
+    N2linex = linspace(min(xN2.value(N2dataIndcs)),max(xN2.value(N2dataIndcs)),100);
+    COval = mean(xCO.value(N2dataIndcs));
+    N2liney = b(1)*COval.^2 + b(2)*N2linex*COval + b(3)*mean(xO3.value(N2dataIndcs));
+
+    figure;plot(xN2(N2dataIndcs)./1e17,y(N2dataIndcs)./xCO(N2dataIndcs).*1e14,'ko','MarkerFaceColor','none','MarkerEdgeColor','k','LineWidth',1);
+    xlabel('[N2] \times 10^{-17} (molecule cm^{-3})');
+    ylabel('y \times 10^{14} (molecule^{-1} cm^3 s^{-1})');
+    hold on;
+    plot(N2linex./1e17,N2liney./COval.*1e14,'r');
+    %plot(xfit,yfit,'Color','r','LineWidth',2);
+    %plot(xfit,ci(:,1),'r--','LineWidth',1);
+    %plot(xfit,ci(:,2),'r--','LineWidth',1);
+    %scatter(xD2,yysim,'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
+    set(gca,'FontSize',14);
+
     
     %% Generate another CO Plot with only CO scans
     COdataNames = {...
@@ -296,18 +343,133 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     indcs10 = COdataIndcs(intTimes(COdataIndcs)==10);
     
     figure;
-    plot(xCO(indcs50),y(indcs50),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+    plot(xCO(indcs50)./1e17,y(indcs50)./1e4,'ko','MarkerFaceColor','none','MarkerEdgeColor','k','LineWidth',1);
     hold on;
-    plot(xCO(indcs10),y(indcs10),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
-    xlabel('N2 Concentration [mlc cm^{-3}]');
-    ylabel('DOCO Rate Relative to OD [s^{-1}]');
-    plot(COlinex,COliney,'r');
+    plot(xCO(indcs10)./1e17,y(indcs10)./1e4,'bo','MarkerFaceColor','none','MarkerEdgeColor','b','LineWidth',1);
+    xlabel('[CO] \times 10^{-17} (molecule cm^{-3})');
+    ylabel('(d[DOCO]_0/dt)/[OD]_0 \times 10^{-4} (s^{-1})');
+    plot(COlinex./1e17,COliney./1e4,'r');
+    %plot(xfit,yfit,'Color','r','LineWidth',2);
+    %plot(xfit,ci(:,1),'r--','LineWidth',1);
+    %plot(xfit,ci(:,2),'r--','LineWidth',1);
+    %scatter(xD2,yysim,'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
+    set(gca,'FontSize',14);
+
+    %% Generate another CO Plot with only CO scans
+    COdataNames = {...
+        'v_20160210_CO_1',...
+        'v_20160210_CO_2',...
+        'v_20160210_CO_3',...
+        'v_20160210_CO_4',...
+        'v_20160210_CO_5',...
+        'v_20160210_CO_6',...
+        'v_20160209_CO_1',...
+        'v_20160209_CO_2',...
+        'v_20160209_CO_3',...
+        'v_20160209_CO_4',...
+        'v_20160209_CO_5',...
+        'v_20160318_ShortInt1',...
+        'v_20160318_ShortInt2',...
+        'v_20160318_ShortInt3',...
+        'v_20160317_ShortInt1',...
+        'v_20160317_ShortInt2',...
+        'v_20160317_ShortInt3',...
+        'v_20160315_ShortInt1',...
+        'v_20160315_ShortInt3',...
+        };
+    COdataIndcs = [];
+    for i = 1:numel(COdataNames)
+        tempind = find(strcmp(COdataNames{i},fitobjnames));
+        if ~isempty(tempind)
+            COdataIndcs(end+1) = tempind(1);
+        end
+    end
+    
+    COlinex = linspace(min(xCO.value(COdataIndcs)),max(xCO.value(COdataIndcs)),100);
+    N2val = mean(xN2.value(COdataIndcs));
+    COliney = b(1)*COlinex.^2 + b(2)*COlinex*N2val + b(3)*mean(xO3.value(N2dataIndcs));
+    
+    indcs50 = COdataIndcs(intTimes(COdataIndcs)==50);
+    indcs25 = COdataIndcs(intTimes(COdataIndcs)==25);
+    indcs10 = COdataIndcs(intTimes(COdataIndcs)==10);
+    
+    figure;
+    plot(xCO(indcs50)./1e17,y(indcs50)./xCO(indcs50).*1e14,'ko','MarkerFaceColor','none','MarkerEdgeColor','k','LineWidth',1);
+    hold on;
+    plot(xCO(indcs10)./1e17,y(indcs10)./xCO(indcs10).*1e14,'bs','MarkerFaceColor','none','MarkerEdgeColor','b','LineWidth',1);
+    xlabel('[CO] \times 10^{-17} (molecules cm^{-3})');
+    ylabel('y \times 10^{14} (molecules^{-1} cm^3 s^{-1})');
+    plot(COlinex./1e17,COliney./COlinex.*1e14,'r');
     %plot(xfit,yfit,'Color','r','LineWidth',2);
     %plot(xfit,ci(:,1),'r--','LineWidth',1);
     %plot(xfit,ci(:,2),'r--','LineWidth',1);
     %scatter(xD2,yysim,'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
     set(gca,'FontSize',14);
     
+    %% Generate another plot with all scans
+    dataNames = {...
+        'v_20160210_CO_1',...
+        'v_20160210_CO_2',...
+        'v_20160210_CO_3',...
+        'v_20160210_CO_4',...
+        'v_20160210_CO_5',...
+        'v_20160210_CO_6',...
+        'v_20160209_CO_1',...
+        'v_20160209_CO_2',...
+        'v_20160209_CO_3',...
+        'v_20160209_CO_4',...
+        'v_20160209_CO_5',...
+        'v_20160318_ShortInt1',...
+        'v_20160318_ShortInt2',...
+        'v_20160318_ShortInt3',...
+        'v_20160317_ShortInt1',...
+        'v_20160317_ShortInt2',...
+        'v_20160317_ShortInt3',...
+        'v_20160315_ShortInt1',...
+        'v_20160315_ShortInt3',...
+        'v_20160307_N2_1',...
+        'v_20160307_N2_2',...
+        'v_20160307_N2_3',...
+        'v_20160307_N2_4',...
+        'v_20160307_N2_5',...
+        'v_20160307_N2_6',...
+        'v_20160307_N2_7',...
+        'v_20160307_N2_8',...
+        'v_20160322_HighN2_1',...
+        'v_20160322_HighN2_2',...
+        'v_20160322_HighN2_3',...
+        };
+    dataIndcs = [];
+    for i = 1:numel(dataNames)
+        tempind = find(strcmp(dataNames{i},fitobjnames));
+        if ~isempty(tempind)
+            dataIndcs(end+1) = tempind(1);
+        end
+    end
+    
+    rVal = (b(1)/b(2));
+    Mlinex = linspace(min(rVal.*xCO.value(dataIndcs)+xN2.value(dataIndcs)),max(rVal.*xCO.value(dataIndcs)+xN2.value(dataIndcs)),100);
+    N2val = mean(xN2.value(dataIndcs));
+    Mliney = b(2)*Mlinex;
+    
+    indcs50 = dataIndcs(intTimes(dataIndcs)==50);
+    indcs25 = dataIndcs(intTimes(dataIndcs)==25);
+    indcs10 = dataIndcs(intTimes(dataIndcs)==10);
+    
+    figure;
+    plot((rVal.*xCO(indcs50)+xN2(indcs50))./1e17,y(indcs50)./xCO(indcs50).*1e14,'ko','MarkerFaceColor','none','MarkerEdgeColor','k','LineWidth',1);
+    hold on;
+    plot((rVal.*xCO(indcs10)+xN2(indcs10))./1e17,y(indcs10)./xCO(indcs10).*1e14,'bs','MarkerFaceColor','none','MarkerEdgeColor','b','LineWidth',1);
+    xlabel('[M] \times 10^{-17} (molecules cm^{-3})');
+    ylabel('y \times 10^{14} (molecules^{-1} cm^3 s^{-1})');
+    plot(Mlinex./1e17,Mliney.*1e14,'r');
+    %plot(xfit,yfit,'Color','r','LineWidth',2);
+    %plot(xfit,ci(:,1),'r--','LineWidth',1);
+    %plot(xfit,ci(:,2),'r--','LineWidth',1);
+    %scatter(xD2,yysim,'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
+    set(gca,'FontSize',14);
+    
+    return
     %% Generate another O3 Plot with only O3 scans
     O3dataNames = {...
         'v_20160216_O3_1',...
