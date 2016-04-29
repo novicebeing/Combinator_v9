@@ -351,15 +351,15 @@ switch ed.Request
         hwait = waitbar(0,'Plotting Fit Coefficients...', 'WindowStyle', 'modal');
         for i = 1:numel(ed.Variables)
             h = this.FitsList.plotFitCoefficients(ed.Variables(i));
-            this.TPComponent.addFigure(h);
+            %this.TPComponent.addFigure(h);
             waitbar(i/numel(ed.Variables),hwait);
         end
         close(hwait);
     case 'plotgroupedfitcoefficients'
         hs = this.FitsList.plotGroupedFitCoefficients(ed.Variables);
-        for h = hs
-            this.TPComponent.addFigure(h);
-        end
+        %for h = hs
+        %    this.TPComponent.addFigure(h);
+        %end
     case 'exportDOCOglobals'
         this.FitsList.exportDOCOglobals(ed.Variables);
     case 'exportToSimBiology'

@@ -460,61 +460,8 @@ function DOCO_v14_COandN2figures(fitobjnames,fitobjs)
         set(gca,'FontSize',15);
 
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %  %% CO SCAN PLOTS (DIV BY CO)       %%
+    %  %%  DOCOdot FUNCTIONAL FORM PLOT       %%
     %  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    COlinex = linspace(0,max(xCO.value(COdataIndcs)),100);
-    N2val = mean(xN2.value(COdataIndcs));
-    COliney = b(1)*COlinex.^2 + b(2)*COlinex*N2val + b(3)*mean(xO3.value(N2dataIndcs));
-    
-    indcs50 = COdataIndcs(intTimes(COdataIndcs)==50);
-    indcs25 = COdataIndcs(intTimes(COdataIndcs)==25);
-    indcs10 = COdataIndcs(intTimes(COdataIndcs)==10);
-    
-    figure;
-    plot(xCO(indcs50)./1e17,dDOCOdt_QUADRATIC(indcs50)./OD_MEAN(indcs50).*1e14,'ko','MarkerFaceColor','none','MarkerEdgeColor','k','LineWidth',1);hold on;
-    plot(xCO(indcs10)./1e17,dDOCOdt_QUADRATIC(indcs10)./OD_MEAN(indcs10).*1e14,'bs','MarkerFaceColor','none','MarkerEdgeColor','b','LineWidth',1);
-    xlabel('[CO] \times 10^{-17} (molecules cm^{-3})');
-    ylabel('y_q*CO \times 10^{14} (molecules^{-1} cm^3 s^{-1})');
-    plot(COlinex./1e17,COliney./COlinex.*1e14,'r');
-    set(gca,'FontSize',15);
-    
-    figure;
-    plot(xCO(indcs50)./1e17,dDOCOdt_EXPONENTIAL(indcs50)./OD_MEAN(indcs50).*1e14,'ko','MarkerFaceColor','none','MarkerEdgeColor','k','LineWidth',1);hold on;
-    plot(xCO(indcs10)./1e17,dDOCOdt_EXPONENTIAL(indcs10)./OD_MEAN(indcs10).*1e14,'bs','MarkerFaceColor','none','MarkerEdgeColor','b','LineWidth',1);
-    xlabel('[CO] \times 10^{-17} (molecules cm^{-3})');
-    ylabel('y_e*CO \times 10^{14} (molecules^{-1} cm^3 s^{-1})');
-    %plot(COlinex./1e17,COliney./COlinex.*1e14,'r');
-    set(gca,'FontSize',15);
-        
-    %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %  %% CO SCAN PLOTS (DIV BY CO)       %%
-    %  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    COlinex = linspace(0,max(xCO.value(COdataIndcs)),100);
-    N2val = mean(xN2.value(COdataIndcs));
-    COliney = b(1)*COlinex.^2 + b(2)*COlinex*N2val + b(3)*mean(xO3.value(N2dataIndcs));
-    
-    indcs50 = COdataIndcs(intTimes(COdataIndcs)==50);
-    indcs25 = COdataIndcs(intTimes(COdataIndcs)==25);
-    indcs10 = COdataIndcs(intTimes(COdataIndcs)==10);
-    
-    figure;
-    plot(xCO(indcs50)./1e17,dDOCOdt_QUADRATIC(indcs50)./OD_MEAN(indcs50)./xCO(indcs50).*1e14,'ko','MarkerFaceColor','none','MarkerEdgeColor','k','LineWidth',1);hold on;
-    plot(xCO(indcs10)./1e17,dDOCOdt_QUADRATIC(indcs10)./OD_MEAN(indcs10)./xCO(indcs10).*1e14,'bs','MarkerFaceColor','none','MarkerEdgeColor','b','LineWidth',1);
-    xlabel('[CO] \times 10^{-17} (molecules cm^{-3})');
-    ylabel('y_q \times 10^{14} (molecules^{-1} cm^3 s^{-1})');
-    plot(COlinex./1e17,COliney./COlinex.*1e14,'r');
-    set(gca,'FontSize',15);
-    
-    figure;
-    plot(xCO(indcs50)./1e17,dDOCOdt_EXPONENTIAL(indcs50)./OD_MEAN(indcs50)./xCO(indcs50).*1e14,'ko','MarkerFaceColor','none','MarkerEdgeColor','k','LineWidth',1);hold on;
-    plot(xCO(indcs10)./1e17,dDOCOdt_EXPONENTIAL(indcs10)./OD_MEAN(indcs10)./xCO(indcs10).*1e14,'bs','MarkerFaceColor','none','MarkerEdgeColor','b','LineWidth',1);
-    xlabel('[CO] \times 10^{-17} (molecules cm^{-3})');
-    ylabel('y_e \times 10^{14} (molecules^{-1} cm^3 s^{-1})');
-    %plot(COlinex./1e17,COliney./COlinex.*1e14,'r');
-    set(gca,'FontSize',15);
-    
-    return
-    
     
     %% Generate another O3 Plot
     COval = mean(xCO.value(O3dataIndcs));
