@@ -6,6 +6,7 @@ classdef spectrabrowser < handle
         
         % Handles
         figureHandle
+        dcmHandle % Datacursormode handle
         axesHandle
         plotHandle
         sliderHandle
@@ -18,6 +19,10 @@ classdef spectrabrowser < handle
         options
     end
     
+    properties (Transient = true)
+        lastdatacursorposition
+    end
+    
     methods
         function this = spectrabrowser(ParentObject,options)
             this.Parent = ParentObject;
@@ -26,8 +31,10 @@ classdef spectrabrowser < handle
             % Construct the figure
             if isempty(this.Parent.name)
                 this.figureHandle = figure('CloseRequestFcn',@figCloseFunction);
+                this.dcmHandle = datacursormode(this.figureHandle);
             else
                 this.figureHandle = figure('Name',this.Parent.name,'NumberTitle','off','CloseRequestFcn',@figCloseFunction);
+                this.dcmHandle = datacursormode(this.figureHandle);
             end
             
             if isempty(this.Parent.yavg)
@@ -41,11 +48,35 @@ classdef spectrabrowser < handle
             this.imagePlot();
             this.Update();
             set(this.sliderHandle,'Callback',@(es,ed) this.updateImagePlot());
+            set(this.dcmHandle,'UpdateFcn',@dcmupdatefcn)
+            
+            % Construct a context menu for the axes
+            c = uicontextmenu(this.figureHandle);
+            this.figureHandle.UIContextMenu = c;
+            topmenu = uimenu('Parent',c,'Label','Change Color','Callback',@singlepixeltimeplot);
+            
+            function singlepixeltimeplot(src,callbackdata)
+                pos = this.lastdatacursorposition;
+                [~,idx] = min(abs(this.Parent.wavenum(:) - pos(1)));
+                
+                [ii,jj] = ind2sub([size(this.Parent.yavg,1) size(this.Parent.yavg,2)],idx);
+                figure;scatter(this.Parent.tavg,reshape(this.Parent.yavg(ii,jj,:),1,[]));
+            end
             
             % Figure Close Function
             function figCloseFunction(src,callbackdata)
                 delete(gcf);
                 delete(this);
+            end
+            
+            % Datacursormode update function
+            function txt = dcmupdatefcn(~,event_obj)
+                % Customizes text of data tips
+
+                pos = get(event_obj,'Position');
+                txt = {['Wavenum: ',num2str(pos(1))],...
+                          ['A: ',num2str(pos(2))]};
+                this.lastdatacursorposition = pos;
             end
         end
         function delete(obj)

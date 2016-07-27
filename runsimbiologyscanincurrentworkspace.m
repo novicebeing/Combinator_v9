@@ -93,6 +93,7 @@ close(hwait);
 
 % Convert the results into an array.
 data = [data{:}]';
+end
 
 % ---------------------------------------------------------
 function restore(cs, originalStatesToLog, originalStopTime)
@@ -102,6 +103,7 @@ set(cs.RuntimeOptions, 'StatesToLog', originalStatesToLog);
 
 % Restore StopTime.
 set(cs, 'StopTime', originalStopTime);
+end
 
 % ---------------------------------------------------------
 function groupNames = getGroupNames(dataset, groupLabel)
@@ -114,6 +116,7 @@ else
     if (isnumeric(groupNames))
         groupNames = num2cell(groupNames);
     end
+end
 end
 
 % ---------------------------------------------------------
@@ -167,6 +170,7 @@ if ~isempty(doseData)
 else
     doseObj = [];
 end
+end
 
 % ---------------------------------------------------------
 function ds = getDataFromDataSet(ds, id, groupValue)
@@ -187,6 +191,7 @@ if ~isempty(id)
     
     % Extract the new dataset.
     ds = ds(indices, :); 
+end
 end
 
 % ---------------------------------------------------------
@@ -210,6 +215,7 @@ if ~isempty(groupNames)
     end
     
     ds(removeRow,:) = [];
+end
 end
 
 % ----------------------------------------------------------
@@ -242,6 +248,7 @@ if (cs.CompileOptions.UnitConversion)
         end
     end
 end
+end
 
 % ----------------------------------------------------------
 function out = getUnitsForResponse(response)
@@ -255,6 +262,7 @@ function out = getUnitsForResponse(response)
         case  'parameter'
             out = response.ValueUnits;
     end
+end
     
 % ----------------------------------------------------------
 function out = getUniqueColumnName(nameIn, columns)
@@ -269,7 +277,7 @@ while ~isempty(obj)
     obj   = find(strcmp(columns, out));
 end
 
-
+end
 
 % ----------------------------------------------------------
 function plottype_Group_Simulation(taskresult, responsesToPlot, axesStyle)
@@ -404,6 +412,7 @@ updateLegend(h, legendNames);
 
 % Restore the NextPlot state.
 set(haxes, 'NextPlot', 'replace');
+end
 
 % ---------------------------------------------------------
 function out = groupSimulationGetLabels(axesStyle)
@@ -425,6 +434,7 @@ if isfield(axesStyle, 'Labels')
         out{6} = allLabels.YLabel;
     end
 end
+end
 
 % ---------------------------------------------------------
 function dependentVars = getDependentVars(taskInfo, dependentVars)
@@ -438,7 +448,7 @@ function dependentVars = getDependentVars(taskInfo, dependentVars)
             end
         end
     end
-
+end
 % ---------------------------------------------------------
 function legendNames = getLegendNames(taskInfo, legendNames)
     % If the Unit Conversion is on, the legend names should be restored back to
@@ -454,3 +464,4 @@ function legendNames = getLegendNames(taskInfo, legendNames)
             end
         end
     end
+end

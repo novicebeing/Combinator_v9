@@ -36,6 +36,8 @@ function DOCO_v14_COandN2figures(fitobjnames,fitobjs)
     dDOCOdt_QUADRATIC = ezeros(size(fitobjs));
     dDOCOdt_LINEAR = ezeros(size(fitobjs));
     dDOCOdt_EXPONENTIAL = ezeros(size(fitobjs));
+    dDOCOdt_EXPCONV = ezeros(size(fitobjs));
+    dDOCOdt_EXPCONV_TOFFSET = ezeros(size(fitobjs));
     dDOCOdtsim_CUBIC = zeros(size(fitobjs));
     dDOCOdtsim_QUADRATIC = zeros(size(fitobjs));
     dDOCOdtsim_LINEAR = zeros(size(fitobjs));
@@ -121,7 +123,7 @@ function DOCO_v14_COandN2figures(fitobjnames,fitobjs)
             % ALL FITS
             DOCOfitIndcs = 3:7;
             DOCOscalefactor = 1e12;
-            [xData, yData, weights] = prepareCurveData( time(DOCOfitIndcs),DOCOtrace(DOCOfitIndcs)/DOCOscalefactor,1./(DOCOtraceErr(DOCOfitIndcs)/DOCOscalefactor).^2 );
+            [xData, yData, weights] = prepareCurveData( time(DOCOfitIndcs),DOCOtrace(DOCOfitIndcs)'/DOCOscalefactor,1./(DOCOtraceErr(DOCOfitIndcs)'/DOCOscalefactor).^2 );
             [xData, yDataSim] = prepareCurveData( time(DOCOfitIndcs),ysimbox(DOCOfitIndcs,docosimInd)/DOCOscalefactor );
             
             
@@ -147,15 +149,43 @@ function DOCO_v14_COandN2figures(fitobjnames,fitobjs)
             dDOCOdtsim_CUBIC(ii) = bsim_CUBIC(1)*DOCOscalefactor*1e6;
         
             % EXPONENTIAL
-            ft = fittype( 'a/b*(1-exp(-b*x)*(1-exp(-b*delta))/b/delta)', 'independent', 'x', 'dependent', 'y','problem','delta' );
+            ft_EXPONENTIAL = fittype( 'a/b*(1-exp(-b*x)*(1-exp(-b*delta))/b/delta)', 'independent', 'x', 'dependent', 'y','problem','delta' );
             opts = fitoptions( 'Method', 'NonlinearLeastSquares',...
                 'Lower',[0,0],...
                 'Upper',[Inf,Inf],...
                 'StartPoint',[1000 1000]);
             opts.weights = weights;
-            [fitresult, gof, output] = fit( xData, yData, ft, opts,'problem',intBox );
+            [fitresult_EXPONENTIAL, gof, output] = fit( xData, yData, ft_EXPONENTIAL, opts,'problem',intBox );
+            ci = diff(confint(fitresult_EXPONENTIAL,0.68),[],1)/2;
+            dDOCOdt_EXPONENTIAL(ii) = edouble(fitresult_EXPONENTIAL.a,ci(1))*DOCOscalefactor*1e6;
+            
+            % ALL FITS
+            DOCOfitIndcs2 = 1:9;
+            DOCOscalefactor = 1e12;
+            [xData2, yData2, weights2] = prepareCurveData( time(DOCOfitIndcs2),DOCOtrace(DOCOfitIndcs2)'/DOCOscalefactor,1./(DOCOtraceErr(DOCOfitIndcs2)'/DOCOscalefactor).^2 );
+            %[xData, yDataSim] = prepareCurveData( time(DOCOfitIndcs),ysimbox(DOCOfitIndcs,docosimInd)/DOCOscalefactor );
+            
+            % EXPONENTIAL CONV
+            ft_EXPCONV = fittype( 'a/b*(ebox(x,0,delta)-ebox(x,b,delta))', 'independent', 'x', 'dependent', 'y','problem','delta' );
+            opts = fitoptions( 'Method', 'NonlinearLeastSquares',...
+                'Lower',[-Inf,0],...
+                'Upper',[Inf,Inf],...
+                'StartPoint',[max(xData2)*0.1 0.1]);
+            opts.weights = weights2;
+            [fitresult, gof, output] = fit( xData2, yData2, ft_EXPCONV, opts,'problem',intBox );
             ci = diff(confint(fitresult,0.68),[],1)/2;
-            dDOCOdt_EXPONENTIAL(ii) = edouble(fitresult.a,ci(1))*DOCOscalefactor*1e6;
+            dDOCOdt_EXPCONV(ii) = edouble(fitresult.a,ci(1))*DOCOscalefactor*1e6;
+            
+            % EXPONENTIAL
+            ft_EXPCONV_TOFFSET = fittype( 'a/b*(ebox(x-tau,0,delta)-ebox(x-tau,b,delta))', 'independent', 'x', 'dependent', 'y','problem','delta' );
+            opts = fitoptions( 'Method', 'NonlinearLeastSquares',...
+                'Lower',[-Inf,0,-Inf],...
+                'Upper',[Inf,Inf,Inf],...
+                'StartPoint',[max(xData2)*0.05 0.05 5]);
+            opts.weights = weights2;
+            [fitresult, gof, output] = fit( xData2, yData2, ft_EXPCONV_TOFFSET, opts,'problem',intBox );
+            ci = diff(confint(fitresult,0.68),[],1)/2;
+            dDOCOdt_EXPCONV_TOFFSET(ii) = edouble(fitresult.a,ci(1))*DOCOscalefactor*1e6;
         
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %  %% CALCULATE THE OD VALUE USING DIFFERENT FUNCTIONS %%
@@ -181,39 +211,40 @@ function DOCO_v14_COandN2figures(fitobjnames,fitobjs)
             set(hbottom,'Position',[0.157094594594595 0.2 0.812500000000001 0.341162790697674]);
         end
         
-%         if ii==1%strcmp(fitobjnames{ii},'v_20160315_ShortInt1')
-%             % Plot DOCO
-%             xxxsim = linspace(min(xData),max(xData),100)';
-%             Mxxx = [(xxxsim+intBox/2) (xxxsim.^2+intBox.*xxxsim+intBox.^2/3)];
-%             indxxx = find(time<100 & time>=-25);
-%             axes(htop); errorbar(time(indxxx),DOCOtrace(indxxx)/1e12,DOCOtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','Exp','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]); hold on;
-%             plot(xxxsim,(b')*(Mxxx'),'LineWidth',smallplotlinewidth,'DisplayName','Exp Fit','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
-%             %plot(time(indxxx),ysimbox(indxxx,docosimInd)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','Sim','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
-%             %plot(xxxsim,(bsim')*(Mxxx'),'LineWidth',smallplotlinewidth,'DisplayName','Sim Fit','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
-%             plot(xxxsim,fitresult(xxxsim),'-','LineWidth',smallplotlinewidth,'DisplayName','Exp Fit','Color','b');
-%             xlim([-30 80]);
-%             %ylim([0 0.45]);
-%             set(gca,'FontSize',12);
-%             set(gca,'XTickLabel',[]);
-%             ylabel({'[DOCO]\times10^{-12}','(mlc cm{-3})'});
-%             %legend1 = legend(htop,'show');
-%             %set(legend1,...
-%             %    'Position',[0.315867121915692 0.59672838996836 0.62837837012233 0.0617283936635947],...
-%             %    'Orientation','horizontal',...
-%             %    'EdgeColor',[1 1 1]);
-%             % Plot OD
-%             MxxxOD = [ones(size(xxxsim)) xxxsim];
-%             axes(hbottom); errorbar(time(indxxx),ODtrace(indxxx)/1e12,ODtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','Exp','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]); hold on;
-%             %plot(xxxsim,(bOD')*(MxxxOD'),'LineWidth',smallplotlinewidth,'DisplayName','Exp Fit','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
-%             %plot(time(indxxx),ysimbox(indxxx,odsimInd)/1e12,'.','LineWidth',smallplotlinewidth,'Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
-%             %plot(xxxsim,(bODsim')*(MxxxOD'),'LineWidth',smallplotlinewidth,'DisplayName','Sim Fit','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
-%             xlim([-30 80]);
-%             %ylim([0 4]);
-%             set(gca,'FontSize',12);
-%             xlabel('Time (\mus)');
-%             ylabel({'[OD]\times10^{-12}';'(mlc cm{-3})'});
-%             %annotation(gcf,'rectangle',[0.261000000000001 0.3875 0.169 0.125],'LineStyle','--');
-%         end
+        if strcmp(fitobjnames{ii},'v_20160315_ShortInt1')
+            ind3 = DOCOfitIndcs;
+            % Plot DOCO
+            xxxsim = linspace(min(xData),max(xData),100)';
+            Mxxx = [(xxxsim+intBox/2) (xxxsim.^2+intBox.*xxxsim+intBox.^2/3)];
+            indxxx = find(time<100 & time>=-25);
+            axes(htop); errorbar(time(indxxx),DOCOtrace(indxxx)/1e12,DOCOtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','Exp','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]); hold on;
+            plot(xxxsim,(b_QUADRATIC')*(Mxxx'),'LineWidth',smallplotlinewidth,'DisplayName','Exp Fit','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
+            %plot(time(indxxx),ysimbox(indxxx,docosimInd)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','Sim','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
+            %plot(xxxsim,(bsim')*(Mxxx'),'LineWidth',smallplotlinewidth,'DisplayName','Sim Fit','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
+            %plot(xxxsim,fitresult(xxxsim),'-','LineWidth',smallplotlinewidth,'DisplayName','Exp Fit','Color','b');
+            xlim([-30 80]);
+            %ylim([0 0.45]);
+            set(gca,'FontSize',12);
+            set(gca,'XTickLabel',[]);
+            ylabel({'[DOCO]\times10^{-12}','(mlc cm{-3})'});
+            %legend1 = legend(htop,'show');
+            %set(legend1,...
+            %    'Position',[0.315867121915692 0.59672838996836 0.62837837012233 0.0617283936635947],...
+            %    'Orientation','horizontal',...
+            %    'EdgeColor',[1 1 1]);
+            % Plot OD
+            MxxxOD = [ones(size(xxxsim)) xxxsim];
+            axes(hbottom); errorbar(time(indxxx),ODtrace(indxxx)/1e12,ODtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','Exp','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]); hold on;
+            %plot(xxxsim,(bOD')*(MxxxOD'),'LineWidth',smallplotlinewidth,'DisplayName','Exp Fit','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
+            %plot(time(indxxx),ysimbox(indxxx,odsimInd)/1e12,'.','LineWidth',smallplotlinewidth,'Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
+            %plot(xxxsim,(bODsim')*(MxxxOD'),'LineWidth',smallplotlinewidth,'DisplayName','Sim Fit','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
+            xlim([-30 80]);
+            %ylim([0 4]);
+            set(gca,'FontSize',12);
+            xlabel('Time (\mus)');
+            ylabel({'[OD]\times10^{-12}';'(mlc cm{-3})'});
+            %annotation(gcf,'rectangle',[0.261000000000001 0.3875 0.169 0.125],'LineStyle','--');
+        end
         
         i = 1;
         dt = (time(secondidx+i) - time(firstidx+i))/1e6;
@@ -427,10 +458,13 @@ function DOCO_v14_COandN2figures(fitobjnames,fitobjs)
         plot(xCO(COdataIndcs),dDOCOdt_LINEAR(COdataIndcs),'rs','DisplayName','Linear','MarkerFaceColor','r','MarkerEdgeColor','r');
         plot(xCO(COdataIndcs),dDOCOdt_CUBIC(COdataIndcs),'gx','DisplayName','Cubic','MarkerFaceColor','g','MarkerEdgeColor','g');
         plot(xCO(COdataIndcs),dDOCOdt_EXPONENTIAL(COdataIndcs),'bd','DisplayName','Exponential','MarkerFaceColor','b','MarkerEdgeColor','b');
+        plot(xCO(COdataIndcs),dDOCOdt_EXPCONV(COdataIndcs),'md','DisplayName','Exp Conv','MarkerFaceColor','m','MarkerEdgeColor','m');
+        plot(xCO(COdataIndcs),dDOCOdt_EXPCONV_TOFFSET(COdataIndcs),'kd','DisplayName','Exp Conv + Toffset','MarkerFaceColor','k','MarkerEdgeColor','k');
         xlabel('CO Concentration (molecule cm^{-3})');
         ylabel('d[DOCO]/dt (molecule cm^{-3} s^{-1})');
         legend;
         set(gca,'FontSize',15);
+        return
 
         figure;plot(xN2(N2dataIndcs),dDOCOdt_QUADRATIC(N2dataIndcs),'ko','DisplayName','Quadratic','MarkerFaceColor','k','MarkerEdgeColor','k');hold on;
         plot(xN2(N2dataIndcs),dDOCOdt_LINEAR(N2dataIndcs),'rs','DisplayName','Linear','MarkerFaceColor','r','MarkerEdgeColor','r');
@@ -459,6 +493,14 @@ function DOCO_v14_COandN2figures(fitobjnames,fitobjs)
         legend;
         set(gca,'FontSize',15);
 
+    %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %  %% RANDOM CO PLOT       %%
+    %  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
+    figure;
+    plot(xCO(COdataIndcs),dDOCOdt_QUADRATIC(COdataIndcs),'ko','MarkerFaceColor','none','MarkerEdgeColor','k','LineWidth',1);hold on;
+    set(gca,'FontSize',15);
+    
+    
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %  %% CO SCAN PLOTS (DIV BY CO)       %%
     %  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

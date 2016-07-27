@@ -1,5 +1,8 @@
 classdef fitsobject < handle
-    %kineticsobject
+    %FITSOBJECT - Object containing fit coefficients and initial conditions
+    %for kinetics studies. Methods are:
+    %   .getinitialconditions('molecule')
+    %   .getkineticsdata('molecule','time')
     
     properties
         name;
@@ -25,6 +28,27 @@ classdef fitsobject < handle
     end
     
     methods
+        %% Exposed functions
+        function y = getinitialconditions(obj,initialconditionsname)
+            y = nan(size(obj));
+            for i = 1:numel(obj)
+                y(i) = obj(i).initialConditionsTable.(initialconditionsname);
+            end
+        end
+        function y = getkineticsdata(obj,kineticsdataname,interptime)
+            if numel(obj) == 1 && nargin == 2
+                kineticsdataindex = find(strcmp(obj.fitbNames,kineticsdataname));
+                y = obj.fitb(kineticsdataindex,:);
+                return
+            end
+            
+            y = ezeros(size(obj));
+            for i = 1:numel(obj)
+                kineticsdataindex = find(strcmp(obj(i).fitbNames,kineticsdataname));
+                y(i) = edouble(interp1(obj(1).t,obj(i).fitb(kineticsdataindex,:),interptime),interp1(obj(1).t,obj(i).fitbError(kineticsdataindex,:),interptime));
+            end
+        end
+        %% Internal functions
         function obj = fitsobject(varargin)
 %             if nargin > 0
 %                 filename = varargin{1};
@@ -72,6 +96,9 @@ classdef fitsobject < handle
             for i = 1:numel(obj.plotHandles)
                 delete(obj.plotHandles{i});
             end
+        end
+        function help(obj)
+            help fitsobjects.fitsobject
         end
         function updatePlots(obj)
             % Remove deleted plot handles
@@ -248,24 +275,32 @@ classdef fitsobject < handle
                 error('groupID argument must be scalar');
             end
             
-            % Get initial conditions
-            tableDose = zeros(numel(obj.t),numel(obj.initialConditionsTable));
-            tableDose(:) = NaN;
-            zeroInd = find((obj.t+50) == 0);
-            if isempty(zeroInd)
-                error('Need to handle no t=0 case...');
-            end
-            tableDose(zeroInd,:) = reshape(table2array(obj.initialConditionsTable),1,[]);
+            % Get integration time
+            intBox = obj.initialConditionsTable.intWindow;
             
+            % Get initial conditions            
             varNames1 = vipadesktop.makeVariableName(obj.fitbNames);
             varNames2 = vipadesktop.makeVariableName(obj.initialConditionsTable.Properties.VariableNames);
+            varNames3 = vipadesktop.makeVariableName(strcat(obj.fitbNames,'_Error'));
             varUnits = {};
-            for i = 1:(numel(varNames1)+numel(varNames2))
+            for i = 1:(numel(varNames1)+numel(varNames2)+numel(varNames3))
                 varUnits{end+1} = 'molecule';
             end
             
+            zeroInd = find((obj.t+intBox) == 0);
+            if isempty(zeroInd)
+                tableDose = zeros(numel(obj.t)+1,numel(obj.initialConditionsTable));
+                tableDose(:) = NaN;
+                tableDose(1,:) = reshape(table2array(obj.initialConditionsTable),1,[]);
+                t = array2table([groupID.*ones(numel(obj.t)+1,1) [0; (obj.t(:)+intBox)] [NaN.*ones(1,size(obj.fitb(obj.fitbNamesInd,:)',2)); obj.fitb(obj.fitbNamesInd,:)'/pathlength] tableDose [NaN.*ones(1,size(obj.fitbError(obj.fitbNamesInd,:)',2)); obj.fitbError(obj.fitbNamesInd,:)'/pathlength]],'VariableNames',{'ID','time',varNames1{:},varNames2{:},varNames3{:}});
+            else
+                tableDose = zeros(numel(obj.t),numel(obj.initialConditionsTable));
+                tableDose(:) = NaN;
+                tableDose(zeroInd,:) = reshape(table2array(obj.initialConditionsTable),1,[]);
+                t = array2table([groupID.*ones(size(obj.t(:))) (obj.t(:)+intBox) obj.fitb(obj.fitbNamesInd,:)'/pathlength tableDose obj.fitbError(obj.fitbNamesInd,:)'/pathlength],'VariableNames',{'ID','time',varNames1{:},varNames2{:},varNames3{:}});
+            end
+           
             % Construct a table with the values from the fits
-            t = array2table([groupID.*ones(size(obj.t(:))) (obj.t(:)+50) obj.fitb(obj.fitbNamesInd,:)'/pathlength tableDose],'VariableNames',{'ID','time',varNames1{:},varNames2{:}});
             t.Properties.VariableUnits = {'','microsecond',varUnits{:}};
         end
         function output_txt = datatipUpdateFunction(obj,evobj,event_obj)

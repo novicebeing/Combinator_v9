@@ -33,17 +33,6 @@ Cosmetic / Ease of use
 
 - Add inspect option on objects
 
-DOCO Acquire Procedure:
-----------------------
+- add progress bars for saving
 
-1. Acquire a cavity transmission image, use to fit fringes
-
-2. Acquire a OD+CO spectrum, use to fit D2O lines
-
-3. Acquire other data
-
-new note dasdf
-
-add progress bars for saving
-
-drag drop command line? other workspace?
+- drag drop command line?
