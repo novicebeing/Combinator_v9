@@ -1,4 +1,5 @@
 function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraSingleImage()
+
     % Start Acquisition thread
     CAM_width = 320;
     CAM_height = 256;

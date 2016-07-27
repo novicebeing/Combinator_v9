@@ -53,6 +53,15 @@ function [imageOut,timeOut,acquireTypeOut,referenceImagesBoolean] = cameraKineti
     % Construct an average background image
     bkgImage = mean(double(collectedImageArray(:,:,indBkg)),3);
     
+%     Make some bkg image stats
+%     bkgImageA = double(collectedImageArray(:,:,indBkg(1)));
+%     bkgImageB = double(collectedImageArray(:,:,indBkg(2)));
+%     bkgImageSubtract = bkgImageA - bkgImageB;
+%     
+%     vertStd = mean(std(bkgImageSubtract,[],2),1);
+%     horizStd = mean(std(bkgImageSubtract,[],1),2);
+%     fprintf('vert:%f,horiz:%f\n',vertStd,horizStd);
+    
     % Find the bad pixels in the background image
     badPixelIndcs = find(double(bkgImage)<0.75*mean(bkgImage(:)) | double(bkgImage)>1.5*mean(bkgImage(:)));
     
