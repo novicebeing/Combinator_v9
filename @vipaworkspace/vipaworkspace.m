@@ -463,6 +463,13 @@ switch ed.Request
             waitbar(i/numel(ed.Variables),hwait);
         end
         close(hwait);
+    case 'spectralist_correctxaxis'
+        %hwait = waitbar(0,'Correcting DOCO X Axis...', 'WindowStyle', 'modal');
+        for i = 1:numel(ed.Variables)
+            this.SpectraList.correctxaxis(ed.Variables(i));
+            %waitbar(i/numel(ed.Variables),hwait);
+        end
+        %close(hwait);
     case 'fitslist_runfitanalysisfunction'
             this.FitsList.runfitanalysisfunction(ed.Variables,this.fitAnalysisFunction);
     case 'spectralist_usexaxisforallspectra'

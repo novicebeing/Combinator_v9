@@ -89,20 +89,20 @@ classdef fitbrowserwithcolors < handle
                 this.noImageBoolean = true;
             else
                 
-                plotcolor = [0,0,0];
-                this.plotHandle = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.y(:,:,ind),[],1),'Color',plotcolor);
+                plotcolor = [0.3,0.3,0.3];
+                this.plotHandle = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.y(:,:,ind),[],1),'Color',plotcolor,'LineWidth',0.5);
                 hold(this.axesHandle,'on');
                 co = [  1 1 1;...
                         0    0.4470    0.7410;...
                         0.8500    0.3250    0.0980;...
                         0.4940    0.1840    0.5560;...
-                        0.4660    0.6740    0.1880;...
+                        0.4660-0.1    0.6740-0.1    0.1880-0.1;...
                         0.6350    0.0780    0.1840];
                 set(this.axesHandle,'ColorOrder',co);
                 this.simPlotHandles = [];
                 for i = 1:numel(this.Parent.fitbNames)
                     indx = this.Parent.fitbNamesInd(i);
-                    this.simPlotHandles(i) = plot(this.axesHandle,this.Parent.wavenum(:),this.Parent.fitM(:,indx).*this.Parent.fitb(indx,ind),'-');
+                    this.simPlotHandles(i) = plot(this.axesHandle,this.Parent.wavenum(:),this.Parent.fitM(:,indx).*this.Parent.fitb(indx,ind),'-','LineWidth',1.5);
                     hold on;
                 end
                 hold(this.axesHandle,'off');

@@ -288,10 +288,10 @@ function DOCO_v32_COandN2figures(fitobjnames,fitobjs)
         %  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             % ALL FITS
-            DOCOfitIndcs = 3:7;
+            DOCOfitIndcs = 4:7;
             DOCOscalefactor = 1e12;
-            [xData, yData, weights] = prepareCurveData( time(DOCOfitIndcs)',DOCOtrace(DOCOfitIndcs)'/DOCOscalefactor,1./(DOCOtraceErr(DOCOfitIndcs)'/DOCOscalefactor).^2 );
-            [xData, yDataSim] = prepareCurveData( time(DOCOfitIndcs)',ysimbox(DOCOfitIndcs,docosimInd)./DOCOscalefactor );
+            [xData, yData, weights] = prepareCurveData( time(DOCOfitIndcs)'-time(DOCOfitIndcs(1))',DOCOtrace(DOCOfitIndcs)'/DOCOscalefactor,1./(DOCOtraceErr(DOCOfitIndcs)'/DOCOscalefactor).^2 );
+            [xData, yDataSim] = prepareCurveData( time(DOCOfitIndcs)'-time(DOCOfitIndcs(1))',ysimbox(DOCOfitIndcs,docosimInd)./DOCOscalefactor );
             
             
             % LINEAR

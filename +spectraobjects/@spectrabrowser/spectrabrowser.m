@@ -53,14 +53,14 @@ classdef spectrabrowser < handle
             % Construct a context menu for the axes
             c = uicontextmenu(this.figureHandle);
             this.figureHandle.UIContextMenu = c;
-            topmenu = uimenu('Parent',c,'Label','Change Color','Callback',@singlepixeltimeplot);
+            topmenu = uimenu('Parent',c,'Label','Single Point Plot','Callback',@singlepixeltimeplot);
             
             function singlepixeltimeplot(src,callbackdata)
                 pos = this.lastdatacursorposition;
                 [~,idx] = min(abs(this.Parent.wavenum(:) - pos(1)));
                 
                 [ii,jj] = ind2sub([size(this.Parent.yavg,1) size(this.Parent.yavg,2)],idx);
-                figure;scatter(this.Parent.tavg,reshape(this.Parent.yavg(ii,jj,:),1,[]));
+                figure;errorbar(this.Parent.tavg,reshape(this.Parent.yavg(ii,jj,:),1,[]),reshape(this.Parent.ystderror(ii,jj,:),1,[]));
             end
             
             % Figure Close Function
@@ -144,6 +144,8 @@ classdef spectrabrowser < handle
                     ylabel(this.axesHandle,'Absorbance');
                 end
                 this.noImageBoolean = false;
+                this.sliderHandle.Value = 1;
+                this.sliderHandle.Max = numel(this.Parent.tavg);
             end
         end
         function updateImagePlot(this)
