@@ -6,14 +6,23 @@ cs = getconfigset(modelobj,'active');
 % Define the variants
 variants = sbiovariant('fvariant');
 addcontent(variants, {'parameter', 'f', 'value', 0.164});
-addcontent(variants, {'parameter', 'ODscale', 'value', 0.35+0*0.12});
-addcontent(variants, {'parameter', 'DOCOscale', 'value', 0.35});
+addcontent(variants, {'parameter', 'ODscale', 'value', 0.048});
+addcontent(variants, {'parameter', 'DOCOscale', 'value', 0.048});
 addcontent(variants, {'parameter', 'D2Oscale', 'value', 1});
 addcontent(variants, {'parameter', 'tpump', 'value', 25000});
-addcontent(variants, {'parameter', 'HOCO_LOSS.k', 'value', 0});%20000});
-
+addcontent(variants, {'parameter', 'HOCO_LOSS.k', 'value', 1000});
+addcontent(variants, {'parameter', 'HOCO_O3_OH_CO_O3.k_HOCO_O3_OH_CO_O3', 'value', 3.2e-11});
+    
+    % Define the reaction rates
+    k1b = 7.5e-14;
+    k1aN2 = 6.54588e-33;
+    k1aCO = 1.61386e-32;
+    addcontent(variants, {'parameter', 'k1aN2', 'value', k1aN2});
+    addcontent(variants, {'parameter', 'k1aCO', 'value', k1aCO});
+    addcontent(variants, {'parameter', 'OH_CO_H_CO2.k1b', 'value', k1b});
+    
 % Define the fit data
-pathlength = 14700;
+pathlength = 5348;
 for i = 1:length(fitobjs)
     if i == 1
         dataToFit = fitobjs{i}.getTable(1,pathlength);
@@ -173,8 +182,8 @@ intBox = this.initialConditionsTable.intWindow;
     function [scaleout, fitcolor, legendtext] = getscalingfactor(fitname)
         switch fitname
             case 'DOCOscaled'
-                scaleout = 4;
-                legendtext = 'trans-DOCO Sim (x4)';
+                scaleout = 1;
+                legendtext = 'trans-DOCO Sim';
                 fitcolor = [0.871    0.49    0.0];
 %             case 'D2Oscaled'
 %                 scaleout = 1;
@@ -185,8 +194,8 @@ intBox = this.initialConditionsTable.intWindow;
                 legendtext = 'OD Sim';
                 fitcolor = [0    0.4470    0.7410];
             case 'trans-DOCO'
-                scaleout = 4;
-                legendtext = 'trans-DOCO (x4)';
+                scaleout = 1;
+                legendtext = 'trans-DOCO';
                 fitcolor = [0.871    0.49    0.0];
 %             case 'D2O'
 %                 scaleout = 1;

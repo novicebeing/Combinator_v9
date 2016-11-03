@@ -63,11 +63,11 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,vara
         Yerr = dataYerrnonnan;
         M = fitMatrixnonnan;
         alpha = 0.32;
-        [b,bError] = regress(Y,M./repmat(nanmean(fitMatrixnonnan,1),size(fitMatrixnonnan,1),1),alpha);
-        bStdErr = (bError(:,2)-bError(:,1))/2;
-        %[b,stdx,mse] = lscov(M./repmat(nanmean(fitMatrixnonnan,1),size(fitMatrixnonnan,1),1),Y,1./Yerr.^2);
+        %[b,bError] = regress(Y,M./repmat(nanmean(fitMatrixnonnan,1),size(fitMatrixnonnan,1),1),alpha);
+        %bStdErr = (bError(:,2)-bError(:,1))/2;
+        [b,stdx,mse] = lscov(M./repmat(nanmean(fitMatrixnonnan,1),size(fitMatrixnonnan,1),1),Y,1./Yerr.^2);
         %bStdErr./(stdx/sqrt(mse))
-        %bStdErr = stdx*sqrt(1/mse);
+        bStdErr = stdx/min(1,sqrt(mse));
         beta(:,i) = b./reshape(nanmean(fitMatrixnonnan,1),[],1);
         betaError(:,i) = bStdErr./reshape(nanmean(fitMatrixnonnan,1),[],1);
     end

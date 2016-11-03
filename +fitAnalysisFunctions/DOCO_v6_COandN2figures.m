@@ -111,9 +111,9 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
          %[fitresult, gof] = fit( xData, yData, ft, opts,'problem',intBox );
         
         M = [(xData+intBox/2) (xData.^2+intBox.*xData+intBox.^2/3)];
-        [b,stdb,mse] = lscov(M,DOCOtrace(ind3)'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
-        
-        dDOCOdt3 = edouble(b(1),stdb(1)*sqrt(1/mse))*1e12*1e6;
+        [b,stdb,mse] = lscov(M,(DOCOtrace(ind3))'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
+        chisqr = sum((DOCOtrace(ind3)/1e12-b'*M').^2./(DOCOtraceErr(ind3)/1e12).^2)/(5-2-1)
+        dDOCOdt3 = edouble(b(1),stdb(1)/min(1,sqrt(mse)))*1e12*1e6;
         
         i = 1;
         dt = (time(secondidx+i) - time(firstidx+i))/1e6;
@@ -144,17 +144,25 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     %[xData, yData, weights] = prepareCurveData( x.value(:), y.value(:), 1./y.errorbar(:).^2 );
 
     % Set up fittype and options.
-    X = [xCO.value(:).^2 xCO.value(:).*xN2.value(:) xCO.value(:).*xO3.value(:) xCO.value(:).*1e32./xO3.value(:)];% yDOCO_LOSS*1e16];
+    X = [xCO.value(:).^2 xCO.value(:).*xN2.value(:)];% yDOCO_LOSS*1e16];
     Xplot = [xCO.value(:) xCO.value(:)];
     [b,bstd,mse] = lscov(X,y.value(:),1./y.errorbar(:).^2);
-    %b(3) = 5e-11/1e16;
+    
+    
     
     fprintf('b = \n');
     for i=1:numel(b)
-        fprintf('%g +- %g\n',b(i),bstd(i)/sqrt(mse));
+        fprintf('%g +- %g\n',b(i),bstd(i));
     end
-
+    fprintf('mse = %g\n',sqrt(mse));
+    
     ysim = b'*X';
+    b(3) = 0;
+    bstd(3) = 0;
+    b(4) = 0;
+    bstd(4) = 0;
+    
+    redChiSqr = sum((y.value(:)'-ysim).^2./y.errorbar(:)'.^2)/(numel(y)-2-1)
     
     %ft = fittype( 'poly2' );
     %opts = fitoptions( 'Method', 'LinearLeastSquares' );
@@ -299,7 +307,7 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     plot(xCO(indcs50),y(indcs50),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
     hold on;
     plot(xCO(indcs10),y(indcs10),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
-    xlabel('N2 Concentration [mlc cm^{-3}]');
+    xlabel('CO Concentration [mlc cm^{-3}]');
     ylabel('DOCO Rate Relative to OD [s^{-1}]');
     plot(COlinex,COliney,'r');
     %plot(xfit,yfit,'Color','r','LineWidth',2);
@@ -308,6 +316,7 @@ function DOCO_v6_COandN2figures(fitobjnames,fitobjs)
     %scatter(xD2,yysim,'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
     set(gca,'FontSize',14);
     
+    return
     %% Generate another O3 Plot with only O3 scans
     O3dataNames = {...
         'v_20160216_O3_1',...

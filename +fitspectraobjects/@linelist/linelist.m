@@ -8,7 +8,7 @@ classdef linelist < handle & JavaVisible
         lineposition;
         linestrength;
     end
-    properties (Transient = false, Hidden = true)
+    properties (Transient = true, Hidden = true)
         % Spectrum Cache
         spectrumCacheParams = [];
         spectrumCacheWavenum = [];

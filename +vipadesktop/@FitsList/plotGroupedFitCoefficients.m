@@ -23,6 +23,7 @@ function hs = plotGroupedFitCoefficients(this, plantids)
     for i = 1:length(plants)
         time = plants{i}.t;
         fitCoeffs = plants{i}.fitb;
+		fitCoeffErrors = plants{i}.fitbError;
         fitCoeffNames = plants{i}.fitbNames;
         %[time,fitCoeffs,fitCoeffNames] = plants{i}.getfitcoefficients();
         for j = 1:numel(fitCoeffNames)
@@ -37,7 +38,8 @@ function hs = plotGroupedFitCoefficients(this, plantids)
                 plotLabels{idx} = {};
                 set(h,'name',fitCoeffNames{j},'numbertitle','off')
             end
-            plot(time,fitCoeffs(j,:),'.-','Parent',axesHandles(idx)); hold on;
+            %errorbar(time,fitCoeffs(j,:),fitCoeffErrors(j,:),'.-','Parent',axesHandles(idx)); hold on;
+            scatter(time,fitCoeffs(j,:),'o','Parent',axesHandles(idx)); hold on;
             title(fitCoeffNames{j});
             
             plotLabels{idx} = {plotLabels{idx}{:},strrep(plantNames{i},'_','\_')};

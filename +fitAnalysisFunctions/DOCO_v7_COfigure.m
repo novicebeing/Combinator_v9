@@ -105,7 +105,7 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
         M = [(xData+intBox/2) (xData.^2+intBox.*xData+intBox.^2/3)];
         [b,stdb,mse] = lscov(M,DOCOtrace(ind3)'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
         
-        dDOCOdt3 = edouble(b(1),stdb(1)*sqrt(1/mse))*1e12*1e6;
+        dDOCOdt3 = edouble(b(1),stdb(1))*1e12*1e6;
         %dDOCOdt3 = (DOCOtrace(ind3(2))-DOCOtrace(ind3(1)))/(time(ind3(2))-time(ind3(1)))*1e6;
         %dDOCOdt3 = (edouble(DOCOtrace(ind3(2)),DOCOtraceErr(ind3(2)))-edouble(DOCOtrace(ind3(1)),DOCOtraceErr(ind3(1))))/(time(ind3(2))-time(ind3(1)))*1e6;
         %dDOCOdt3 = dDOCOdt3.value(:);
@@ -120,34 +120,36 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
             set(htop,'Position',[0.157094594594595 0.583837209302326 0.814189189189189 0.341162790697675]);
             set(hbottom,'Position',[0.157094594594595 0.2 0.812500000000001 0.341162790697674]);
         end
-        if strcmp(fitobjnames{ii},'v_20160210_CO_1')
-            % Plot DOCO
-            xxxsim = linspace(min(time(ind3)),max(time(ind3)),100)';
-            Mxxx = [(xxxsim+intBox/2) (xxxsim.^2+intBox.*xxxsim+intBox.^2/3)];
-            indxxx = find(time<100 & time>=0);
-            axes(htop); errorbar(time(indxxx),DOCOtrace(indxxx)/1e12,DOCOtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','50 \mus','Color',[0 0.447 0.741]); hold on;
-            plot(xxxsim,(b')*(Mxxx'),'LineWidth',smallplotlinewidth,'DisplayName','50 \mus fit','Color',[0 0.447 0.741]);
-            xlim([-5 80]);
-            ylim([-0.02 0.45]);
-            set(gca,'FontSize',12);
-            set(gca,'XTickLabel',[]);
-            % Plot OD
-            axes(hbottom); errorbar(time(indxxx),ODtrace(indxxx)/1e12,ODtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'Color',[0 0.447 0.741]); hold on;
-            xlim([-5 80]);
-            ylim([0 4]);
-            set(gca,'FontSize',12);
-            linkaxes([htop hbottom],'x');
-        end
+%         if strcmp(fitobjnames{ii},'v_20160210_CO_1')
+%             % Plot DOCO
+%             xxxsim = linspace(min(time(ind3)),max(time(ind3)),100)';
+%             Mxxx = [(xxxsim+intBox/2) (xxxsim.^2+intBox.*xxxsim+intBox.^2/3)];
+%             indxxx = find(time<100 & time>=0);
+%             axes(htop); errorbar(time(indxxx),DOCOtrace(indxxx)/1e12,DOCOtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','50 \mus','Color',[0 0.447 0.741]); hold on;
+%             plot(xxxsim,(b')*(Mxxx'),'LineWidth',smallplotlinewidth,'DisplayName','50 \mus fit','Color',[0 0.447 0.741]);
+%             xlim([-5 80]);
+%             ylim([-0.02 0.45]);
+%             set(gca,'FontSize',12);
+%             set(gca,'XTickLabel',[]);
+%             % Plot OD
+%             axes(hbottom); errorbar(time(indxxx),ODtrace(indxxx)/1e12,ODtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'Color',[0 0.447 0.741]); hold on;
+%             xlim([-5 80]);
+%             ylim([0 4]);
+%             set(gca,'FontSize',12);
+%             linkaxes([htop hbottom],'x');
+%         end
         
         if strcmp(fitobjnames{ii},'v_20160315_ShortInt1')
             % Plot DOCO
             xxxsim = linspace(min(time(ind3)),max(time(ind3)),100)';
             Mxxx = [(xxxsim+intBox/2) (xxxsim.^2+intBox.*xxxsim+intBox.^2/3)];
-            indxxx = find(time<100 & time>=0);
+            indxxx = find(time<100 & time>=-25);
             axes(htop); errorbar(time(indxxx),DOCOtrace(indxxx)/1e12,DOCOtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'DisplayName','10 \mus','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]); hold on;
             plot(xxxsim,(b')*(Mxxx'),'LineWidth',smallplotlinewidth,'DisplayName','10 \mus fit','Color',[0.850980392156863 0.325490196078431 0.0980392156862745]);
-            xlim([-5 80]);
-            %xlabel('Time (\mus)');
+            xlim([-30 80]);
+            ylim([0 0.45]);
+            set(gca,'FontSize',12);
+            set(gca,'XTickLabel',[]);
             ylabel({'[DOCO]\times10^{-12}','(mlc cm{-3})'});
             legend1 = legend(htop,'show');
             set(legend1,...
@@ -156,7 +158,9 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
                 'EdgeColor',[1 1 1]);
             % Plot OD
             axes(hbottom); errorbar(time(indxxx),ODtrace(indxxx)/1e12,ODtraceErr(indxxx)/1e12,'.','LineWidth',smallplotlinewidth,'Color',[0.850980392156863 0.325490196078431 0.0980392156862745]); hold on;
-            xlim([-5 80]);
+            xlim([-30 80]);
+            ylim([0 4]);
+            set(gca,'FontSize',12);
             xlabel('Time (\mus)');
             ylabel({'[OD]\times10^{-12}';'(mlc cm{-3})'});
             annotation(gcf,'rectangle',[0.261000000000001 0.3875 0.169 0.125],'LineStyle','--');
@@ -187,8 +191,10 @@ function DOCO_v7_COfigure(fitobjnames,fitobjs)
     % Set up fittype and options.
     ft = fittype( 'poly2' );
     opts = fitoptions( 'Method', 'LinearLeastSquares' );
-    opts.Lower = [-Inf -inf 0];
-    opts.Upper = [Inf inf 0];
+    opts.Lower = [-inf -inf 0];
+    opts.Upper = [inf inf 0];
+    %opts.Lower = [-inf -inf 0];
+    %opts.Upper = [inf inf 0];
     opts.Weights = weights;
 
     % Fit model to data.

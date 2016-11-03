@@ -5,9 +5,9 @@ classdef spectrumsimulationbrowser < handle
         Parent
         
         % Simulation Parameters
-        wavenumMin = 2600;
-        wavenumMax = 2800;
-        numPoints = 20000;
+        wavenumMin = 2400;
+        wavenumMax = 2600;
+        numPoints = 40000;
         instrumentGaussianFWHM = 0.03;
         instrumentLorentzianFWHM = 0;
         

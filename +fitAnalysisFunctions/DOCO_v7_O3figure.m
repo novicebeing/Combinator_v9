@@ -19,12 +19,14 @@ function DOCO_v7_O3figure(fitobjnames,fitobjs)
         fitobject = fitobjs{ii};
         
         O3 = fitobject.initialConditionsTable.O3;
+        CO = fitobject.initialConditionsTable.CO;
+        ConcVal = fitobject.initialConditionsTable.N2;
         
-        try
+        %try
             intBox = fitobject.initialConditionsTable.intWindow;
-        catch ee
-            intBox = 50;
-        end
+        %catch ee
+        %    intBox = 50;
+        %end
         
         % Evaluate a slope for the first two OD points
         ODidx = find(strcmp('OD',fitobject.fitbNames));
@@ -45,22 +47,23 @@ function DOCO_v7_O3figure(fitobjnames,fitobjs)
         dt = (time(secondidx) - time(firstidx))/1e6;
 
         % Calculate the simulated data
-        %data = runsimbiologyscanincurrentworkspace(fitobject.getTable(1,14700),variants);
-        %[t,ysim,names] = getdata(data(1));
-        t=time;
-        ysim = zeros(numel(time),2);
+        data = runsimbiologyscanincurrentworkspace(fitobject.getTable(1,14700),variants);
+        [tsim,ysim,names] = getdata(data(1));
+        %t=time;
+        %ysim = zeros(numel(time),2);
         names = {'ODscaled','DOCOscaled'};
-        %t = t-50;
         
+        %intBox = 10;
+        t = tsim-intBox;
         ysimbox = zeros(size(ysim));
         for i = 1:numel(names)
             yyy = ysim(:,i);
             [~,ind,~] = unique(t);
             xint = linspace(nanmin(t),nanmax(t),2e5);
-            yint = interp1(t(ind),yyy(ind),xint);
-            windowSize = round(50/(xint(2)-xint(1)));
+            yint = interp1(t(ind),yyy(ind),xint,'spline',0);
+            windowSize = round(intBox/(xint(2)-xint(1)));
             yintbox = filter((1/windowSize)*ones(1,windowSize),1,yint);
-            ysimbox(:,i) = interp1(xint,yintbox,t);
+            ysimbox(:,i) = interp1(xint,yintbox,t,'spline',0);
         end
         
         % Get the proper indices for the data
@@ -73,15 +76,18 @@ function DOCO_v7_O3figure(fitobjnames,fitobjs)
         dDOCOdtsim = (interp1(t(ind),ysimbox(ind,docosimInd),time(secondidx))-interp1(t(ind),ysimbox(ind,docosimInd),time(firstidx)))/dt;
         dDOCOdt2sim = (1/(50e-6)^2*DOCOsim2+1/(25e-6)^2*DOCOsim1)*100e-6/2;
         
-        ODsim1 = interp1(t(ind),ysimbox(ind,odsimInd),time(firstidx));
-        ODsim2 = interp1(t(ind),ysimbox(ind,odsimInd),time(secondidx));
-        ODmeansim = (ODsim1+ODsim2)/2;
+        ODsim1 = interp1(t(ind),ysimbox(ind,odsimInd),time(firstidx+1));
+        ODsim2 = interp1(t(ind),ysimbox(ind,odsimInd),time(secondidx+1));
+        ODmeansim = (interp1(t(ind),ysimbox(ind,odsimInd),10)+...
+            interp1(t(ind),ysimbox(ind,odsimInd),20))/2;
+        ODmeansimTrue = interp1(t(ind),ysim(ind,odsimInd),1.5);
+        dDOCOdtsimTrue = (interp1(tsim(ind),ysim(ind,docosimInd),2)-interp1(tsim(ind),ysim(ind,docosimInd),1))/1e-6;
         
         
         % Calculate and print the DOCO slope
         dDOCOdt = (edouble(DOCOtrace(4),DOCOtraceErr(4))-edouble(DOCOtrace(3),DOCOtraceErr(3)))/(time(4)-time(3))*1e6;
         dDOCOdt2 = (1/(50e-6)^2*edouble(DOCOtrace(3),DOCOtraceErr(3))+1/(25e-6)^2*edouble(DOCOtrace(2),DOCOtraceErr(2)))*100e-6/2;
-        n = 2; ind3 = 3:7; p = polyfit(time(ind3)*1e-6,DOCOtrace(ind3),n);
+        n = 2; ind3 = 3:7;% p = polyfit(time(ind3)*1e-6,DOCOtrace(ind3),n);
         
         [xData, yData] = prepareCurveData( time(ind3),DOCOtrace(ind3)/1e12 );
 %         % Set up fittype and options.
@@ -93,8 +99,10 @@ function DOCO_v7_O3figure(fitobjnames,fitobjs)
         
         M = [(xData+intBox/2) (xData.^2+intBox.*xData+intBox.^2/3)];
         [b,stdb,mse] = lscov(M,DOCOtrace(ind3)'/1e12,1./(DOCOtraceErr(ind3)/1e12).^2);
+        bsim = lscov(M,interp1(t(ind),ysimbox(ind,docosimInd),xData,'spline',0)/1e12);
         
         dDOCOdt3 = edouble(b(1),stdb(1)*sqrt(1/mse))*1e12*1e6;
+        dDOCOdt3sim = bsim(1)*1e12*1e6;
         
 %         dDOCOdt3 = fitresult.b*1e12*1e6;
         %dDOCOdt3 = (DOCOtrace(ind3(2))-DOCOtrace(ind3(1)))/(time(ind3(2))-time(ind3(1)))*1e6;
@@ -115,10 +123,11 @@ function DOCO_v7_O3figure(fitobjnames,fitobjs)
 
         ODmean = (edouble(ODtrace(secondidx+i),ODtraceErr(secondidx+i))+edouble(ODtrace(firstidx+i),ODtraceErr(firstidx+i)))/2;
         
-         xxsim(ii) = O3;
-         yysim(ii) = dDOCOdtsim/ODmeansim;
+         xxsim(ii) = ConcVal;
+         %yysim(ii) = ODmeansim/ODmeansimTrue;%
+         yysim(ii) = (dDOCOdt3sim/ODmeansim)/(dDOCOdtsimTrue/ODmeansimTrue);
          y(ii) = dDOCOdt3/ODmean*edouble(1,0.01);
-         x(ii) = edouble(1,0)*O3;%ExtraRxns/ODmean/CO;
+         x(ii) = edouble(1,0)*ConcVal;%ExtraRxns/ODmean/CO;
          intTimes(ii) = intBox;
          
          waitbar(ii/numel(fitobjs),hwait);
@@ -151,14 +160,14 @@ function DOCO_v7_O3figure(fitobjnames,fitobjs)
     yfit = feval(fitresult,xfit);
     ci = predint(fitresult,xfit);
     
-    figure;plot(x(intTimes==50),y(intTimes==50),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
-    xlabel('O3 Concentration [mlc cm^{-3}]');
-    ylabel('DOCO Rate Relative to OD [s^{-1}]');
-    hold on;
-    plot(x(intTimes==10),y(intTimes==10),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
-    plot(xfit,yfit,'Color','r','LineWidth',2);
-    plot(xfit,ci(:,1),'r--','LineWidth',1);
-    plot(xfit,ci(:,2),'r--','LineWidth',1);
+    figure;%plot(x(intTimes==50),y(intTimes==50),'ko','MarkerFaceColor','k','MarkerEdgeColor','k');
+%     xlabel('O3 Concentration [mlc cm^{-3}]');
+%     ylabel('DOCO Rate Relative to OD [s^{-1}]');
+%     hold on;
+%     plot(x(intTimes==10),y(intTimes==10),'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
+%     plot(xfit,yfit,'Color','r','LineWidth',2);
+%     plot(xfit,ci(:,1),'r--','LineWidth',1);
+%     plot(xfit,ci(:,2),'r--','LineWidth',1);
    
     scatter(xxsim,yysim,'bo','MarkerFaceColor','b','MarkerEdgeColor','b');
     set(gca,'FontSize',14);

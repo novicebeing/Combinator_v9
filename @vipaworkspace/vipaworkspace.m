@@ -6,22 +6,12 @@ classdef vipaworkspace < handle
     
     properties
         TPComponent
-        TPComponent2
-        PlantListBrowser
-        PlantList
-        PIDTuner
-        SimulinkGateway
-        PlantIdentifier
-        OpenLoopRelinearizer
-        ClosedLoopRelinearizer
         DataBrowser
         ImagesList
         CalibrationList
         SpectraList
         FitSpectraList
         FitsList
-        TC
-        TabGC
         
         % Tabs
         hometab
@@ -168,8 +158,8 @@ classdef vipaworkspace < handle
 %             this.PIDTuner.TC.oneClick();
 %             this.PIDTuner.updateMessagePanel();
 %             %=====================================================================================================(Listeners)
-%             setClosingApprovalNeeded(this.TPComponent,true);
-%             addlistener(this.TPComponent, 'GroupAction',@(src, evnt) cbCloseGroup(this, evnt));
+             setClosingApprovalNeeded(this.TPComponent,true);
+             addlistener(this.TPComponent, 'GroupAction',@(src, evnt) cbCloseGroup(this, evnt));
 %             addlistener(this.TPComponent, 'ClientAction',@(src, evnt) cbClientAction(this, evnt));
 %             addlistener(this.PlantList, 'OpenLoopRelinearizationRequested', ...
 %                 @(es,ed)showOpenLoopRelinearizationTab(this));
@@ -183,9 +173,12 @@ classdef vipaworkspace < handle
         function open(this)
             %OPEN
             this.TPComponent.open;
+            groupwidth = 960;
             
             % Connect to statusbar
              this.MD = com.mathworks.mlservices.MatlabDesktopServices.getDesktop;
+             loc = com.mathworks.widgets.desk.DTLocation.createExternal( int16(100), int16(100), int16(groupwidth), int16(710));
+             this.MD.setGroupLocation(this.TPComponent.Name, loc);
              Frame = this.MD.getFrameContainingGroup(this.GroupName);
              this.StatusBar = ctrluis.toolstrip.StatusMessage(Frame);
 
@@ -198,7 +191,7 @@ classdef vipaworkspace < handle
         function close(this)
             %CLOSE
             this.PIDTuner.isGroupActionClosing = true;
-            delete(this.PIDTuner.ResponsePlots);
+            %delete(this.PIDTuner.ResponsePlots);
             this.TPComponent.close;
         end
         function val = getPIDBlockHandle(this)
@@ -268,6 +261,16 @@ classdef vipaworkspace < handle
         % Get Set functions
         function setFitAnalysisFunction(this,functionString)
             this.fitAnalysisFunction = str2func(sprintf('%s.%s','fitAnalysisFunctions',functionString));
+            
+%             fitAnalysisFunctionsPackage = what('fitAnalysisFunctions');
+%             this.fitAnalysisFunctions = {};
+%             for i = 1:numel(fitAnalysisFunctionsPackage.m)
+%                 [~,b,~] = fileparts(fitAnalysisFunctionsPackage.m{i});
+%                 this.fitAnalysisFunctions{end+1} = str2func(sprintf('%s.%s','fitAnalysisFunctions',b));
+%             end
+%             if numel(this.fitAnalysisFunctions) > 0
+%                 this.fitAnalysisFunction = this.fitAnalysisFunctions{1};
+%             end
         end
         function setAcquireFunction(this,acquireFunctionString)
             this.acquireFunction = str2func(sprintf('%s.%s','acquireFunctions',acquireFunctionString));
@@ -279,6 +282,21 @@ classdef vipaworkspace < handle
 end
 
 %=================================================================================================================(Callbacks)
+function cbCloseGroup(this, evnt)
+    %CBCLOSEGROUP
+    ET = evnt.EventData.EventType;
+    if strcmp(ET, 'CLOSING')
+        this.TPComponent.approveClose;
+    end
+    if strcmp(ET, 'CLOSED')
+        L = this.Listeners;
+        for ct = 1:numel(L)
+            delete(L{ct})
+        end
+        delete(this);
+    end
+end
+
 function cbPlantListBrowserRequest(this,ed)
 switch ed.Request
     % Image Acquire Events
@@ -348,7 +366,7 @@ switch ed.Request
     case 'plotgroupedfitcoefficients'
         hs = this.FitsList.plotGroupedFitCoefficients(ed.Variables);
         for h = hs
-            this.TPComponent.addFigure(h);
+           this.TPComponent.addFigure(h);
         end
     case 'exportDOCOglobals'
         this.FitsList.exportDOCOglobals(ed.Variables);
@@ -444,6 +462,13 @@ switch ed.Request
             waitbar(i/numel(ed.Variables),hwait);
         end
         close(hwait);
+    case 'spectralist_correctxaxis'
+        %hwait = waitbar(0,'Correcting DOCO X Axis...', 'WindowStyle', 'modal');
+        for i = 1:numel(ed.Variables)
+            this.SpectraList.correctxaxis(ed.Variables(i));
+            %waitbar(i/numel(ed.Variables),hwait);
+        end
+        %close(hwait);
     case 'fitslist_runfitanalysisfunction'
             this.FitsList.runfitanalysisfunction(ed.Variables,this.fitAnalysisFunction);
     case 'spectralist_usexaxisforallspectra'

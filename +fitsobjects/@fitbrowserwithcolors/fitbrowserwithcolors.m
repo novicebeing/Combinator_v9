@@ -36,6 +36,48 @@ classdef fitbrowserwithcolors < handle
             this.Update();
             set(this.sliderHandle,'Callback',@(es,ed) this.updateImagePlot());
             
+            % Construct a context menu for the axes
+            c = uicontextmenu(this.figureHandle);
+            this.figureHandle.UIContextMenu = c;
+            topmenu = uimenu('Parent',c,'Label','Generate Movie','Callback',@generatemovie);
+			
+			% Generate spectra movie
+            function generatemovie(src,callbackdata)
+				% set the movie save path
+				[filename,filepath] = uiputfile( ...
+					{  '*.mp4','MPEG-4 (*.mp4)'; ...
+					   '*.avi',  'AVI (*.avi)'}, ...
+					   'Pick a file');
+
+				if filepath == 0
+					return
+				end
+				
+				[~,ext] = fileparts(filename);
+				
+				timePerFrame = 0.2;
+				if strcmp(ext,'mp4')
+					v = VideoWriter(fullfile(filepath,filename),'MPEG-4');
+				else
+					v = VideoWriter(fullfile(filepath,filename));
+				end
+				
+				set(v,'FrameRate',1./timePerFrame);
+				open(v);
+				
+				maxval = 26;
+				F(maxval) = struct('cdata',[],'colormap',[]);
+				for i = 1:maxval
+					set(this.sliderHandle,'Value',i);
+					this.Update();
+					F(i) = getframe(this.figureHandle);
+					writeVideo(v,F(i));
+				end
+				
+				% save the movie
+				close(v);
+            end
+			
             % Figure Close Function
             function figCloseFunction(src,callbackdata)
                 delete(gcf);
@@ -89,20 +131,20 @@ classdef fitbrowserwithcolors < handle
                 this.noImageBoolean = true;
             else
                 
-                plotcolor = [0,0,0];
-                this.plotHandle = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.y(:,:,ind),[],1),'Color',plotcolor);
+                plotcolor = [0.3,0.3,0.3];
+                this.plotHandle = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.y(:,:,ind),[],1),'Color',plotcolor,'LineWidth',0.5);
                 hold(this.axesHandle,'on');
                 co = [  1 1 1;...
                         0    0.4470    0.7410;...
                         0.8500    0.3250    0.0980;...
                         0.4940    0.1840    0.5560;...
-                        0.4660    0.6740    0.1880;...
+                        0.4660-0.1    0.6740-0.1    0.1880-0.1;...
                         0.6350    0.0780    0.1840];
                 set(this.axesHandle,'ColorOrder',co);
                 this.simPlotHandles = [];
                 for i = 1:numel(this.Parent.fitbNames)
                     indx = this.Parent.fitbNamesInd(i);
-                    this.simPlotHandles(i) = plot(this.axesHandle,this.Parent.wavenum(:),this.Parent.fitM(:,indx).*this.Parent.fitb(indx,ind),'-');
+                    this.simPlotHandles(i) = plot(this.axesHandle,this.Parent.wavenum(:),this.Parent.fitM(:,indx).*this.Parent.fitb(indx,ind),'-','LineWidth',1.5);
                     hold on;
                 end
                 hold(this.axesHandle,'off');

@@ -1,11 +1,4 @@
-function [simPeaks,expPeaks] = correctDOCOwavenumAxis( obj, varargin )
-
-    if numel(varargin) > 0
-        import mlreportgen.dom.*;
-        DOCOreport = varargin{1};
-    else
-        DOCOreport = [];
-    end
+function correctWavenumAxis( obj, varargin )
     
     % Perform a spectral correction using D2O
 	
@@ -16,9 +9,9 @@ function [simPeaks,expPeaks] = correctDOCOwavenumAxis( obj, varargin )
     % Get the data
     fitx = obj.wavenum;
     fity = obj.ysum(:,:,ind)./obj.wsum(:,:,ind);
-    fity((fitx > 2623.2) & (fitx < 2623.25)) = NaN;
-    fity(fitx > 2673) = NaN;
-    fity(fitx < 2659) = NaN;
+    %fity((fitx > 2623.2) & (fitx < 2623.25)) = NaN;
+    %fity(fitx > 2673) = NaN;
+    %fity(fitx < 2659) = NaN;
     %fity((fitx > 2658.54) & (fitx < 2658.86)) = NaN;
     %fity(fitx<2680) = NaN;
 
@@ -33,18 +26,22 @@ function [simPeaks,expPeaks] = correctDOCOwavenumAxis( obj, varargin )
     n_0 = 2.6867805e19;     % Loschmidt mlc/cm^3
     D2O_S = D2O.data(:,8)./n_0; % now in cm/mlc
     D2O_wavenum = D2O.data(:,1); % now in cm/mlc
-
+    indcs = D2O_S>1e-22;
+    D2O_S = D2O_S(indcs);
+    D2O_wavenum = D2O_wavenum(indcs);
+    
     % Open the fitting figure
     fitobj = spectraobjects.VIPAxaxis(centerWavenum,vertScale,horizScale,fity);
     fitobj.setSimulationSpectrum(D2O_wavenum,D2O_S);
 
     % Fit the x axis
-    fitobj.autoSelectPeaks();
-    fitobj.findCorrespondingPeaks();
-    fitobj.fitYaxis();
+    %fitobj.autoSelectPeaks();
+    %fitobj.findCorrespondingPeaks();
+    %fitobj.fitYaxis();
+    uiwait(fitobj.fitbrowser());
     
     % Display the x axis fitting on the report
-    [simPeaks,expPeaks] = fitobj.compareSimExpPeaks();
+    %[simPeaks,expPeaks] = fitobj.compareSimExpPeaks();
 
     % Get the x axis
     obj.wavenum = reshape(fitobj.getWavenum(),[],1);
