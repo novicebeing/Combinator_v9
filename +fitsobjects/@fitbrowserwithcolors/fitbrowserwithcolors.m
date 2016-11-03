@@ -53,6 +53,23 @@ classdef fitbrowserwithcolors < handle
 					return
 				end
 				
+				prompt = {'Time per frame (s)','Min spectra time (us)','Max spectra time (us)'};
+				dlg_title = 'Movie Settings';
+				num_lines = 1;
+				defaultans = {'0.2',num2str(min(this.Parent.t)),num2str(max(this.Parent.t))};
+				answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
+				
+				if isempty(answer)
+					return
+				end
+				
+				% get the responses
+				timePerFrame = str2double(answer{1});
+				minSpectraTime = str2double(answer{2});
+				maxSpectraTime = str2double(answer{3});
+				
+				indcs = find(this.Parent.t >= minSpectraTime & this.Parent.t <= maxSpectraTime);
+				
 				[~,ext] = fileparts(filename);
 				
 				timePerFrame = 0.2;
@@ -65,10 +82,10 @@ classdef fitbrowserwithcolors < handle
 				set(v,'FrameRate',1./timePerFrame);
 				open(v);
 				
-				maxval = 26;
-				F(maxval) = struct('cdata',[],'colormap',[]);
-				for i = 1:maxval
-					set(this.sliderHandle,'Value',i);
+				
+				F(numel(indcs)) = struct('cdata',[],'colormap',[]);
+				for i = 1:numel(indcs)
+					set(this.sliderHandle,'Value',indcs(i));
 					this.Update();
 					F(i) = getframe(this.figureHandle);
 					writeVideo(v,F(i));
