@@ -72,7 +72,6 @@ classdef fitbrowserwithcolors < handle
 				
 				[~,ext] = fileparts(filename);
 				
-				timePerFrame = 0.2;
 				if strcmp(ext,'mp4')
 					v = VideoWriter(fullfile(filepath,filename),'MPEG-4');
 				else
