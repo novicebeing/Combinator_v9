@@ -26,7 +26,7 @@ function correctWavenumAxis( obj, varargin )
     n_0 = 2.6867805e19;     % Loschmidt mlc/cm^3
     D2O_S = D2O.data(:,8)./n_0; % now in cm/mlc
     D2O_wavenum = D2O.data(:,1); % now in cm/mlc
-    indcs = D2O_S>1e-20;
+    indcs = D2O_S>1e-22;
     D2O_S = D2O_S(indcs);
     D2O_wavenum = D2O_wavenum(indcs);
     

@@ -21,7 +21,7 @@ VIPA Workspace TODO List:
 
 Cosmetic / Ease of use
 
-- Add fixed with left sidebar
+- Add fixed width left sidebar
 
 - Add normalization option in group plots
 
@@ -36,3 +36,5 @@ Cosmetic / Ease of use
 - add progress bars for saving
 
 - drag drop command line?
+
+- Add "Export to base workspace"

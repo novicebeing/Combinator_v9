@@ -5,6 +5,10 @@ classdef VIPAxaxis < handle
         % 
         title;
 
+		% Plot axes
+		axExp;
+		hExp;
+		
         % Spectrum Parameters
         yIn;
 
@@ -52,8 +56,7 @@ classdef VIPAxaxis < handle
             linkaxes([axExp,axSim],'x');
             axmenu = uicontextmenu();
             set(axExp,'UIContextMenu',axmenu);
-            
-            
+			
             hSim = obj.plotSim(axSim);
             obj.updatePlotSim(axSim,hSim);
 
@@ -67,6 +70,10 @@ classdef VIPAxaxis < handle
             hold(axExp,'on');
             hExp = obj.plotExp(axExp);hold(axExp,'off');
             obj.updatePlotExp(axExp,hExp);
+			
+            % Set axes and stuff
+			obj.axExp = axExp;
+			obj.hExp = hExp;
             
             uimenu('Parent',axmenu,'Label','Weighted Mean of Brushed Points','Callback',@(s,e) obj.weightedMeanOfBrushedPoints(axExp,hExp,hExpStem));
             uimenu('Parent',axmenu,'Label','Auto Select Peaks','Callback',@(s,e) obj.autoSelectPeaksGUI(axExp,hExp,hExpStem));
@@ -74,9 +81,44 @@ classdef VIPAxaxis < handle
             uimenu('Parent',axmenu,'Label','Fit the Peaks','Callback',@(s,e) obj.fitYaxisGUI(axExp,hExp,hExpStem));
             uimenu('Parent',axmenu,'Label','Fit the Lineshape','Callback',@(s,e) obj.fitLineshape(axExp,hExp,hExpStem));
 
+			% Load icons
+			load(cat(2,fileparts(which('spectraobjects.VIPAxaxis')),'\Icons.mat'));
+			
+			ht = uitoolbar(hf);
+			uipushtool(ht,'CData',icons.leftIcon,...
+					 'TooltipString','Shift Frequency Left',...
+					 'ClickedCallback',...
+					 @obj.fitFrequencyAxisFigureShiftLeft);
+			uipushtool(ht,'CData',icons.setWavelengthIcon,...
+					 'TooltipString','Set Reference Wavelength',...
+					 'ClickedCallback',...
+					 @obj.fitFrequencyAxisFigureShiftSet);
+			uipushtool(ht,'CData',icons.rightIcon,...
+					 'TooltipString','Shift Frequency Right',...
+					 'ClickedCallback',...
+					 @obj.fitFrequencyAxisFigureShiftRight);
+			uipushtool(ht,'CData',icons.peakPickIcon,...
+					 'TooltipString','Start Peak Picker',...
+					 'ClickedCallback',...
+					 @obj.pickPeak);
+			uipushtool(ht,'CData',icons.peakPickIcon,...
+					 'TooltipString','Clear Picked Peaks',...
+					 'ClickedCallback',...
+					 @obj.clearPeaks);
+			
             % Force figure menubar
             set( hf, 'menubar', 'figure' );
         end
+		function fitFrequencyAxisFigureShiftSet(self,hObject,eventdata)
+            x = inputdlg({'Enter spectrum center wavenumber [cm-1]:','Enter Horiz span [cm-1]:','Enter Vert span [cm-1]:'}, 'Set Spectrum Center Wavenumber', [1 50],...
+                {num2str(self.xaxisParams.centerWavenum),num2str(self.xaxisParams.horizPoly(1)),num2str(self.xaxisParams.vertPoly(1))});
+            self.xaxisParams.centerWavenum = str2double(x{1});
+			self.xaxisParams.horizPoly(:) = 0;
+			self.xaxisParams.vertPoly(:) = 0;
+			self.xaxisParams.horizPoly(1) = str2double(x{2});
+			self.xaxisParams.vertPoly(1) = str2double(x{3});
+            self.updatePlotExp(self.axExp, self.hExp);
+		end
         function fitLineshape(obj,axExp,hExp,hExpStem)
             x = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
             y = obj.yIn;
@@ -186,6 +228,7 @@ classdef VIPAxaxis < handle
             x = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
             set(hExp,'XData',reshape(x,[],1));
             set(hExp,'YData',reshape(obj.yIn,[],1));
+			xlim(axExp,[min(x(:)) max(x(:))])
         end
         function hExpStem = updatePlotExpStem(obj, axExp, hExpStem)
             x = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
@@ -219,16 +262,16 @@ classdef VIPAxaxis < handle
             set(hSimSelect,'YData',yy);
         end
         function fitYaxis(obj)
-            wavenumFun = @(b,x) interp1(1:numel(obj.yIn),reshape(obj.createWavenumAxis( b(1),[b(2) b(3)],b(4),size(obj.yIn)),[],1),x);
+            wavenumFun = @(b,x) interp1(1:numel(obj.yIn),reshape(obj.createWavenumAxis( b(1),b(2),b(3),size(obj.yIn)),[],1),x);
             
-            beta0 = [obj.xaxisParams.centerWavenum obj.xaxisParams.vertPoly(1) 0 obj.xaxisParams.horizPoly];
+            beta0 = [obj.xaxisParams.centerWavenum obj.xaxisParams.vertPoly(1) obj.xaxisParams.horizPoly(1)];
             opts = statset('nlinfit');
             [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(obj.linePositions,obj.linePositionsSim,wavenumFun,beta0,opts);
 
             % Set the relevant parameters
             obj.xaxisParams.centerWavenum = beta(1);
-            obj.xaxisParams.vertPoly = beta(2:3);
-            obj.xaxisParams.horizPoly = beta(4);
+            obj.xaxisParams.vertPoly = beta(2);
+            obj.xaxisParams.horizPoly = beta(3);
         end
         function [simPeaks,expPeaks] = compareSimExpPeaks(obj)
             x = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );

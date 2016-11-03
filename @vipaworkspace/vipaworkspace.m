@@ -286,7 +286,6 @@ function cbCloseGroup(this, evnt)
     %CBCLOSEGROUP
     ET = evnt.EventData.EventType;
     if strcmp(ET, 'CLOSING')
-        this.PIDTuner.isGroupActionClosing = true;
         this.TPComponent.approveClose;
     end
     if strcmp(ET, 'CLOSED')
