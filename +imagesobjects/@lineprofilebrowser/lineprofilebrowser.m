@@ -119,7 +119,7 @@ classdef lineprofilebrowser < handle
             if this.highPassOn == true
                 y = y - smooth(y,20);
             end
-            this.plotHandle = plot(x,y,'Parent',this.axesHandle);
+            this.plotHandle = plot(x,y,'Parent',this.axesHandle,'LineWidth',2);
             ylim([0 6000]);
         end
         function updateLineProfilePlot(this)

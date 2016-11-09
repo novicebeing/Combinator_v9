@@ -8,6 +8,9 @@ classdef VIPAxaxis < handle
 		% Plot axes
 		axExp;
 		hExp;
+		axSim;
+		hSimSelect;
+        hExpStem;
 		
         % Spectrum Parameters
         yIn;
@@ -23,6 +26,8 @@ classdef VIPAxaxis < handle
         % Fitted Parameters
         xaxisParams; % Struct containing wavenum parameters
         
+		% Temporary Linking Params
+		expLinkIndx;
 
         % Simulation Parameters
         wavenumSim;
@@ -52,7 +57,8 @@ classdef VIPAxaxis < handle
             cursorMode = datacursormode(hf);
             set(cursorMode,'UpdateFcn',@(o,e) obj.datatipUpdateFunction(o,e));
             axExp = subplot(2,1,1);
-            axSim = subplot(2,1,2);
+            obj.axSim = subplot(2,1,2);
+			axSim = obj.axSim;
             linkaxes([axExp,axSim],'x');
             axmenu = uicontextmenu();
             set(axExp,'UIContextMenu',axmenu);
@@ -62,9 +68,11 @@ classdef VIPAxaxis < handle
 
             hold(axSim,'on');
             hSimSelect = obj.plotSimSelect(axSim);hold(axSim,'off');
+			obj.hSimSelect = hSimSelect;
             obj.updatePlotSimSelect(axSim,hSimSelect);
 
             hExpStem = obj.plotExpStem(axExp);
+            obj.hExpStem = hExpStem;
             obj.updatePlotExpStem(axExp,hExpStem);
 
             hold(axExp,'on');
@@ -118,6 +126,7 @@ classdef VIPAxaxis < handle
 			self.xaxisParams.horizPoly(1) = str2double(x{2});
 			self.xaxisParams.vertPoly(1) = str2double(x{3});
             self.updatePlotExp(self.axExp, self.hExp);
+			self.updatePlotExpStem(self.axExp,self.hExpStem);
 		end
         function fitLineshape(obj,axExp,hExp,hExpStem)
             x = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
@@ -241,8 +250,8 @@ classdef VIPAxaxis < handle
             set(hExpStem,'XData',xx);
             set(hExpStem,'YData',yy);
         end
-        function hSim  = plotSim(obj, axSim)
-            hSim = stem(axSim,obj.wavenumSim,obj.crossSectionSim,'Marker','none');
+        function hSim  = plotSim(this, axSim)
+            hSim = stem(axSim,this.wavenumSim,this.crossSectionSim,'Marker','none','ButtonDownFcn',@this.callback_Sim);
         end
         function hSim  = updatePlotSim(obj, axSim, hSim)
             set(hSim,'XData',obj.wavenumSim);
@@ -289,7 +298,28 @@ classdef VIPAxaxis < handle
             %figure;scatter(1:numel(linePositions),wavenumFun(linePositions))
         end
 		function callback_ExpStem(obj,gcbo,eventdata)
-			eventdata
+			%find(event
+            x = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
+            xx = interp1(1:numel(x),x(:),obj.linePositions);
+			xval = eventdata.IntersectionPoint(1);
+			yval = eventdata.IntersectionPoint(2);
+			obj.expLinkIndx = min(find(round(xx*100) == round(xval*100)));
+		end
+		function callback_Sim(obj,gcbo,eventdata)
+			if ~isempty(obj.expLinkIndx)
+				xval = eventdata.IntersectionPoint(1);
+				yval = eventdata.IntersectionPoint(2);
+				indxSim = min(find(round(100*xval) == round(100*obj.wavenumSim) & abs((yval-obj.crossSectionSim)./yval) < 0.001));
+				
+				% Save Positions
+				if isempty
+				
+				end
+				obj.linePositionsSim(obj.expLinkIndx) = obj.wavenumSim(indxSim)
+				obj.lineHeightsSim(obj.expLinkIndx) = obj.crossSectionSim(indxSim)
+				
+				obj.updatePlotSimSelect(obj.axSim,obj.hSimSelect);
+			end
 		end
         function wavenum = getWavenum(obj)
             wavenum = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
