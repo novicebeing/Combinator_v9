@@ -221,8 +221,8 @@ classdef VIPAxaxis < handle
             hExp = plot(axExp,reshape(x,[],1),reshape(obj.yIn,[],1));
             set(axExp,'XLim',[min(x(:)), max(x(:))]);
         end
-        function hExpStem = plotExpStem(obj, axExp)
-            hExpStem = stem(axExp,NaN,NaN,'Marker','none','Color','r','LineWidth',3,'ShowBaseline','off');
+        function hExpStem = plotExpStem(this, axExp)
+            hExpStem = stem(axExp,NaN,NaN,'Marker','none','Color','r','LineWidth',3,'ShowBaseline','off','ButtonDownFcn',@this.callback_ExpStem);
         end
         function hExp = updatePlotExp(obj, axExp, hExp)
             x = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
@@ -288,6 +288,9 @@ classdef VIPAxaxis < handle
             obj.updatePlotExpStem(axExp, hExpStem);
             %figure;scatter(1:numel(linePositions),wavenumFun(linePositions))
         end
+		function callback_ExpStem(obj,gcbo,eventdata)
+			eventdata
+		end
         function wavenum = getWavenum(obj)
             wavenum = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
         end

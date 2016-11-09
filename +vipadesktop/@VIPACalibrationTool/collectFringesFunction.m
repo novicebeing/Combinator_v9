@@ -126,8 +126,8 @@ function [fringeX,fringeY,fringeImageSize] = collectFringesFunction(this,fringeI
         end
         
         % Save the fringes to be used later
-        fringeX = newFringesX;
-        fringeY = newFringesY;
+        fringeX = fliplr(newFringesX);
+        fringeY = fliplr(newFringesY);
         fringeImageSize = size(fringeImage');
         
         % Plot the fringes for the user

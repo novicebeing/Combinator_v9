@@ -180,6 +180,7 @@ classdef VIPACalibrationTool < handle
 	methods (Access = private)
 		[fringeX,fringeY,fringeImageSize] = collectFringesFunction(this,fringeImage);
 		calibrateWavenumberFunction(this,spectrum);
+		calibrateWavenumberFunction2(this,spectrum);
 		function this = deleteReferenceImage(this)
 			this.referenceImage = [];
 			this.referenceImageButton.Enabled = false;
