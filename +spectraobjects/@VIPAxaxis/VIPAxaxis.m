@@ -309,14 +309,15 @@ classdef VIPAxaxis < handle
 			if ~isempty(obj.expLinkIndx)
 				xval = eventdata.IntersectionPoint(1);
 				yval = eventdata.IntersectionPoint(2);
-				indxSim = min(find(round(100*xval) == round(100*obj.wavenumSim) & abs((yval-obj.crossSectionSim)./yval) < 0.001));
+				indxSim = min(find(round(1000*xval) == round(1000*obj.wavenumSim)));
 				
 				% Save Positions
-				if isempty
-				
+				if isempty(obj.linePositionsSim)
+					obj.linePositionsSim = nan(size(obj.linePositions));
+					obj.lineHeightsSim = nan(size(obj.linePositions));
 				end
-				obj.linePositionsSim(obj.expLinkIndx) = obj.wavenumSim(indxSim)
-				obj.lineHeightsSim(obj.expLinkIndx) = obj.crossSectionSim(indxSim)
+				obj.linePositionsSim(obj.expLinkIndx) = obj.wavenumSim(indxSim);
+				obj.lineHeightsSim(obj.expLinkIndx) = obj.crossSectionSim(indxSim);
 				
 				obj.updatePlotSimSelect(obj.axSim,obj.hSimSelect);
 			end

@@ -53,10 +53,11 @@ function acquire(obj)
                 end
             end
         end
-        
-        if ~strcmp(obj.acquiretab.calibrationTextField.Text,'none')
+
             % Pass the image through the appropriate calibration object
-            [wavenum,spectra,spectraTime] = obj.CalibrationList.createSpectra(1,images,time,refImagesBoolean);
+            [spectra] = obj.VIPACalibrationTool.image2spectrum(images(:,:,1));
+			wavenum = obj.VIPACalibrationTool.wavenum;
+			spectraTime = 0;
             if isempty(wavenum) && isempty(spectra) && isempty(spectraTime)
                 break
             end
@@ -80,7 +81,6 @@ function acquire(obj)
                         error('Acquire Operation Not Defined')
                 end
             end
-        end
         
         pause(0.1);
 %         if ishandle(h)

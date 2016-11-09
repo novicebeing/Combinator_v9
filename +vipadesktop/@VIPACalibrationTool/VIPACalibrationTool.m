@@ -4,6 +4,7 @@ classdef VIPACalibrationTool < handle
 		tooltab
 		referenceImage
 		calibrationgasImage
+		wavenum
 	end
 
 	%% Private Properties, Events, Methods
@@ -203,6 +204,7 @@ classdef VIPACalibrationTool < handle
 		function clearAll(this)
 			this.referenceImage = [];
 			this.calibrationgasImage = [];
+			this.wavenum = [];
 			this.referenceImageButton.Enabled = false;
 			this.referenceImageDeleteButton.Enabled = false;
 			this.signalImageButton.Enabled = false;
@@ -210,6 +212,7 @@ classdef VIPACalibrationTool < handle
 			this.CollectFringesButton.Enabled = false;
 			this.CalibrateWavenumberButton.Enabled = false;
 			this.fringesStatus.Icon = toolpack.component.Icon.CLOSE_16;
+			this.wavenumberStatus.Icon = toolpack.component.Icon.CLOSE_16;
 		end
 		function collectFringes(this)
 			[this.fringeX,this.fringeY,this.fringeImageSize] = this.collectFringesFunction(this.referenceImage);
@@ -221,6 +224,7 @@ classdef VIPACalibrationTool < handle
 			calgasSpectrum = this.image2spectrum(this.calibrationgasImage);
 			%figure;plot(reshape(log(refSpectrum./calgasSpectrum),[],1));
 			this.calibrateWavenumberFunction(log(refSpectrum./calgasSpectrum));
+			this.wavenumberStatus.Icon = toolpack.component.Icon.CONFIRM_16;
 		end
 	end
 	methods (Static)
