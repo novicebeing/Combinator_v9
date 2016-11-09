@@ -179,6 +179,7 @@ classdef VIPACalibrationTool < handle
 	end
 	methods (Access = private)
 		[fringeX,fringeY,fringeImageSize] = collectFringesFunction(this,fringeImage);
+		calibrateWavenumberFunction(this,spectrum);
 		function this = deleteReferenceImage(this)
 			this.referenceImage = [];
 			this.referenceImageButton.Enabled = false;
@@ -217,7 +218,8 @@ classdef VIPACalibrationTool < handle
 		function calibrateWavenumber(this)
 			refSpectrum = this.image2spectrum(this.referenceImage);
 			calgasSpectrum = this.image2spectrum(this.calibrationgasImage);
-			figure;plot(reshape(log(refSpectrum./calgasSpectrum),[],1));
+			%figure;plot(reshape(log(refSpectrum./calgasSpectrum),[],1));
+			this.calibrateWavenumberFunction(log(refSpectrum./calgasSpectrum));
 		end
 	end
 	methods (Static)

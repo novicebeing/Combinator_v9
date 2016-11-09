@@ -1,7 +1,7 @@
 VIPA Workspace TODO List:
 -------------------------
 
-- Allow for using acquired spectrum to calibrate
+- Setting integration time!
 
 - Allow for setting of the approximate calibration function
 
