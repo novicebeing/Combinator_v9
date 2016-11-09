@@ -1,6 +1,9 @@
 classdef imagebrowser < handle
     % Line Profile Browser Class
     properties
+		% Parent GUI
+		ParentGUI
+	
         % Parent imagesobject
         Parent
         
@@ -9,14 +12,17 @@ classdef imagebrowser < handle
         axesHandle
         plotHandle
         sliderHandle
+		recordRefButton
+		recordSigButton
         
         % No Image Boolean
         noImageBoolean = false
     end
     
     methods
-        function this = imagebrowser(ParentObject)
+        function this = imagebrowser(ParentObject,ParentGUI)
             this.Parent = ParentObject;
+			this.ParentGUI = ParentGUI;
             
             % Construct the figure
             if isempty(this.Parent.name)
@@ -30,10 +36,20 @@ classdef imagebrowser < handle
 
             this.sliderHandle = uicontrol('Parent',this.figureHandle,'Style','slider','Position',[81,10,419,23],...
               'value',1, 'min',1, 'max',1,'sliderstep',[1 1],'Visible','off');
+			this.recordRefButton = uicontrol('Parent',this.figureHandle,'Style','pushbutton','Position',[81+500,10,100,23],'String','Record as Ref','Visible','off');
+			this.recordSigButton = uicontrol('Parent',this.figureHandle,'Style','pushbutton','Position',[81+650,10,100,23],'String','Record as Sig','Visible','off');
             set(this.sliderHandle,'Callback',@(es,ed) this.updateImagePlot());
+			set(this.recordRefButton,'Callback',@(es,ed) this.recordRef());
+			set(this.recordSigButton,'Callback',@(es,ed) this.recordSig());
             this.imagePlot();
             this.Update();
-            
+			
+			% Enable the "Record as" buttons if ParentGUI is set
+            if ~isempty(ParentGUI)
+				set(this.recordRefButton,'Visible','on');
+				set(this.recordSigButton,'Visible','on');
+			end
+			
             % Figure Close Function
             function figCloseFunction(src,callbackdata)
                 delete(gcf);
@@ -105,5 +121,13 @@ classdef imagebrowser < handle
                 title(this.axesHandle,sprintf('Image %i,T = %i',ind,this.Parent.time(ind)));
             end
         end
+		function recordRef(this)
+			ind = round(get(this.sliderHandle,'Value'));
+			this.ParentGUI.VIPACalibrationTool.referenceImage = this.Parent.images(:,:,ind);
+		end
+		function recordSig(this)
+			ind = round(get(this.sliderHandle,'Value'));
+			this.ParentGUI.VIPACalibrationTool.calibrationgasImage = this.Parent.images(:,:,ind);
+		end
     end
 end

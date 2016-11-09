@@ -1,4 +1,4 @@
-function hfig = openImageBrowsers(this, plantids)
+function hfig = openImageBrowsers(this, plantids, ParentGUI)
     % Get the spectra objects
     if isempty(plantids)
         return
@@ -16,6 +16,6 @@ function hfig = openImageBrowsers(this, plantids)
 
     % Open the plot browsers
     for i = 1:length(plants)
-        hfig = plants{i}.imagebrowser();
+        hfig = plants{i}.imagebrowser(ParentGUI);
     end
 end
