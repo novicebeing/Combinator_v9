@@ -24,7 +24,7 @@ function obj = setSpectra(obj,specWavenum,specY,specYerror,t)
     w = 1./specYerror.^2;
     
     obj.t = t;
-    obj.ysum = yout.*w;
+    obj.ysum = specY.*w;
     obj.wsum = w;
     obj.wavenum = specWavenum;
     

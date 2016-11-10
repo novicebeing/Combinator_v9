@@ -55,9 +55,9 @@ function acquire(obj)
         end
 
             % Pass the image through the appropriate calibration object
-            [spectra] = obj.VIPACalibrationTool.image2spectrum(images(:,:,1));
+            spectra = obj.VIPACalibrationTool.image2spectrum(images);
 			wavenum = obj.VIPACalibrationTool.wavenum;
-			spectraTime = 0;
+			spectraTime = 1:(size(spectra,3));
             if isempty(wavenum) && isempty(spectra) && isempty(spectraTime)
                 break
             end

@@ -228,14 +228,19 @@ classdef VIPACalibrationTool < handle
 		end
 	end
 	methods (Static)
-		function spectrum = image2spectrumStatic(fringeX,fringeY,theImage,columnsToSum)
+		function spectrumOut = image2spectrumStatic(fringeX,fringeY,theImages,columnsToSum)
 			indcsX = round(fringeX);
 			indcsY = round(fringeY);
 			nonnanindcs = ~isnan(indcsX);
-			spectrum = zeros(size(indcsX));
-			spectrum(~nonnanindcs) = NaN;
-			for i = -columnsToSum:columnsToSum
-				spectrum(nonnanindcs) = spectrum(nonnanindcs) + theImage(sub2ind(size(theImage),indcsY(nonnanindcs),indcsX(nonnanindcs)+i));
+			spectrumOut = zeros(size(indcsX,1),size(indcsX,2),size(theImages,3));
+			%spectrumOut(repmat(~nonnanindcs,1,1,size(spectrum,3))) = NaN;
+			for j = 1:size(theImages,3)
+				spectrum = zeros(size(indcsX));
+				spectrum(~nonnanindcs) = NaN;
+				for i = -columnsToSum:columnsToSum
+					spectrum(nonnanindcs) = spectrum(nonnanindcs) + theImages(sub2ind(size(theImages),indcsY(nonnanindcs),indcsX(nonnanindcs)+i,j.*ones(sum(sum(nonnanindcs)),1)));
+				end
+				spectrumOut(:,:,j) = spectrum;
 			end
 		end
    end

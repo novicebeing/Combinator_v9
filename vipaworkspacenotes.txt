@@ -1,6 +1,8 @@
 VIPA Workspace TODO List:
 -------------------------
 
+- fix acquire bug
+
 - Setting integration time!
 
 - Allow for setting of the approximate calibration function
