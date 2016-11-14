@@ -63,7 +63,7 @@ classdef vipaworkspace < handle
 %             this.SpectraList2 = vipadesktop.SpectraList();
             this.DataBrowser = vipadesktop.VIPAdataBrowser();
             this.ImagesList.setWorkspace(this.DataBrowser.imagesWorkspace);
-            this.CalibrationList.setWorkspace(this.DataBrowser.calibrationWorkspace);
+            %this.CalibrationList.setWorkspace(this.DataBrowser.calibrationWorkspace);
             this.SpectraList.setWorkspace(this.DataBrowser.spectraWorkspace);
             this.FitSpectraList.setWorkspace(this.DataBrowser.fitspectraWorkspace);
             this.FitsList.setWorkspace(this.DataBrowser.fitsWorkspace);

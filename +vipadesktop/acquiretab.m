@@ -8,13 +8,14 @@ classdef acquiretab < handle
        
        % Sections
        CameraSection
-       AcquireSection
        AcquireDestinationSection
        AcquireDestinationSection2
        
        % Buttons
-       AcquireButton
-       StopAcquireButton
+	   AcquireSection
+        AcquireButton
+	    AcquireSpectrumButton
+        StopAcquireButton
        
        % Combo Boxes
        acquireFunctionComboBox
@@ -76,16 +77,20 @@ classdef acquiretab < handle
             
             % Add Acquire Section
             this.AcquireSection = toolpack.desktop.ToolSection('acquire','Acquire');
-             panel = toolpack.component.TSPanel('7px, f:p, 4px, f:p, 7px','3px, 20px, 4px, 20px, 4px, 22px');
-             this.AcquireSection.add(panel);
-            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
+            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
             this.AcquireSection.add(panel);
-            this.AcquireButton = toolpack.component.TSButton('Acquire',toolpack.component.Icon.RUN_24);
-            panel.add( this.AcquireButton, 'xy(1,2)' );
+            this.AcquireButton = toolpack.component.TSButton(sprintf('Acquire\nImage'),toolpack.component.Icon.RUN_24);
+            this.AcquireButton.Orientation = toolpack.component.ButtonOrientation.VERTICAL;
+			panel.add( this.AcquireButton, 'xy(1,2)' );
             addlistener(this.AcquireButton,'ActionPerformed',@(~,~) notify(this,'AcquireButtonPressed'));
+            this.AcquireSpectrumButton = toolpack.component.TSButton(sprintf('Acquire\nSpectrum'),toolpack.component.Icon.RUN_24);
+            this.AcquireSpectrumButton.Orientation = toolpack.component.ButtonOrientation.VERTICAL;
+			panel.add( this.AcquireSpectrumButton, 'xy(3,2)' );
+            addlistener(this.AcquireSpectrumButton,'ActionPerformed',@(~,~) notify(this,'AcquireSpectrumButtonPressed'));
             this.StopAcquireButton = toolpack.component.TSButton('Stop',toolpack.component.Icon.END_24);
             this.StopAcquireButton.Enabled = false;
-            panel.add( this.StopAcquireButton, 'xy(3,2)' );
+			this.StopAcquireButton.Orientation = toolpack.component.ButtonOrientation.VERTICAL;
+            panel.add( this.StopAcquireButton, 'xy(5,2)' );
             addlistener(this.StopAcquireButton,'ActionPerformed',@(~,~) notify(this,'StopAcquireButtonPressed'));
             this.TPComponent.add(this.AcquireSection);
             

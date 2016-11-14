@@ -32,36 +32,19 @@ classdef VIPACalibrationTool < handle
 	    fringesStatus
 		wavenumberStatus
 	    
+	   % Save Section
+	   SaveLoadSection
+	    SaveButton
+		LoadButton
+		
 	   % Fringe Collection
 	   fringeX
 	   fringeY
 	   fringeImageSize
 	   
-       % Sections
-       CameraSection
-       AcquireSection
-       AcquireDestinationSection
-       AcquireDestinationSection2
-       
-       % Buttons
-       AcquireButton
-       StopAcquireButton
-       
-       % Combo Boxes
-       acquireFunctionComboBox
-       singleImageComboBox
-       kineticsImagesComboBox
-       imageDestTextField
-       calibrationTextField
-       spectraDestTextField
-       acquireOperationComboBox
    end
    events
-       OpenButtonPressed
-       AcquireButtonPressed
-       StopAcquireButtonPressed
-       AcquireFunctionBoxAction
-       AcquireOperationBoxAction
+   
    end
    methods
        function this = VIPACalibrationTool(vipadesktop)
@@ -140,6 +123,31 @@ classdef VIPACalibrationTool < handle
 				panel.add(l,'xy(4,6,''r,c'')');
 				
 			this.tooltab.add(this.StatusSection);
+			
+            % Add the Calibration Images Panel
+            this.SaveLoadSection = toolpack.desktop.ToolSection('saveload','Save/Load');
+            panel = toolpack.component.TSPanel('7px, f:p, 4px, f:p, 7px','3px, 20px, 4px, 20px, 4px, 22px');
+            this.SaveLoadSection.add(panel);
+			
+				% Add the signal and reference image buttons to the panel
+				this.SaveButton = toolpack.component.TSButton('Save');
+				% this.SaveButton.Enabled = false;
+				panel.add(this.SaveButton,'xy(2,2,''r,c'')');
+				this.LoadButton = toolpack.component.TSButton('Load');
+				% this.LoadButton.Enabled = false;
+				panel.add(this.LoadButton,'xy(2,4,''r,c'')');
+				% this.referenceImageDeleteButton = toolpack.component.TSButton('',toolpack.component.Icon.CLOSE_16);
+				% this.referenceImageDeleteButton.Enabled = false;
+				% panel.add(this.referenceImageDeleteButton,'xywh(4,2,1,1)');
+				% this.signalImageDeleteButton = toolpack.component.TSButton('',toolpack.component.Icon.CLOSE_16);
+				% this.signalImageDeleteButton.Enabled = false;
+				% panel.add(this.signalImageDeleteButton,'xywh(4,4,1,1)');
+				
+				% Add Event Handlers
+				addlistener(this.SaveButton,'ActionPerformed',@(~,~) this.saveCalibrationData());
+				addlistener(this.LoadButton,'ActionPerformed',@(~,~) this.loadCalibrationData());
+				
+			this.tooltab.add(this.SaveLoadSection);
 
             this.vipadesktop = vipadesktop;
             
@@ -205,14 +213,18 @@ classdef VIPACalibrationTool < handle
 			this.referenceImage = [];
 			this.calibrationgasImage = [];
 			this.wavenum = [];
-			this.referenceImageButton.Enabled = false;
-			this.referenceImageDeleteButton.Enabled = false;
-			this.signalImageButton.Enabled = false;
-			this.signalImageDeleteButton.Enabled = false;
-			this.CollectFringesButton.Enabled = false;
-			this.CalibrateWavenumberButton.Enabled = false;
-			this.fringesStatus.Icon = toolpack.component.Icon.CLOSE_16;
-			this.wavenumberStatus.Icon = toolpack.component.Icon.CLOSE_16;
+			this.fringeX = [];
+			this.fringeY = [];
+			this.fringeImageSize = [];
+			this.refreshGUI();
+			% this.referenceImageButton.Enabled = false;
+			% this.referenceImageDeleteButton.Enabled = false;
+			% this.signalImageButton.Enabled = false;
+			% this.signalImageDeleteButton.Enabled = false;
+			% this.CollectFringesButton.Enabled = false;
+			% this.CalibrateWavenumberButton.Enabled = false;
+			% this.fringesStatus.Icon = toolpack.component.Icon.CLOSE_16;
+			% this.wavenumberStatus.Icon = toolpack.component.Icon.CLOSE_16;
 		end
 		function collectFringes(this)
 			[this.fringeX,this.fringeY,this.fringeImageSize] = this.collectFringesFunction(this.referenceImage);
@@ -225,6 +237,76 @@ classdef VIPACalibrationTool < handle
 			%figure;plot(reshape(log(refSpectrum./calgasSpectrum),[],1));
 			this.calibrateWavenumberFunction(log(refSpectrum./calgasSpectrum));
 			this.wavenumberStatus.Icon = toolpack.component.Icon.CONFIRM_16;
+		end
+		function saveCalibrationData(this)
+			[filename,filepath] = uiputfile( ...
+				{  '*.VIPACalibration','MAT-files (*.VIPACalibration)'}, ...
+				   'Pick a file');
+				   
+			if filepath == 0
+					return
+			end
+       
+			[~,fname,ext] = fileparts(filename);
+			
+			s = struct();
+			s.referenceImage = this.referenceImage;
+			s.calibrationgasImage = this.calibrationgasImage;
+			s.fringeX = this.fringeX;
+			s.fringeY = this.fringeY;
+			s.fringeImageSize = this.fringeImageSize;
+			s.wavenum = this.wavenum;
+			
+			save(fullfile(filepath,filename),'-struct','s');
+		end
+		function loadCalibrationData(obj)
+			[filename,filepath] = uigetfile( ...
+				{  '*.VIPACalibration','VIPA Calibration (*.VIPACalibration)'}, ...
+				   'Pick a file', ...
+				   'MultiSelect', 'off');
+				   
+			if filepath == 0
+				return
+			end
+			
+			this = load(fullfile(filepath,filename),'-mat');
+			obj.referenceImage = this.referenceImage;
+			obj.calibrationgasImage = this.calibrationgasImage;
+			obj.fringeX = this.fringeX;
+			obj.fringeY = this.fringeY;
+			obj.fringeImageSize = this.fringeImageSize;
+			obj.wavenum = this.wavenum;
+			obj.refreshGUI();
+		end
+		function refreshGUI(this)
+			if isempty(this.referenceImage)
+                this.referenceImageButton.Enabled = false;
+				this.referenceImageDeleteButton.Enabled = false;
+				this.CollectFringesButton.Enabled = false;
+			else
+                this.referenceImageButton.Enabled = true;
+				this.referenceImageDeleteButton.Enabled = true;
+				this.CollectFringesButton.Enabled = true;
+			end
+			if isempty(this.calibrationgasImage)
+                this.signalImageButton.Enabled = false;
+				this.signalImageDeleteButton.Enabled = false;
+			else
+                this.signalImageButton.Enabled = true;
+				this.signalImageDeleteButton.Enabled = true;
+			end
+			if isempty(this.fringeX) | isempty(this.fringeX) | isempty(this.fringeImageSize)
+				this.CalibrateWavenumberButton.Enabled = false;
+				this.fringesStatus.Icon = toolpack.component.Icon.CLOSE_16;
+			else
+				this.CalibrateWavenumberButton.Enabled = true;
+				this.fringesStatus.Icon = toolpack.component.Icon.CONFIRM_16;
+			end
+			if isempty(this.wavenum)
+				this.wavenumberStatus.Icon = toolpack.component.Icon.CLOSE_16;
+			else
+				this.wavenumberStatus.Icon = toolpack.component.Icon.CONFIRM_16;
+			end
 		end
 	end
 	methods (Static)
