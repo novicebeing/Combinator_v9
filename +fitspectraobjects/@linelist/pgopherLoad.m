@@ -9,6 +9,6 @@ function pgopherLoad(this,pgopherfile)
     C = textscan(fid,[repmat('%*s',1,9) '%f %f' repmat('%*s',1,8)],'Delimiter',',','HeaderLines',2,'EndOfLine','\r\n');
     linelist = C{1};
     linestrength = C{2};
-    this.lineposition = linelist(1:2:end);
-    this.linestrength = linestrength(1:2:end);
+    this.lineposition = linelist;
+    this.linestrength = linestrength;
 end
