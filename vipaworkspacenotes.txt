@@ -12,4 +12,8 @@ VIPA Workspace TODO List:
 
 - make spectraobject replace-only
 
-- allow for time-dependent live spectra
+X axis calibration:
+
+- fix "default view"
+
+- stem plot for fit spectra

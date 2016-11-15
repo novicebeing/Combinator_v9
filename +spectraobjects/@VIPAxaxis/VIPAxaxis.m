@@ -128,6 +128,16 @@ classdef VIPAxaxis < handle
             self.updatePlotExp(self.axExp, self.hExp);
 			self.updatePlotExpStem(self.axExp,self.hExpStem);
 		end
+		function fitFrequencyAxisFigureShiftLeft(self,hObject,eventdata)
+            self.xaxisParams.centerWavenum = self.xaxisParams.centerWavenum - 5;
+            self.updatePlotExp(self.axExp, self.hExp);
+			self.updatePlotExpStem(self.axExp,self.hExpStem);
+		end
+		function fitFrequencyAxisFigureShiftRight(self,hObject,eventdata)
+            self.xaxisParams.centerWavenum = self.xaxisParams.centerWavenum + 5;
+            self.updatePlotExp(self.axExp, self.hExp);
+			self.updatePlotExpStem(self.axExp,self.hExpStem);
+		end
         function fitLineshape(obj,axExp,hExp,hExpStem)
             x = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
             y = obj.yIn;
