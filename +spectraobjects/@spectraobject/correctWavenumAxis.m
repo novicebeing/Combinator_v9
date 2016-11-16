@@ -32,7 +32,7 @@ function correctWavenumAxis( obj, varargin )
     D2O_wavenum = D2O_wavenum(indcs);
     
 	% Load in the spectrum
-	s = load('H:\Spectrum Library\OD\OD_v0_PGo.mat');
+	s = load('\\ftcombdaq\Mid_IR_Data\Spectrum Library\OD\OD_v0_PGo.mat');
 	OD_S = s.OD_v0_PGo.linestrength;
 	OD_wavenum = s.OD_v0_PGo.lineposition;
 	

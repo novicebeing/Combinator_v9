@@ -113,10 +113,10 @@ classdef VIPAxaxis < handle
 					 'TooltipString','Clear Picked Peaks',...
 					 'ClickedCallback',...
 					 @obj.clearPeaks);
-			uipushtool(ht,'CData',icons.peakPickIcon,...
-					 'TooltipString','Load New Calibration File',...
+			uipushtool(ht,'CData',icons.openIcon,...
+					 'TooltipString','Load New Simulation Spectrum',...
 					 'ClickedCallback',...
-					 @obj.loadCalibrationFile);
+					 @obj.loadSimulationSpectrum);
 			
             % Force figure menubar
             set( hf, 'menubar', 'figure' );
@@ -141,6 +141,9 @@ classdef VIPAxaxis < handle
             self.xaxisParams.centerWavenum = self.xaxisParams.centerWavenum + 5;
             self.updatePlotExp(self.axExp, self.hExp);
 			self.updatePlotExpStem(self.axExp,self.hExpStem);
+		end
+		function loadSimulationSpectrum(this,hObject,eventdata)
+			
 		end
         function fitLineshape(obj,axExp,hExp,hExpStem)
             x = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
