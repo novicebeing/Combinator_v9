@@ -1,5 +1,5 @@
 classdef vipaworkspace < handle
-    %PIDTOOLDESKTOP
+    %VIPAWORKSPACE
     
     % Author(s): Baljeet Singh 20-Nov-2013
     % Copyright 2013 The MathWorks, Inc.
@@ -16,12 +16,16 @@ classdef vipaworkspace < handle
         % Tabs
         hometab
         acquiretab
+		calibrationtab
         fittingtab
         fitanalysistab
         figuretab
         
         stopAcquireBoolean = false;
         
+		% VIPA Calibration Tool
+		VIPACalibrationTool
+		
         % Image Acquire Functions Library
         acquireOperations
         acquireFunctions
@@ -59,7 +63,7 @@ classdef vipaworkspace < handle
 %             this.SpectraList2 = vipadesktop.SpectraList();
             this.DataBrowser = vipadesktop.VIPAdataBrowser();
             this.ImagesList.setWorkspace(this.DataBrowser.imagesWorkspace);
-            this.CalibrationList.setWorkspace(this.DataBrowser.calibrationWorkspace);
+            %this.CalibrationList.setWorkspace(this.DataBrowser.calibrationWorkspace);
             this.SpectraList.setWorkspace(this.DataBrowser.spectraWorkspace);
             this.FitSpectraList.setWorkspace(this.DataBrowser.fitspectraWorkspace);
             this.FitsList.setWorkspace(this.DataBrowser.fitsWorkspace);
@@ -120,11 +124,15 @@ classdef vipaworkspace < handle
             % Tab Controls
             this.hometab = vipadesktop.hometab(this.TPComponent);
             this.TPComponent.add(this.hometab.TPComponent);
+			
             this.acquiretab = vipadesktop.acquiretab(this.TPComponent,this.acquireFunctions,this.singleImageAcquireFunctions,this.kineticsImagesAcquireFunctions);
             this.TPComponent.add(this.acquiretab.TPComponent);
             addlistener(this.acquiretab,'AcquireFunctionBoxAction',@(~,~) this.setAcquireFunction(this.acquiretab.acquireFunctionComboBox.SelectedItem));
             addlistener(this.acquiretab,'AcquireOperationBoxAction',@(~,~) this.setAcquireOperation(this.acquiretab.acquireOperationComboBox.SelectedItem));
             
+			this.VIPACalibrationTool = vipadesktop.VIPACalibrationTool(this.TPComponent);
+            this.TPComponent.add(this.VIPACalibrationTool.tooltab);
+			
             this.fittingtab = vipadesktop.fittingtab(this.TPComponent);
             this.TPComponent.add(this.fittingtab.TPComponent);
             
@@ -347,7 +355,7 @@ switch ed.Request
         end
         close(hwait);
     case 'openimagebrowser'
-        h = this.ImagesList.openImageBrowsers(ed.Variables);
+        h = this.ImagesList.openImageBrowsers(ed.Variables,this);
         this.TPComponent.addFigure(h);
     case 'openfitbrowser'
         h = this.FitsList.openFitBrowsers(ed.Variables);

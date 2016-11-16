@@ -9,6 +9,9 @@ classdef fittingtab < handle
        % Sections
        InstrumentParametersSection
        
+	   % Spectrum Simulation Section
+	   SpectrumSimulationSection
+	   
        % Text Fields
        instrumentGaussianFWHMTextField
        instrumentLorentzianFWHMTextField
@@ -21,6 +24,28 @@ classdef fittingtab < handle
             % Add home tab
             this.TPComponent = toolpack.desktop.ToolTab('VIPAworkspaceFittingTab', 'Fitting');
             
+			% Spectrum Simulation Section
+			this.SpectrumSimulationSection = toolpack.desktop.ToolSection('spectrumsimulation','Spectrum Simulation');
+			panel = toolpack.component.TSPanel('7px, f:p, 4px, f:p, 7px','3px, 20px, 4px, 20px, 4px, 22px');
+            this.SpectrumSimulationSection.add(panel);
+            l = toolpack.component.TSLabel('Min Wavenum');
+            panel.add(l,'xy(2,2,''r,c'')');
+            l = toolpack.component.TSLabel('Max Wavenum');
+            panel.add(l,'xy(2,4,''r,c'')');
+            l = toolpack.component.TSLabel('Num Points');
+            panel.add(l,'xy(2,6,''r,c'')');
+            instrumentGaussianFWHMTextField = toolpack.component.TSTextField('2400',8);
+            instrumentGaussianFWHMTextField.Editable = true;
+            %addlistener(this.instrumentGaussianFWHMTextField,'ActionPerformed',@(~,~) setTextFieldText(this.imageDestTextField,'none'));
+            panel.add(instrumentGaussianFWHMTextField,'xywh(4,2,1,1)');
+            instrumentLorentzianFWHMTextField = toolpack.component.TSTextField('2600',8);
+            instrumentLorentzianFWHMTextField.Editable = true;
+			panel.add(instrumentLorentzianFWHMTextField,'xywh(4,4,1,1)');
+            simNumPoints = toolpack.component.TSTextField('100',8);
+            simNumPoints.Editable = true;
+			panel.add(simNumPoints,'xywh(4,6,1,1)');
+			this.TPComponent.add(this.SpectrumSimulationSection);
+			
             % Add Instrument Parameters Section
             this.InstrumentParametersSection = toolpack.desktop.ToolSection('instrumentparameters','Inst. Parameters');
             panel = toolpack.component.TSPanel('7px, f:p, 4px, f:p, 7px','3px, 20px, 4px, 20px, 4px, 22px');

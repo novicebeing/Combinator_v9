@@ -1,40 +1,19 @@
+SPECTRA COLLECTION PROCEDURE:
+1) Open live image browser
+2) Save a reference image
+3) Save a calibration gas image
+3) Collect fringes
+4) Calibrate the spectrum using the calibration gas image
+5) Open live spectrum viewer
+
+
 VIPA Workspace TODO List:
 -------------------------
 
-- Allow for using acquired spectrum to calibrate
+- make spectraobject replace-only
 
-- Allow for setting of the approximate calibration function
+X axis calibration:
 
-- remove yavg, tavg from spectraobject as they are no longer necessary
+- fix "default view"
 
-- FFT x axis seems to be off by a factor of 2
-
-- Add "new figure" capabilities
-
-- Add x and y labels to fits plots
-
-- Add "make spectra without reference"
-
-- Remove bg substraction when averaging spectra
-
-- Add real-time fitting of spectra
-
-Cosmetic / Ease of use
-
-- Add fixed width left sidebar
-
-- Add normalization option in group plots
-
-- Add x and y labels to fits plots
-
-- Make averaging bar chart an object
-
-- Add instrument phase option
-
-- Add inspect option on objects
-
-- add progress bars for saving
-
-- drag drop command line?
-
-- Add "Export to base workspace"
+- stem plot for fit spectra

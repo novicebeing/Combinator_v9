@@ -31,7 +31,7 @@ function obj = averageSpectrum(obj,specWavenum,specY,specYerror,t)
     end
     
     % Avoid NaN
-        yadd = yout;
+        yadd = specY;
         wadd = w;
         yadd(isnan(yout)|isnan(w)) = 0;
         wadd(isnan(yout)|isnan(w)) = 0;

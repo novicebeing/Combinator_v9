@@ -1,4 +1,4 @@
-classdef acquiretab < handle
+classdef calibrationtab < handle
    properties 
        vipadesktop
        TPComponent
@@ -6,16 +6,22 @@ classdef acquiretab < handle
        OpenButton
        FileSection
        
+	   % Calibration Images Section
+	   CalibrationImagesSection
+	   referenceImageButton
+	   signalImageButton
+	   referenceImageDeleteButton
+	   signalImageDeleteButton
+	   
        % Sections
        CameraSection
+       AcquireSection
        AcquireDestinationSection
        AcquireDestinationSection2
        
        % Buttons
-	   AcquireSection
-        AcquireButton
-	    AcquireSpectrumButton
-        StopAcquireButton
+       AcquireButton
+       StopAcquireButton
        
        % Combo Boxes
        acquireFunctionComboBox
@@ -34,63 +40,47 @@ classdef acquiretab < handle
        AcquireOperationBoxAction
    end
    methods
-       function this = acquiretab(vipadesktop,acquireFunctions,singleImageAcquireFunctions,kineticsImagesAcquireFunctions)
+       function this = calibrationtab(vipadesktop)
             % Add home tab
-            this.TPComponent = toolpack.desktop.ToolTab('VIPAworkspaceAcquireTab', 'Acquire');
+            this.TPComponent = toolpack.desktop.ToolTab('VIPAworkspaceCalibrationTab', 'Calibration');
             
-            % Convert the functions to strings
-            acquireFunctionStrings = {};
-            for i = 1:numel(acquireFunctions)
-                a = strsplit(func2str(acquireFunctions{i}),'.');
-                acquireFunctionStrings{end+1} = char(a(end));
-            end
-            singleImageAcquireFunctionStrings = {};
-            for i = 1:numel(singleImageAcquireFunctions)
-                a = strsplit(func2str(singleImageAcquireFunctions{i}),'.');
-                singleImageAcquireFunctionStrings{end+1} = char(a(end));
-            end
-            kineticsImagesAcquireFunctionStrings = {};
-            for i = 1:numel(kineticsImagesAcquireFunctions)
-                a = strsplit(func2str(kineticsImagesAcquireFunctions{i}),'.');
-                kineticsImagesAcquireFunctionStrings{end+1} = char(a(end));
-            end
-            
-            % Add Camera Section
-            this.CameraSection = toolpack.desktop.ToolSection('camera','Camera');
+            % Add the Calibration Images Panel
+            this.CalibrationImagesSection = toolpack.desktop.ToolSection('calibrationimages','Cal. Images');
             panel = toolpack.component.TSPanel('7px, f:p, 4px, f:p, 7px','3px, 20px, 4px, 20px, 4px, 22px');
-            this.CameraSection.add(panel);
-            singleImageFunctionLabel = toolpack.component.TSLabel('Acquire Function');
-            panel.add(singleImageFunctionLabel,'xy(2,2,''r,c'')');
-             singleImageFunctionLabel = toolpack.component.TSLabel('Acquire Operation');
-             panel.add(singleImageFunctionLabel,'xy(2,4,''r,c'')');
-%             kineticsImagesFunctionLabel = toolpack.component.TSLabel('Kinetics Images');
-%             panel.add(kineticsImagesFunctionLabel,'xy(2,6,''r,c'')');
-            this.acquireFunctionComboBox = toolpack.component.TSComboBox(acquireFunctionStrings);
-            panel.add(this.acquireFunctionComboBox,'xywh(4,2,1,1)');
-            addlistener(this.acquireFunctionComboBox,'ActionPerformed',@(~,~) notify(this,'AcquireFunctionBoxAction'));
-             this.acquireOperationComboBox = toolpack.component.TSComboBox({'replace','add','average','averageWithRestart'});
-             panel.add(this.acquireOperationComboBox,'xywh(4,4,1,1)');
-             addlistener(this.acquireOperationComboBox,'ActionPerformed',@(~,~) notify(this,'AcquireOperationBoxAction'));
-%             this.kineticsImagesComboBox = toolpack.component.TSComboBox(kineticsImagesAcquireFunctionStrings);
-%             panel.add(this.kineticsImagesComboBox,'xywh(4,6,1,1)');
-            this.TPComponent.add(this.CameraSection);
+            this.CalibrationImagesSection.add(panel);
+			
+				% Add the signal and reference image buttons to the panel
+				this.referenceImageButton = toolpack.component.TSButton('Reference Image');
+				this.referenceImageButton.Enabled = false;
+				panel.add(this.referenceImageButton,'xy(2,2,''r,c'')');
+				this.signalImageButton = toolpack.component.TSButton('Signal Image');
+				this.signalImageButton.Enabled = false;
+				panel.add(this.singleImageFunctionLabel,'xy(2,4,''r,c'')');
+				this.referenceImageDeleteButton = toolpack.component.TSButton('Delete');
+				panel.add(this.referenceImageDeleteButton,'xywh(4,2,1,1)');
+				this.signalImageDeleteButton = toolpack.component.TSButton('Delete');
+				panel.add(this.signalImageDeleteButton,'xywh(4,4,1,1)');
+				
+				% Add Event Handlers
+				addlistener(this.referenceImageButton,'ActionPerformed',@(~,~) notify(this,'openReferenceImageFigure'));
+				addlistener(this.referenceImageDeleteButton,'ActionPerformed',@(~,~) notify(this,'deleteReferenceImage'));
+				addlistener(this.signalImageButton,'ActionPerformed',@(~,~) notify(this,'openSignalImageFigure'));
+				addlistener(this.signalImageDeleteButton,'ActionPerformed',@(~,~) notify(this,'deleteSignalImage'));
+				
+			this.TPComponent.add(this.CalibrationImagesSection);
             
             % Add Acquire Section
             this.AcquireSection = toolpack.desktop.ToolSection('acquire','Acquire');
-            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
+             panel = toolpack.component.TSPanel('7px, f:p, 4px, f:p, 7px','3px, 20px, 4px, 20px, 4px, 22px');
+             this.AcquireSection.add(panel);
+            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
             this.AcquireSection.add(panel);
-            this.AcquireButton = toolpack.component.TSButton(sprintf('Acquire\nImage'),toolpack.component.Icon.RUN_24);
-            this.AcquireButton.Orientation = toolpack.component.ButtonOrientation.VERTICAL;
-			panel.add( this.AcquireButton, 'xy(1,2)' );
+            this.AcquireButton = toolpack.component.TSButton('Acquire',toolpack.component.Icon.RUN_24);
+            panel.add( this.AcquireButton, 'xy(1,2)' );
             addlistener(this.AcquireButton,'ActionPerformed',@(~,~) notify(this,'AcquireButtonPressed'));
-            this.AcquireSpectrumButton = toolpack.component.TSButton(sprintf('Acquire\nSpectrum'),toolpack.component.Icon.RUN_24);
-            this.AcquireSpectrumButton.Orientation = toolpack.component.ButtonOrientation.VERTICAL;
-			panel.add( this.AcquireSpectrumButton, 'xy(3,2)' );
-            addlistener(this.AcquireSpectrumButton,'ActionPerformed',@(~,~) notify(this,'AcquireSpectrumButtonPressed'));
             this.StopAcquireButton = toolpack.component.TSButton('Stop',toolpack.component.Icon.END_24);
             this.StopAcquireButton.Enabled = false;
-			this.StopAcquireButton.Orientation = toolpack.component.ButtonOrientation.VERTICAL;
-            panel.add( this.StopAcquireButton, 'xy(5,2)' );
+            panel.add( this.StopAcquireButton, 'xy(3,2)' );
             addlistener(this.StopAcquireButton,'ActionPerformed',@(~,~) notify(this,'StopAcquireButtonPressed'));
             this.TPComponent.add(this.AcquireSection);
             

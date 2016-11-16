@@ -44,7 +44,7 @@ classdef imagesobject < handle
             end
         end
 
-        function hf = imagebrowser(obj)
+        function hf = imagebrowser(obj,ParentGUI)
             if ~isempty(obj.plotHandles)
                 obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
             else
@@ -52,10 +52,10 @@ classdef imagesobject < handle
             end
             if ~isempty(obj.plotHandles)
                 n = numel(obj.plotHandles);
-                obj.plotHandles{n+1} = imagesobjects.imagebrowser(obj);
+                obj.plotHandles{n+1} = imagesobjects.imagebrowser(obj,ParentGUI);
                 hf = obj.plotHandles{n+1}.figureHandle;
             else
-                obj.plotHandles = {imagesobjects.imagebrowser(obj)};
+                obj.plotHandles = {imagesobjects.imagebrowser(obj,ParentGUI)};
                 hf = obj.plotHandles{1}.figureHandle;
             end
         end
