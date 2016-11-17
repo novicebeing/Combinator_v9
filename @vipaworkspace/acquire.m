@@ -47,7 +47,7 @@ function acquire(obj)
     %         if ishandle(h)
     %             h.Children(2).Children.String = sprintf('Acquired %i Spectra, %.1f Hz...',n,1/(acqTimeDiff*24*3600));
     %         end
-            statusString = sprintf('Acquired %i Spectra, %.1f Hz...',n,1/(acqTimeDiff*24*3600));
+            statusString = sprintf('Acquired %i Spectra, %.1f Hz, DARK=0000...',n,1/(acqTimeDiff*24*3600));
             obj.StatusBar.setText(statusString,[],'west');
             n = n+1;
         end
