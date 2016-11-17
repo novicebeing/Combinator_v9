@@ -67,6 +67,21 @@ classdef linelist < handle & JavaVisible
                 hf = obj.plotHandles{1}.figureHandle;
             end
         end
+        function hf = spectrumstembrowser(obj)
+            if ~isempty(obj.plotHandles)
+                obj.plotHandles = obj.plotHandles(cellfun(@isvalid,obj.plotHandles)); % Clean up the plot handles
+            else
+                obj.plotHandles = {};
+            end
+            if ~isempty(obj.plotHandles)
+                n = numel(obj.plotHandles);
+                obj.plotHandles{n+1} = fitspectraobjects.spectrumstembrowser(obj);
+                hf = obj.plotHandles{n+1}.figureHandle;
+            else
+                obj.plotHandles = {fitspectraobjects.spectrumstembrowser(obj)};
+                hf = obj.plotHandles{1}.figureHandle;
+            end
+        end
     end
 end
 
