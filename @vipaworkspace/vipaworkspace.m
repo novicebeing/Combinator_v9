@@ -444,6 +444,9 @@ switch ed.Request
     case 'fitspectralist_opensimulationbrowser'
         h = this.FitSpectraList.openSimulationBrowser(ed.Variables);
         this.TPComponent.addFigure(h);
+    case 'fitspectralist_openstembrowser'
+        h = this.FitSpectraList.openStemBrowser(ed.Variables);
+        this.TPComponent.addFigure(h);
     case 'spectralist_useforwavenumcalibration'
         data = inputdlg({'Calibration Spectrum Number'},'Calibration Spectrum',[1],{'1'});
         calibrationobjid = {this.acquiretab.calibrationTextField.Text};

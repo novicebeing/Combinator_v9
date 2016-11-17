@@ -28,6 +28,12 @@ classdef spectrumstembrowser < handle
             else
                 this.figureHandle = figure('Name',sprintf('%s Simulation',this.Parent.name),'NumberTitle','off','CloseRequestFcn',@figCloseFunction);
             end
+			
+			% Set zoom and pan callbacks
+			hZoom = zoom(this.figureHandle);
+			hPan  = pan(this.figureHandle);
+			set(hZoom, 'ActionPostCallback', @(~,~) this.Update());
+			set(hPan , 'ActionPostCallback', @(~,~) this.Update());
             
             % Construct the plot and axes
             this.axesHandle = axes('Parent',this.figureHandle,'position',[0.13 0.20 0.79 0.72]);
@@ -35,9 +41,9 @@ classdef spectrumstembrowser < handle
             this.updateImagePlot();
 
             % Add a menu for the axes
-            this.axesmenu = uicontextmenu();
-            uimenu('Parent',this.axesmenu,'Label','Set Simulation Range','Callback',@(s,e) this.setSimulationRange());
-            set(this.axesHandle,'UIContextMenu',this.axesmenu);
+            %this.axesmenu = uicontextmenu();
+            %uimenu('Parent',this.axesmenu,'Label','Set Simulation Range','Callback',@(s,e) this.setSimulationRange());
+            %set(this.axesHandle,'UIContextMenu',this.axesmenu);
 
             % Figure Close Function
             function figCloseFunction(src,callbackdata)
@@ -46,7 +52,7 @@ classdef spectrumstembrowser < handle
             end
         end
         function Update(this)
-            this.updateImagePlot(this.plotHandle,round(get(this.sliderHandle,'Value')));
+            this.updateImagePlot();
         end
         
         % Internal Functions
@@ -60,18 +66,24 @@ classdef spectrumstembrowser < handle
             end
         end
         function hp = imagePlot(obj)
-			
-            x = linspace(obj.wavenumMin,obj.wavenumMax,obj.numPoints);
-            y = obj.Parent.createSpectrum(x,...
-                'instrumentLorentzianFWHM',obj.instrumentLorentzianFWHM,...
-                'instrumentGaussianFWHM',obj.instrumentGaussianFWHM);
-            hp = plot(x,y,'Parent',obj.axesHandle);
+            x = obj.Parent.lineposition;
+            y = obj.Parent.linestrength;
+            hp = stem(NaN,NaN,'Parent',obj.axesHandle,'Marker','none','Color','k','LineWidth',1,'ShowBaseline','off');
+			xlim(obj.axesHandle,[min(x) max(x)]);
         end
         function updateImagePlot(obj)
-            x = linspace(obj.wavenumMin,obj.wavenumMax,obj.numPoints);
-            y = obj.Parent.createSpectrum(x,...
-                'instrumentLorentzianFWHM',obj.instrumentLorentzianFWHM,...
-                'instrumentGaussianFWHM',obj.instrumentGaussianFWHM);
+		
+			% Get axes range
+			axrange = xlim(obj.axesHandle);
+			if strcmp(get(obj.figureHandle,'SelectionType'),'open')
+				axrange = [min(obj.Parent.lineposition) max(obj.Parent.lineposition)];
+			end
+			rangeindcs = obj.Parent.lineposition > axrange(1) & obj.Parent.lineposition < axrange(2);
+			
+			heightindcs = obj.Parent.linestrength > max(obj.Parent.linestrength(rangeindcs))/100;
+			
+            x = obj.Parent.lineposition(rangeindcs & heightindcs);
+            y = obj.Parent.linestrength(rangeindcs & heightindcs);
             set(obj.plotHandle,'XData',x);
             set(obj.plotHandle,'YData',y);
         end

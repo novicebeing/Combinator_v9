@@ -44,7 +44,7 @@ function calibrateWavenumberFunction(this,spectrum)
     delete(hfit);
 	
     % Open the fitting figure
-    fitobj = spectraobjects.VIPAxaxis(3900,2,60,spectrum);
+    fitobj = spectraobjects.VIPAxaxis(3900,1.8405,63.2908,spectrum);
     fitobj.setSimulationSpectrum([],[]);
 
     % Fit the x axis

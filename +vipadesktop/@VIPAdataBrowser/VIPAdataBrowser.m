@@ -305,21 +305,26 @@ classdef VIPAdataBrowser < handle
             nonselectionPopupMenu = obj.fitspectraWorkspaceView.getNoSelectionPopupMenu;
             WarningState = warning('off','MATLAB:Containers:Map:NoKeyToRemove');
             selectionPopupMenu.removeMenuItem('RecordCopyingMenuItem');
+            s.Text = 'Open Stem Browser';
+            s.Name = 'fitspectralist_openstembrowser';
+            s.Callback = @(x)fitspectralist_openstembrowser(obj,x);
+            s.MultiSelection = false;
+            selectionPopupMenu.addMenuItem(s,1);
             s.Text = 'Open Simulation Browser';
             s.Name = 'fitspectralist_opensimulationbrowser';
             s.Callback = @(x)fitspectralist_opensimulationbrowser(obj,x);
             s.MultiSelection = false;
-            selectionPopupMenu.addMenuItem(s,1);
+            selectionPopupMenu.addMenuItem(s,2);
             s.Text = 'Save To File...';
             s.Name = 'fitspectralist_savetofile';
             s.Callback = @(x)fitspectralist_savetofile(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,2);
+            selectionPopupMenu.addMenuItem(s,3);
             s.Text = 'Inspect';
             s.Name = 'fitspectralist_inspect';
             s.Callback = @(x)fitspectralist_inspect(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,3);
+            selectionPopupMenu.addMenuItem(s,4);
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -564,6 +569,10 @@ end
 
 function fitspectralist_opensimulationbrowser(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitspectralist_opensimulationbrowser',src.Variables));
+end
+
+function fitspectralist_openstembrowser(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('fitspectralist_openstembrowser',src.Variables));
 end
 
 function spectralist_openaveragingbarchart(obj,src)
