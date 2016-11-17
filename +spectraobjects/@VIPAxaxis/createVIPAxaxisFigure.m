@@ -16,8 +16,8 @@ set(hax1,'XTickLabel','');
 % Create axes
 hax2 = axes('Parent',hfig,...
     'Position',[0.0607142857142856 0.497619047619048 0.898214285714286 0.114285714285721]);
-hstem2A = stem(hax2,NaN,NaN,'Marker','none','Color','r','LineWidth',3,'ShowBaseline','off','ButtonDownFcn',expStemCallback); hold(hax2,'on');
-hDottedConnection = plot(hax2,NaN,NaN,'LineStyle','--');
+hDottedConnection = plot(hax2,NaN,NaN,'LineStyle','--');hold(hax2,'on');
+hstem2A = stem(hax2,NaN,NaN,'Marker','none','Color','r','LineWidth',3,'ShowBaseline','off','ButtonDownFcn',expStemCallback);
 hstem2B = stem(hax2,NaN,NaN,'Marker','none','Color','g','LineWidth',3,'ShowBaseline','off'); hold(hax2,'off');
 ylim(hax2,[-1 1]);
 set(hax2,'XTickLabel','');

@@ -9,6 +9,7 @@ classdef spectrabrowser < handle
         dcmHandle % Datacursormode handle
         axesHandle
         plotHandle
+		shadowplotHandle
         sliderHandle
         h
         herrorminus
@@ -54,6 +55,7 @@ classdef spectrabrowser < handle
             c = uicontextmenu(this.figureHandle);
             this.figureHandle.UIContextMenu = c;
             topmenu = uimenu('Parent',c,'Label','Single Point Plot','Callback',@singlepixeltimeplot);
+			uimenu('Parent',c,'Label','Show Spectrum in Bkg','Callback',@showbkgspectrum);
             
             function singlepixeltimeplot(src,callbackdata)
                 pos = this.lastdatacursorposition;
@@ -61,6 +63,19 @@ classdef spectrabrowser < handle
                 
                 [ii,jj] = ind2sub([size(this.Parent.yavg,1) size(this.Parent.yavg,2)],idx);
                 figure;errorbar(this.Parent.tavg,reshape(this.Parent.yavg(ii,jj,:),1,[]),reshape(this.Parent.ystderror(ii,jj,:),1,[]));
+            end
+			
+            function showbkgspectrum(src,callbackdata)
+				data = inputdlg('Choose a bkg spectrum');
+				
+				if isempty(data{1})
+					set(this.shadowplotHandle,'XData',NaN);
+					set(this.shadowplotHandle,'YData',NaN);
+				else
+					ind = str2double(data{1});
+                    set(this.shadowplotHandle,'XData',this.Parent.wavenum(:));
+                    set(this.shadowplotHandle,'YData',reshape(this.Parent.yavg(:,:,ind),[],1));
+				end
             end
             
             % Figure Close Function
@@ -120,9 +135,14 @@ classdef spectrabrowser < handle
             if ishandle(this.plotHandle)
                 delete(this.plotHandle)
             end
+			
+			if ishandle(this.shadowplotHandle)
+				delete(this.shadowplotHandle);
+			end
             
             if isempty(this.Parent.t)
-                this.plotHandle = plot(NaN,NaN,'Parent',this.axesHandle);
+				this.shadowplotHandle = plot(NaN,NaN,'Parent',this.axesHandle,'Color','r'); hold(this.axesHandle,'on');
+                this.plotHandle = plot(NaN,NaN,'Parent',this.axesHandle); hold(this.axesHandle,'off');
                 this.noImageBoolean = true;
             else
                 if isempty(this.Parent.yavg)
@@ -131,7 +151,8 @@ classdef spectrabrowser < handle
                 plotcolor = [0,0,0];
                 errorcolor = [0,0,0]+0.90;
                 %h = plot(ax,obj.wavenum,reshape(obj.yavg(:,:,ind),[],1),'Color',plotcolor); hold(ax,'on');
-                this.herrorplus = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.yavg(:,:,ind)+this.Parent.ystderror(:,:,ind),[],1),'Color',errorcolor);hold(this.axesHandle,'on');
+				this.shadowplotHandle = plot(NaN,NaN,'Parent',this.axesHandle,'Color','r'); hold(this.axesHandle,'on');
+                this.herrorplus = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.yavg(:,:,ind)+this.Parent.ystderror(:,:,ind),[],1),'Color',errorcolor);
                 this.herrorminus = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.yavg(:,:,ind)-this.Parent.ystderror(:,:,ind),[],1),'Color',errorcolor);
                 this.h = plot(this.axesHandle,this.Parent.wavenum(:),reshape(this.Parent.yavg(:,:,ind),[],1),'Color',plotcolor);
                 hold(this.axesHandle,'off');
