@@ -486,5 +486,8 @@ switch ed.Request
             this.SpectraList.usexaxisforallspectra(ed.Variables);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
+	case 'spectralist_openmultiplotbrowser'
+		h = this.SpectraList.openMultiPlotBrowser(ed.Variables);
+        this.TPComponent.addFigure(h);
 end
 end
