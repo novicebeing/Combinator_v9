@@ -16,6 +16,8 @@ classdef multispectrabrowser < handle
         herrorplus
         
         noImageBoolean
+        
+        ind
     end
     
     properties (Transient = true)
@@ -26,6 +28,10 @@ classdef multispectrabrowser < handle
         function this = multispectrabrowser(ParentObjectCellArray)
             this.ParentCellArray = ParentObjectCellArray;
             
+			% Set the index
+			data = inputdlg('Set the index');
+			this.ind = str2double(data{1});
+			
             % Construct the figure
             %if isempty(this.Parent.name)
                 this.figureHandle = figure('CloseRequestFcn',@figCloseFunction);
@@ -81,7 +87,7 @@ classdef multispectrabrowser < handle
 			hold(this.axesHandle,'off');
         end
         function updateImagePlot(this)
-			ind = 1;
+			ind = this.ind;
 			numplots = numel(this.ParentCellArray);
 			
 			for i = 1:numplots
