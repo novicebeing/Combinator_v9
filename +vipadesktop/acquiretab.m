@@ -29,6 +29,7 @@ classdef acquiretab < handle
    events
        OpenButtonPressed
        AcquireButtonPressed
+	   AcquireSpectrumButtonPressed
        StopAcquireButtonPressed
        AcquireFunctionBoxAction
        AcquireOperationBoxAction

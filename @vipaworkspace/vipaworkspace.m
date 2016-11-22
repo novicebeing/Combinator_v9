@@ -149,6 +149,7 @@ classdef vipaworkspace < handle
             
             % Add Spectrum acquire listener
             addlistener(this.acquiretab,'AcquireButtonPressed',@(~,~) this.acquire());
+            addlistener(this.acquiretab,'AcquireSpectrumButtonPressed',@(~,~) this.acquireSpectrum());
             addlistener(this.acquiretab,'StopAcquireButtonPressed',@(~,~) this.stopAcquire());
             
             %=====================================================================================================(PID Tuner)

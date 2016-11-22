@@ -5,6 +5,8 @@ classdef VIPACalibrationTool < handle
 		referenceImage
 		calibrationgasImage
 		wavenum
+	   fringeX
+	   fringeY
 	end
 
 	%% Private Properties, Events, Methods
@@ -38,8 +40,6 @@ classdef VIPACalibrationTool < handle
 		LoadButton
 		
 	   % Fringe Collection
-	   fringeX
-	   fringeY
 	   fringeImageSize
 	   
    end
