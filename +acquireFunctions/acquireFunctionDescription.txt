@@ -1,0 +1,14 @@
+Formatting for acquireFunction:
+
+Required properties:
+	referenceImage
+	fringeX
+	fringeY
+	wavenum
+	
+Required methods:
+	startImageAcquire()
+	startSpectrumAcquire()
+	getImages()
+	getSpectra()
+	stopAcquire()

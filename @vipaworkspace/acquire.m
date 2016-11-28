@@ -13,21 +13,21 @@ function acquire(obj)
     obj.acquiretab.AcquireSpectrumButton.Enabled = false;
     obj.acquiretab.StopAcquireButton.Enabled = true;
     
-    try % to acquire an image
-    
+    %try % to acquire an image
+	
+		acquireObject = obj.acquireFunction();
+		acquireObject.referenceImage = obj.VIPACalibrationTool.referenceImage;
+		acquireObject.startImageAcquire();
+	
         n = 0;
         lastAcquire = now;
         while ~obj.stopAcquireBoolean
-            [images,time,acquireType,refImagesBoolean] = obj.acquireFunction();
+            [images,time] = acquireObject.getImages();
 
             % Check the output
             numImages = size(images,3);
             if ~isvector(time) || ...
-                    numel(time) ~= numImages || ...
-                    ~islogical(refImagesBoolean) || ...
-                    ~isvector(refImagesBoolean) || ...
-                    numel(refImagesBoolean) ~= numImages || ...
-                    ~strcmp(acquireType,'image')
+                    numel(time) ~= numImages
                 errordlg('Acquire function output is poorly formatted','Acquire Error','modal');
                 break
             end
@@ -39,7 +39,7 @@ function acquire(obj)
             if ~strcmp(obj.acquiretab.imageDestTextField.Text,'none')
                 imageobjid = {obj.acquiretab.imageDestTextField.Text};
                 if ~strcmp(imageobjid,'none')
-                    obj.ImagesList.setImages(imageobjid,images,time,refImagesBoolean);
+                    obj.ImagesList.setImages(imageobjid,images,time,false(size(time)));
                 end
             end
 
@@ -51,10 +51,12 @@ function acquire(obj)
             obj.StatusBar.setText(statusString,[],'west');
             n = n+1;
         end
+		
+		acquireObject.stopAcquire();
     
-    catch err
-        uiwait(errordlg('Could not acquire an image.','Acquire Error'));
-    end
+    %catch err
+    %    uiwait(errordlg('Could not acquire an image.','Acquire Error'));
+    %end
     
     % Reset the status
     statusString = sprintf('');
@@ -63,5 +65,6 @@ function acquire(obj)
     % Reset the acquire buttons
     obj.stopAcquireBoolean = false;
     obj.acquiretab.AcquireButton.Enabled = true;
+	obj.acquiretab.AcquireSpectrumButton.Enabled = true;
     obj.acquiretab.StopAcquireButton.Enabled = false;
 end

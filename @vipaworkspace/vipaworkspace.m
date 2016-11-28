@@ -149,6 +149,7 @@ classdef vipaworkspace < handle
             
             % Add Spectrum acquire listener
             addlistener(this.acquiretab,'AcquireButtonPressed',@(~,~) this.acquire());
+            addlistener(this.acquiretab,'AcquireSpectrumButtonPressed',@(~,~) this.acquireSpectrum());
             addlistener(this.acquiretab,'StopAcquireButtonPressed',@(~,~) this.stopAcquire());
             
             %=====================================================================================================(PID Tuner)
@@ -486,5 +487,8 @@ switch ed.Request
             this.SpectraList.usexaxisforallspectra(ed.Variables);
     case 'select'
         this.PlantList.SelectedPlant = ed.Variables{1};
+	case 'spectralist_openmultiplotbrowser'
+		h = this.SpectraList.openMultiPlotBrowser(ed.Variables);
+        this.TPComponent.addFigure(h);
 end
 end

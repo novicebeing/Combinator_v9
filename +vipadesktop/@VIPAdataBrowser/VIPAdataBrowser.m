@@ -241,56 +241,61 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)openplotbrowser(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,2);
+            s.Text = 'Open Multi Plot Browser';
+            s.Name = 'spectralist_openmultiplotbrowser';
+            s.Callback = @(x)spectralist_openmultiplotbrowser(obj,x);
+            s.MultiSelection = true;
+            selectionPopupMenu.addMenuItem(s,3);
             s.Text = 'Open FFTPlot Browser';
             s.Name = 'openfftplotbrowser';
             s.Callback = @(x)openfftplotbrowser(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,3);
+            selectionPopupMenu.addMenuItem(s,4);
             s.Text = 'Use for Wavenum Calibration';
             s.Name = 'spectralist_useforwavenumcalibration';
             s.Callback = @(x)spectralist_useforwavenumcalibration(obj,x);
             s.MultiSelection = false;
-            selectionPopupMenu.addMenuItem(s,4);
+            selectionPopupMenu.addMenuItem(s,5);
             s.Text = 'Perform Spectral Fit';
             s.Name = 'performspectralfit';
             s.Callback = @(x)performspectralfit(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,5);
+            selectionPopupMenu.addMenuItem(s,6);
             s.Text = 'Save To File...';
             s.Name = 'spectralist_savetofile';
             s.Callback = @(x)spectralist_savetofile(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,6);
+            selectionPopupMenu.addMenuItem(s,7);
             s.Text = 'Export To Base Workspace';
             s.Name = 'spectralist_exporttobaseworkspace';
             s.Callback = @(x)spectralist_exporttobaseworkspace(obj,x);
             s.MultiSelection = false;
-            selectionPopupMenu.addMenuItem(s,7);
+            selectionPopupMenu.addMenuItem(s,8);
             s.Text = 'Open Averaging Bar Chart';
             s.Name = 'spectralist_openaveragingbarchart';
             s.Callback = @(x)spectralist_openaveragingbarchart(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,8);
+            selectionPopupMenu.addMenuItem(s,9);
             s.Text = 'Inspect';
             s.Name = 'spectralist_inspect';
             s.Callback = @(x)spectralist_inspect(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,9);
+            selectionPopupMenu.addMenuItem(s,10);
             s.Text = 'Auto Correct DOCO X Axis';
             s.Name = 'spectralist_autocorrectdocoxaxis';
             s.Callback = @(x)spectralist_autocorrectdocoxaxis(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,10);
+            selectionPopupMenu.addMenuItem(s,11);
             s.Text = 'Use X Axis for all spectra';
             s.Name = 'spectralist_usexaxisforallspectra';
             s.Callback = @(x)spectralist_usexaxisforallspectra(obj,x);
             s.MultiSelection = false;
-            selectionPopupMenu.addMenuItem(s,11);
+            selectionPopupMenu.addMenuItem(s,12);
             s.Text = 'Correct X Axis';
             s.Name = 'spectralist_correctxaxis';
             s.Callback = @(x)spectralist_correctxaxis(obj,x);
             s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,12);
+            selectionPopupMenu.addMenuItem(s,13);
             
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
@@ -617,4 +622,8 @@ end
 
 function spectralist_usexaxisforallspectra(obj,src)
     notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_usexaxisforallspectra',src.Variables));
+end
+
+function spectralist_openmultiplotbrowser(obj,src)
+    notify(obj,'ComponentRequest',vipadesktop.DataBrowserEventData('spectralist_openmultiplotbrowser',src.Variables));
 end
