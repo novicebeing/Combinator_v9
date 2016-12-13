@@ -37,9 +37,9 @@ function correctWavenumAxis( obj, varargin )
 	OD_wavenum = s.OD_v0_PGo.lineposition;
 	
     % Open the fitting figure
-    fitobj = spectraobjects.VIPAxaxis(centerWavenum,vertScale,horizScale,fity);
+    fitobj = spectraobjects.VIPAxaxis(centerWavenum,[vertScale 0],horizScale,fity);
     %fitobj.setSimulationSpectrum(D2O_wavenum,D2O_S);
-	fitobj.setSimulationSpectrum(OD_wavenum,OD_S);
+	%fitobj.setSimulationSpectrum(OD_wavenum,OD_S);
 
     % Fit the x axis
     %fitobj.autoSelectPeaks();
