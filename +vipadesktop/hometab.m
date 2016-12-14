@@ -48,9 +48,18 @@ classdef hometab < handle
             this.TPComponent.add(notesSection);
             panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
             notesSection.add(panel);
-            this.NewButton = toolpack.component.TSButton('Notes',toolpack.component.Icon.PROPERTIES_24);
-            panel.add( this.NewButton, 'xy(1,2)' );
-            addlistener(this.NewButton,'ActionPerformed',@(~,~) vipaworkspacenotes);
+            button = toolpack.component.TSButton('Notes',toolpack.component.Icon.PROPERTIES_24);
+            panel.add( button, 'xy(1,2)' );
+            addlistener(button,'ActionPerformed',@(~,~) vipaworkspacenotes);
+			
+            % Add Notes Section
+            gitSection = toolpack.desktop.ToolSection('Git','Git');
+            this.TPComponent.add(gitSection);
+            panel = toolpack.component.TSPanel('p:grow,2dlu,p:grow,2dlu,p:grow', '2dlu,fill:p:grow,2dlu');
+            gitSection.add(panel);
+            button = toolpack.component.TSButton('Git Shell',toolpack.component.Icon.PROPERTIES_24);
+            panel.add( button, 'xy(1,2)' );
+            addlistener(button,'ActionPerformed',@(~,~) vipaworkspacegitshell);
             
 %             % Add open button
 %             this.FileSection = toolpack.desktop.ToolSection('File','File');
