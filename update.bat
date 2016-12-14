@@ -1,5 +1,3 @@
-git fetch upstream
 git checkout master
-git merge upstream/master
-git merge upstream/master
+git pull https://github.com/brycebjork/Combinator_v9 master
 git push
