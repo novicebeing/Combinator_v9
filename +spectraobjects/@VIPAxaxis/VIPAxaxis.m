@@ -122,18 +122,22 @@ classdef VIPAxaxis < handle
 			
             % Force figure menubar
             set( obj.hf, 'menubar', 'figure' );
+			
+			% Set 
+			%if exist('setMenuAccelerator','file')==2
+			%	setMenuAccelerator(obj.hf,'Tools','Zoom In','ctrl shift Z');
+			%	setMenuAccelerator(obj.hf,'Tools','Brush','ctrl shift X');
+            %end
             
             % Send the output
             hf = obj.hf;
         end
 		function fitFrequencyAxisFigureShiftSet(self,hObject,eventdata)
             x = inputdlg({'Enter spectrum center wavenumber [cm-1]:','Enter Horiz span [cm-1]:','Enter Vert span [cm-1]:'}, 'Set Spectrum Center Wavenumber', [1 50],...
-                {num2str(self.xaxisParams.centerWavenum),num2str(self.xaxisParams.horizPoly(1)),num2str(self.xaxisParams.vertPoly(1))});
-            self.xaxisParams.centerWavenum = str2double(x{1});
-			self.xaxisParams.horizPoly(:) = 0;
-			self.xaxisParams.vertPoly(:) = 0;
-			self.xaxisParams.horizPoly(1) = str2double(x{2});
-			self.xaxisParams.vertPoly(1) = str2double(x{3});
+                {num2str(self.xaxisParams.centerWavenum),num2str(self.xaxisParams.horizPoly),num2str(self.xaxisParams.vertPoly)});
+            self.xaxisParams.centerWavenum = str2num(x{1});
+			self.xaxisParams.horizPoly = str2num(x{2});
+			self.xaxisParams.vertPoly = str2num(x{3});
             self.updatePlotExp(self.axExp, self.hExp);
 			self.updatePlotExpStem(self.axExp,self.hExpStem);
 		end
@@ -368,16 +372,18 @@ classdef VIPAxaxis < handle
 			end
         end
         function fitYaxis(obj)
-            wavenumFun = @(b,x) interp1(1:numel(obj.yIn),reshape(obj.createWavenumAxis( b(1),b(2),b(3),size(obj.yIn)),[],1),x);
+            nVert = numel(obj.xaxisParams.vertPoly);
+            nHoriz = numel(obj.xaxisParams.horizPoly);
+            wavenumFun = @(b,x) interp1(1:numel(obj.yIn),reshape(obj.createWavenumAxis( b(1),b(2:(1+nVert)),b((2+nVert):(1+nVert+nHoriz)),size(obj.yIn)),[],1),x);
             
-            beta0 = [obj.xaxisParams.centerWavenum obj.xaxisParams.vertPoly(1) obj.xaxisParams.horizPoly(1)];
+            beta0 = [obj.xaxisParams.centerWavenum obj.xaxisParams.vertPoly(:)' obj.xaxisParams.horizPoly(:)'];
             opts = statset('nlinfit');
             [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(obj.linePositions,obj.linePositionsSim,wavenumFun,beta0,opts);
 
             % Set the relevant parameters
             obj.xaxisParams.centerWavenum = beta(1);
-            obj.xaxisParams.vertPoly = beta(2);
-            obj.xaxisParams.horizPoly = beta(3);
+            obj.xaxisParams.vertPoly = beta(2:(1+nVert));
+            obj.xaxisParams.horizPoly = beta((2+nVert):(1+nVert+nHoriz));
         end
         function [simPeaks,expPeaks] = compareSimExpPeaks(obj)
             x = obj.createWavenumAxis( obj.xaxisParams.centerWavenum, obj.xaxisParams.vertPoly, obj.xaxisParams.horizPoly, size(obj.yIn) );
