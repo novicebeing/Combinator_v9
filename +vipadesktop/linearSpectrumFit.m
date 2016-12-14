@@ -30,8 +30,9 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,vara
         for j = 1:numel(fitspectrumobjects{i})
             y = fitspectrumobjects{i}(j).createSpectrum(x,varargin{:});%0.02997); %***
             k = spectraobjects.spectraobject(); %***
-            k.averageSpectrum(x,y,[],0);
-            yy = k.ysum./k.wsum;
+            %k.averageSpectrum(x,y,[],0);
+			[yy,~] = k.assignyerror(x,y);
+            %yy = k.ysum./k.wsum;
             yy(isnan(yy)) = 0;
             fitMatrix(:,:,fitArrayNum) = yy;
             fitbNames{fitArrayNum} = fitspectrumobjects{i}(j).name;
