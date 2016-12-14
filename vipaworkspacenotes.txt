@@ -6,6 +6,10 @@ SPECTRA COLLECTION PROCEDURE:
 4) Calibrate the spectrum using the calibration gas image
 5) Open live spectrum viewer
 
+X Axis Correction:
+------------------
+
+1. shortcut key for brush (ctl+b)
 
 VIPA Workspace TODO List:
 -------------------------
