@@ -164,7 +164,7 @@ classdef fitbrowserwithcolors < handle
                     hold on;
                 end
                 hold(this.axesHandle,'off');
-                legend({'Experiment',this.Parent.fitbNames{:}});
+                legend({'Experiment',this.Parent.fitbNames{:}},'interpreter','none');
 
                 if strcmp(this.options,'fft')
                     xlabel(this.axesHandle,'Etalon Length [cm]');
