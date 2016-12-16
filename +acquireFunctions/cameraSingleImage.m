@@ -1,22 +1,6 @@
-classdef cameraSingleImage
-	properties (Access = public)
-		referenceImage
-		fringeX
-		fringeY
-		wavenum
-	end
-
+classdef cameraSingleImage < acquireFunctions.cameraSingleImage_template
 	methods
 		function this = cameraSingleImage()
-			
-		end
-		function startImageAcquire(this)
-			
-		end
-		function startSpectrumAcquire(this)
-			
-		end
-		function stopAcquire(this)
 			
 		end
 		function [imageOut,timeOut] = getImages(this)
@@ -53,32 +37,5 @@ classdef cameraSingleImage
 			acquireTypeOut = 'image';
 			referenceImagesBoolean = false;
 			
-			assignin('base','bkgImage',bkgImage);
-			%figure(10);plot(1:size(bkgImage,2),bkgImage(100,:));
-			
 		end
-		function [spectra,time] = getSpectra(this)
-			[images,time] = this.getImages();
-			specImage = -log(images./this.referenceImage);
-			specImage(images./this.referenceImage < 0) = NaN;
-			spectra = this.image2spectrumStatic(this.fringeX,this.fringeY,specImage,2);
-		end
-	end
-	methods (Static)
-		function spectrumOut = image2spectrumStatic(fringeX,fringeY,theImages,columnsToSum)
-			indcsX = round(fringeX);
-			indcsY = round(fringeY);
-			nonnanindcs = ~isnan(indcsX);
-			spectrumOut = zeros(size(indcsX,1),size(indcsX,2),size(theImages,3));
-			%spectrumOut(repmat(~nonnanindcs,1,1,size(spectrum,3))) = NaN;
-			for j = 1:size(theImages,3)
-				spectrum = zeros(size(indcsX));
-				spectrum(~nonnanindcs) = NaN;
-				for i = -columnsToSum:columnsToSum
-					spectrum(nonnanindcs) = spectrum(nonnanindcs) + theImages(sub2ind(size(theImages),indcsY(nonnanindcs),indcsX(nonnanindcs)+i,j.*ones(sum(sum(nonnanindcs)),1)));
-				end
-				spectrumOut(:,:,j) = spectrum;
-			end
-		end
-   end
 end

@@ -1,11 +1,12 @@
 function acquire(obj)
 
     % Check to see if there are any acquire destinations set
-    if strcmp(obj.acquiretab.imageDestTextField.Text,'none') && ...
-            strcmp(obj.acquiretab.calibrationTextField.Text,'none') && ...
-            strcmp(obj.acquiretab.spectraDestTextField.Text,'none')
-        errordlg('No acquire destination is set...','Acquire Error','modal');
-        return
+    if strcmp(obj.acquiretab.imageDestTextField.Text,'none')
+	    h = imagesobjects.imagesobject();
+            obj.ImagesList.addItem(h,0,0,'liveimage');
+            obj.acquiretab.imageDestTextField.Text = 'liveimage';
+        %errordlg('No acquire destination is set...','Acquire Error','modal');
+        %return
     end
 
     % Set acquire buttons

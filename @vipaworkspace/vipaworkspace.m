@@ -76,7 +76,7 @@ classdef vipaworkspace < handle
             this.TPComponent.setDataBrowser(this.DataBrowser.View.getPanel);
             
             % Get Image Acquire Operations
-            this.acquireOperations = {'replace','add','average','averageWithRestart'};
+            this.acquireOperations = {'staticReference','kineticsReference'};
             this.acquireOperation = this.acquireOperations{1};
             
             % Get Image Acquire functions
@@ -150,6 +150,7 @@ classdef vipaworkspace < handle
             % Add Spectrum acquire listener
             addlistener(this.acquiretab,'AcquireButtonPressed',@(~,~) this.acquire());
             addlistener(this.acquiretab,'AcquireSpectrumButtonPressed',@(~,~) this.acquireSpectrum());
+			addlistener(this.acquiretab,'AverageSpectrumButtonPressed',@(~,~) this.averageSpectrum());
             addlistener(this.acquiretab,'StopAcquireButtonPressed',@(~,~) this.stopAcquire());
             
             %=====================================================================================================(PID Tuner)
