@@ -20,7 +20,10 @@ classdef cameraSingleImage < acquireFunctions.cameraSingleImage_template
 			collectedImageArray = double(reshape(collectedImageArray,[CAM_width CAM_height numImages]));
 			
 			bkgImage = collectedImageArray(:,:,indBkg(1))';
-			sigImage = collectedImageArray(:,:,indBkg(1)-1)';
+			if strcmp(this.referenceType,'kineticsReference')
+				this.referenceImage = collectedImageArray(:,:,mod(indBkg(1),numImages)+1)'-bkgImage;
+			end
+			sigImage = collectedImageArray(:,:,mod(indBkg(1)+1,numImages)+1)';
 			
 			% Find the indices of the bad pixels
 			badPixelIndcs = find(double(bkgImage)<0.75*mean(bkgImage(:)) | double(bkgImage)>1.5*mean(bkgImage(:)));
@@ -37,5 +40,6 @@ classdef cameraSingleImage < acquireFunctions.cameraSingleImage_template
 			acquireTypeOut = 'image';
 			referenceImagesBoolean = false;
 			
-		end
+        end
+    end
 end
