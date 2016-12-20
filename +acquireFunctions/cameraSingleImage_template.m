@@ -47,7 +47,8 @@ classdef cameraSingleImage_template < handle
 			
 			if this.averaging == true
 				y = this.image2spectrumStatic(this.fringeX,this.fringeY,specImage,2);
-				w = 1./this.assignyerror(this.wavenum,y).^2;
+				[y,deltay] = this.assignyerror(this.wavenum,y);
+				w = 1./deltay.^2;
 				if isempty(this.ySum)
 					this.ySum = w.*y;
 					this.wSum = w;
@@ -57,7 +58,9 @@ classdef cameraSingleImage_template < handle
 				end
 				spectra = this.ySum./this.wSum;
 			else
-				spectra = this.image2spectrumStatic(this.fringeX,this.fringeY,specImage,2);
+				y = this.image2spectrumStatic(this.fringeX,this.fringeY,specImage,2);
+				[yout,deltay] = this.assignyerror(this.wavenum,y);
+				spectra = yout;
 			end
 		end
 	end
