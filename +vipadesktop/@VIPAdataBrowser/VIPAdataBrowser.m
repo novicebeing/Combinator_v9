@@ -5,6 +5,7 @@ classdef VIPAdataBrowser < handle
     % Copyright 2013 The MathWorks, Inc.
     
     properties
+		Parent
         Model
         View
         imagesWorkspace
@@ -24,9 +25,10 @@ classdef VIPAdataBrowser < handle
         ComponentRequest
     end
     methods
-        function obj = VIPAdataBrowser()
+        function obj = VIPAdataBrowser(Parent)
             %PLANTLISTBROWSER
-            
+            this.Parent = Parent;
+			
             % Construct the basic model
             obj.Model = vipadesktop.DataBrowserModel;%toolpack.databrowser.DataBrowserModel;
             obj.Model.remove('base');
@@ -100,11 +102,6 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)imageslist_setacquiredestination(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,1);
-            s.Text = 'Open Image Browser';
-            s.Name = 'openplotbrowser';
-            s.Callback = @(x)openimagebrowser(obj,x);
-            s.MultiSelection = false;
-            selectionPopupMenu.addMenuItem(s,2);
             s.Text = 'Open Line Profile Browser';
             s.Name = 'imageslist_openlineprofilebrowser';
             s.Callback = @(x)imageslist_openlineprofilebrowser(obj,x);
@@ -165,6 +162,19 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)imageslist_inspect(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,12);
+			
+			% Add context menu items
+			menuitems = vipadesktop.getpackagemfiles('imagesobjects.contextmenu');
+			for i = 1:numel(menuitems)
+				s.Text = eval(sprintf('%s.menuitemText',menuitems{i}));
+				s.Name =  eval(sprintf('%s.menuitemName',menuitems{i}));
+				f = str2func(sprintf('%s.menucallback',menuitems{i}));
+				s.Callback =  @(selecteditems) f(this.Parent,selecteditems);
+				s.MultiSelection = eval(sprintf('%s.menuitemMultiSelection',menuitems{i}));
+				selectionPopupMenu.addMenuItem(s);
+				%itemIndex = itemIndex + 1;
+			end
+			
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);
@@ -236,11 +246,6 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)spectralist_setacquiredestination(obj,x);
             s.MultiSelection = false;
             selectionPopupMenu.addMenuItem(s,1);
-            s.Text = 'Open Plot Browser';
-            s.Name = 'openplotbrowser';
-            s.Callback = @(x)openplotbrowser(obj,x);
-            s.MultiSelection = true;
-            selectionPopupMenu.addMenuItem(s,2);
             s.Text = 'Open Multi Plot Browser';
             s.Name = 'spectralist_openmultiplotbrowser';
             s.Callback = @(x)spectralist_openmultiplotbrowser(obj,x);
@@ -266,11 +271,6 @@ classdef VIPAdataBrowser < handle
             s.Callback = @(x)spectralist_savetofile(obj,x);
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,7);
-            s.Text = 'Export To Base Workspace';
-            s.Name = 'spectralist_exporttobaseworkspace';
-            s.Callback = @(x)spectralist_exporttobaseworkspace(obj,x);
-            s.MultiSelection = false;
-            selectionPopupMenu.addMenuItem(s,8);
             s.Text = 'Open Averaging Bar Chart';
             s.Name = 'spectralist_openaveragingbarchart';
             s.Callback = @(x)spectralist_openaveragingbarchart(obj,x);
@@ -297,6 +297,19 @@ classdef VIPAdataBrowser < handle
             s.MultiSelection = true;
             selectionPopupMenu.addMenuItem(s,13);
             
+			% Add menu items from contextmenu directory
+			%itemIndex = 14;
+			menuitems = vipadesktop.getpackagemfiles('spectraobjects.contextmenu');
+			for i = 1:numel(menuitems)
+				s.Text = eval(sprintf('%s.menuitemText',menuitems{i}));
+				s.Name =  eval(sprintf('%s.menuitemName',menuitems{i}));
+				f = str2func(sprintf('%s.menucallback',menuitems{i}));
+				s.Callback =  @(selecteditems) f(this.Parent,selecteditems);
+				s.MultiSelection = eval(sprintf('%s.menuitemMultiSelection',menuitems{i}));
+				selectionPopupMenu.addMenuItem(s);
+				%itemIndex = itemIndex + 1;
+			end
+			
             %nonselectionPopupMenu.removeMenuItem('RecordCreationMenuItem');
             nonselectionPopupMenu.removeMenuItem('PasteMenuItem');
             warning(WarningState);

@@ -6,6 +6,10 @@ function correctWavenumAxis( obj, varargin )
     ind = find(obj.t >= 12000);
     ind = ind(1);
 	ind = 1;
+	
+	% 
+	in = inputdlg('Spectrum Number:','Spectrum Number',1,{'1'});
+	ind = str2double(in{1})
 
     % Get the data
     fitx = obj.wavenum;
