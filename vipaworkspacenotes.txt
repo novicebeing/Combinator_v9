@@ -14,12 +14,8 @@ X Axis Correction:
 VIPA Workspace TODO List:
 -------------------------
 
-- make spectraobject replace-only
-
 X axis calibration:
 
 - fix "default view"
 
 - stem plot for fit spectra
-
-test on Wednesday 14th

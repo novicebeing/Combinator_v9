@@ -61,7 +61,7 @@ classdef vipaworkspace < handle
             this.FitSpectraList = vipadesktop.FitSpectraList();
             this.FitsList = vipadesktop.FitsList();
 %             this.SpectraList2 = vipadesktop.SpectraList();
-            this.DataBrowser = vipadesktop.VIPAdataBrowser();
+            this.DataBrowser = vipadesktop.VIPAdataBrowser(this);
             this.ImagesList.setWorkspace(this.DataBrowser.imagesWorkspace);
             %this.CalibrationList.setWorkspace(this.DataBrowser.calibrationWorkspace);
             this.SpectraList.setWorkspace(this.DataBrowser.spectraWorkspace);
@@ -76,7 +76,7 @@ classdef vipaworkspace < handle
             this.TPComponent.setDataBrowser(this.DataBrowser.View.getPanel);
             
             % Get Image Acquire Operations
-            this.acquireOperations = {'replace','add','average','averageWithRestart'};
+            this.acquireOperations = {'staticReference','kineticsReference'};
             this.acquireOperation = this.acquireOperations{1};
             
             % Get Image Acquire functions
@@ -150,6 +150,7 @@ classdef vipaworkspace < handle
             % Add Spectrum acquire listener
             addlistener(this.acquiretab,'AcquireButtonPressed',@(~,~) this.acquire());
             addlistener(this.acquiretab,'AcquireSpectrumButtonPressed',@(~,~) this.acquireSpectrum());
+			addlistener(this.acquiretab,'AverageSpectrumButtonPressed',@(~,~) this.averageSpectrum());
             addlistener(this.acquiretab,'StopAcquireButtonPressed',@(~,~) this.stopAcquire());
             
             %=====================================================================================================(PID Tuner)
@@ -355,9 +356,6 @@ switch ed.Request
             waitbar(i/numel(ed.Variables),hwait);
         end
         close(hwait);
-    case 'openimagebrowser'
-        h = this.ImagesList.openImageBrowsers(ed.Variables,this);
-        this.TPComponent.addFigure(h);
     case 'openfitbrowser'
         h = this.FitsList.openFitBrowsers(ed.Variables);
         this.TPComponent.addFigure(h);
@@ -433,8 +431,6 @@ switch ed.Request
         assignin('base','hobj',this.CalibrationList.Plants);
     case 'imageslist_exporttobaseworkspace'
         assignin('base','hobj',this.ImagesList.Plants);
-    case 'spectralist_exporttobaseworkspace'
-        assignin('base','hobj',this.SpectraList.Plants);
     case 'imageslist_openlineprofilebrowser'
         h = this.ImagesList.openLineProfileBrowsers(ed.Variables);
         this.TPComponent.addFigure(h);

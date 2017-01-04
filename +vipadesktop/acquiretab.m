@@ -30,6 +30,7 @@ classdef acquiretab < handle
        OpenButtonPressed
        AcquireButtonPressed
 	   AcquireSpectrumButtonPressed
+	   AverageSpectrumButtonPressed
        StopAcquireButtonPressed
        AcquireFunctionBoxAction
        AcquireOperationBoxAction
@@ -62,14 +63,14 @@ classdef acquiretab < handle
             this.CameraSection.add(panel);
             singleImageFunctionLabel = toolpack.component.TSLabel('Acquire Function');
             panel.add(singleImageFunctionLabel,'xy(2,2,''r,c'')');
-             singleImageFunctionLabel = toolpack.component.TSLabel('Acquire Operation');
+             singleImageFunctionLabel = toolpack.component.TSLabel('Reference Source');
              panel.add(singleImageFunctionLabel,'xy(2,4,''r,c'')');
 %             kineticsImagesFunctionLabel = toolpack.component.TSLabel('Kinetics Images');
 %             panel.add(kineticsImagesFunctionLabel,'xy(2,6,''r,c'')');
             this.acquireFunctionComboBox = toolpack.component.TSComboBox(acquireFunctionStrings);
             panel.add(this.acquireFunctionComboBox,'xywh(4,2,1,1)');
             addlistener(this.acquireFunctionComboBox,'ActionPerformed',@(~,~) notify(this,'AcquireFunctionBoxAction'));
-             this.acquireOperationComboBox = toolpack.component.TSComboBox({'replace','add','average','averageWithRestart'});
+             this.acquireOperationComboBox = toolpack.component.TSComboBox({'staticReference','kineticsReference'});
              panel.add(this.acquireOperationComboBox,'xywh(4,4,1,1)');
              addlistener(this.acquireOperationComboBox,'ActionPerformed',@(~,~) notify(this,'AcquireOperationBoxAction'));
 %             this.kineticsImagesComboBox = toolpack.component.TSComboBox(kineticsImagesAcquireFunctionStrings);
@@ -84,10 +85,26 @@ classdef acquiretab < handle
             this.AcquireButton.Orientation = toolpack.component.ButtonOrientation.VERTICAL;
 			panel.add( this.AcquireButton, 'xy(1,2)' );
             addlistener(this.AcquireButton,'ActionPerformed',@(~,~) notify(this,'AcquireButtonPressed'));
-            this.AcquireSpectrumButton = toolpack.component.TSButton(sprintf('Acquire\nSpectrum'),toolpack.component.Icon.RUN_24);
+            this.AcquireSpectrumButton = toolpack.component.TSSplitButton(sprintf('Acquire\nSpectrum'),toolpack.component.Icon.RUN_24);
             this.AcquireSpectrumButton.Orientation = toolpack.component.ButtonOrientation.VERTICAL;
+            items(1) = struct(...
+                'Title','Average Spectrum', ...
+                'Description', 'Acquire Averaged Spectrum', ...
+                'Icon', toolpack.component.Icon.EXPORT_16, ...
+                'Help', [], ...
+                'Header', false);
+			this.AcquireSpectrumButton.Popup = toolpack.component.TSDropDownPopup(items,'icon_text_description');
 			panel.add( this.AcquireSpectrumButton, 'xy(3,2)' );
             addlistener(this.AcquireSpectrumButton,'ActionPerformed',@(~,~) notify(this,'AcquireSpectrumButtonPressed'));
+			addlistener(this.AcquireSpectrumButton.Popup, 'ListItemSelected', @(src,~) cbSplitButtonAction(src));
+			
+			function cbSplitButtonAction(src)
+				switch src.SelectedIndex
+					case 1
+						notify(this,'AverageSpectrumButtonPressed');
+				end
+			end
+			
             this.StopAcquireButton = toolpack.component.TSButton('Stop',toolpack.component.Icon.END_24);
             this.StopAcquireButton.Enabled = false;
 			this.StopAcquireButton.Orientation = toolpack.component.ButtonOrientation.VERTICAL;
@@ -148,7 +165,7 @@ classdef acquiretab < handle
             %this.TPComponent = toolpack.desktop.ToolSection('Plant',pidtool.utPIDgetStrings('cst','strPlant'));
             this.vipadesktop = vipadesktop;
             %this.layout();
-            
+           
            function setTextFieldText(obj,text)
                obj.Text = text;
            end

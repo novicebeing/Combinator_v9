@@ -1,4 +1,4 @@
-function acquireSpectrum(obj)
+function averageSpectrum(obj)
 
 	% Check to see if there is a valid wavelength calibration
 	if isempty(obj.VIPACalibrationTool.wavenum) | ...
@@ -29,8 +29,7 @@ function acquireSpectrum(obj)
 		acquireObject.fringeX = obj.VIPACalibrationTool.fringeX;
 		acquireObject.fringeY = obj.VIPACalibrationTool.fringeY;
 		acquireObject.wavenum = obj.VIPACalibrationTool.wavenum;
-		acquireObject.averaging = false;
-		acquireObject.referenceType = obj.acquireOperation;
+		acquireObject.averaging = true;
 		acquireObject.startSpectrumAcquire();
 	
         n = 0;

@@ -1,16 +1,16 @@
 function [fringeX,fringeY,fringeImageSize] = collectFringesFunction(this,fringeImage)
         
-        % Check to see if bad pixels have been detected
-        if sum(isnan(fringeImage)) == 0
-           % Bad pixels have not been detected. We'll do that here
-            % Get bkg Image
-                 bkgImages = self.dependencyHandles.MOD_ExternalAcquireSync.acquireBackgroundImages(3);
-                 bkgImage = bkgImages(:,:,1)';
-
-            % Find the indices of the bad pixels
-            badPixelIndcs = find(double(bkgImage)<0.75*mean(bkgImage(:)) | double(bkgImage)>1.5*mean(bkgImage(:)));
-            fringeImage(badPixelIndcs) = NaN;
-        end
+%         % Check to see if bad pixels have been detected
+%         if sum(isnan(fringeImage)) == 0
+%            % Bad pixels have not been detected. We'll do that here
+%             % Get bkg Image
+%                  bkgImages = self.dependencyHandles.MOD_ExternalAcquireSync.acquireBackgroundImages(3);
+%                  bkgImage = bkgImages(:,:,1)';
+% 
+%             % Find the indices of the bad pixels
+%             badPixelIndcs = find(double(bkgImage)<0.75*mean(bkgImage(:)) | double(bkgImage)>1.5*mean(bkgImage(:)));
+%             fringeImage(badPixelIndcs) = NaN;
+%         end
         
         % Save as reference
         self.calibrationImages_reference = fringeImage';

@@ -378,8 +378,17 @@ classdef VIPAxaxis < handle
             
             beta0 = [obj.xaxisParams.centerWavenum obj.xaxisParams.vertPoly(:)' obj.xaxisParams.horizPoly(:)'];
             opts = statset('nlinfit');
-            [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(obj.linePositions,obj.linePositionsSim,wavenumFun,beta0,opts);
-
+			
+			switch numel(obj.linePositions)
+				case 0
+					return
+				case 1
+					[beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(obj.linePositions,obj.linePositionsSim,@(b,x) wavenumFun([b beta0(2:end)],x),beta0(1),opts);
+					beta = [beta beta0(2:end)];
+				otherwise
+					[beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(obj.linePositions,obj.linePositionsSim,wavenumFun,beta0,opts);
+			end
+			
             % Set the relevant parameters
             obj.xaxisParams.centerWavenum = beta(1);
             obj.xaxisParams.vertPoly = beta(2:(1+nVert));
