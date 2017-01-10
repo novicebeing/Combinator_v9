@@ -10,7 +10,7 @@ classdef performspectralfit
 			hwait = waitbar(0,'Fitting Spectra', 'WindowStyle', 'modal');
 			itemNames = Parent.SpectraList.getItemNames(SelectedItems.Variables);
 			for i = 1:numel(SelectedItems.Variables)
-				h = Parent.SpectraList.performSpectralFits(SelectedItems.Variables(i),Parent.FitSpectraList.Plants,'instrumentGaussianFWHM',str2double(this.fittingtab.instrumentGaussianFWHMTextField.Text),'instrumentLorentzianFWHM',str2double(this.fittingtab.instrumentLorentzianFWHMTextField.Text));
+				h = Parent.SpectraList.performSpectralFits(SelectedItems.Variables(i),Parent.FitSpectraList.Plants,'instrumentGaussianFWHM',str2double(Parent.fittingtab.instrumentGaussianFWHMTextField.Text),'instrumentLorentzianFWHM',str2double(Parent.fittingtab.instrumentLorentzianFWHMTextField.Text));
 				Parent.FitsList.addItem(h,0,0,itemNames{i});
 				waitbar(i/numel(SelectedItems.Variables),hwait);
 			end
