@@ -1,4 +1,4 @@
-classdef fitsobject < handle
+classdef fitsobject < handle & JavaVisible
     %FITSOBJECT - Object containing fit coefficients and initial conditions
     %for kinetics studies. Methods are:
     %   .getinitialconditions('molecule')
@@ -17,6 +17,7 @@ classdef fitsobject < handle
         fitbError;
         fitbNames;
         fitbNamesInd;
+		fitChiSquared;
         
         % Kinetics Initial Conditions
         initialConditionsNames;

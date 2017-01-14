@@ -1,7 +1,7 @@
-classdef plotfitcoefficients
+classdef exporttobaseworkspace
 	properties (Constant = true)
-		menuitemName = 'plotfitcoefficients';
-		menuitemText = 'Plot Fit Coefficients';
+		menuitemName = 'exporttobaseworkspace';
+		menuitemText = 'Export to Base Workspace';
 		menuitemMultiSelection = true;
 	end
 
@@ -21,16 +21,12 @@ classdef plotfitcoefficients
 					idx = [idx;find(strcmp(WorkspaceList.PlantNames, SelectedItems.Variables{i}))]; %#ok<AGROW>
 				end
 			end
-			plants = WorkspaceList.Plants(idx);
-			plantnames = WorkspaceList.PlantNames(idx);
-			dupids = [];
 
 			% Open the plot browsers
-			for i = 1:length(plants)
-				hfig = plants{i}.plotfitcoefficients();
-				set(hfig,'Name',sprintf('Coeff:%s',plantnames{i}));
-				set(hfig,'NumberTitle','off');
-				Parent.TPComponent.addFigure(hfig);
+			for i = 1:length(idx)
+				assignin('base',...
+					WorkspaceList.PlantNames{idx(i)},...
+					WorkspaceList.Plants{idx(i)});
 			end
 		end
 	end

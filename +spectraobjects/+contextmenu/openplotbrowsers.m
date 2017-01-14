@@ -22,11 +22,14 @@ classdef openplotbrowsers
 				end
 			end
 			plants = WorkspaceList.Plants(idx);
+			plantnames = WorkspaceList.PlantNames(idx);
 			dupids = [];
 
 			% Open the plot browsers
 			for i = 1:length(plants)
 				hfig = plants{i}.plotbrowser();
+				set(hfig,'Name',sprintf('%s',plantnames{i}));
+				set(hfig,'NumberTitle','off');
 				Parent.TPComponent.addFigure(hfig);
 			end
 		end
