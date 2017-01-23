@@ -67,9 +67,9 @@ classdef fittingtab < handle
             %addlistener(this.calibrationTextField,'ActionPerformed',@(~,~) setTextFieldText(this.calibrationTextField,'none'));
             panel.add(this.instrumentLorentzianFWHMTextField,'xywh(4,4,1,1)');
 			% Fitting checkboxes
-			this.instrumentGaussianFWHMFittingCheckbox = toolpack.component.TSCheckBox('',false);
+			this.instrumentGaussianFWHMFittingCheckbox = toolpack.component.TSCheckBox('Fit',false);
 			panel.add(this.instrumentGaussianFWHMFittingCheckbox,'xywh(6,2,1,1)');
-			this.instrumentLorentzianFWHMFittingCheckbox = toolpack.component.TSCheckBox('',false);
+			this.instrumentLorentzianFWHMFittingCheckbox = toolpack.component.TSCheckBox('Fit',false);
 			panel.add(this.instrumentLorentzianFWHMFittingCheckbox,'xywh(6,4,1,1)');
             this.TPComponent.add(this.InstrumentParametersSection);
             

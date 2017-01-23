@@ -25,15 +25,19 @@ classdef performspectralfit
 			plantnames = WorkspaceList.PlantNames(idx);
 			dupids = [];
 		
-			fitlineshape = true;
+			paramsToFit = [Parent.fittingtab.instrumentGaussianFWHMFittingCheckbox.Selected,...
+							Parent.fittingtab.instrumentLorentzianFWHMFittingCheckbox.Selected];
 		
 			hwait = waitbar(0,'Fitting Spectra', 'WindowStyle', 'modal');
 			itemNames = Parent.SpectraList.getItemNames(SelectedItems.Variables);
 			for i = 1:numel(SelectedItems.Variables)
-				if fitlineshape
+				if any(paramsToFit)
 					options = optimoptions('lsqnonlin','Display','iter');
-					beta = lsqnonlin(@(b) funLineshape(plants{i},Parent.FitSpectraList.Plants,b(1),b(2)),[str2double(Parent.fittingtab.instrumentGaussianFWHMTextField.Text),str2double(Parent.fittingtab.instrumentLorentzianFWHMTextField.Text)],...
-									[0 0],[inf inf],options);
+					beta = lsqnonlinWithFixedParams( ...
+							@(b) funLineshape(plants{i},Parent.FitSpectraList.Plants,b(1),b(2)),...
+							paramsToFit,...
+							[str2double(Parent.fittingtab.instrumentGaussianFWHMTextField.Text),str2double(Parent.fittingtab.instrumentLorentzianFWHMTextField.Text)],...
+							[0 0],[inf inf],options);
 					beta
 					Parent.fittingtab.instrumentGaussianFWHMTextField.Text = num2str(beta(1));
 					Parent.fittingtab.instrumentLorentzianFWHMTextField.Text = num2str(beta(2));
@@ -49,6 +53,14 @@ classdef performspectralfit
 				fitobj = vipadesktop.linearSpectrumFit(inputSpectra,fitSpectra,'instrumentGaussianFWHM',gaussianFWHM,'instrumentLorentzianFWHM',lorentzianFWHM);
 				residuals = reshape(reshape(fitobj.y,[],size(fitobj.y,3))-fitobj.fitM*fitobj.fitb,[],1);
 				residuals(isnan(residuals))=0;
+			end
+			
+			function beta = lsqnonlinWithFixedParams(fun,fitindcs,beta0,lowerLim,upperLim,options)
+				beta = beta0;
+				S.type = '()';
+				S.subs = {logical(fitindcs)};
+				beta(fitindcs) = lsqnonlin(@(b) fun(subsasgn(beta0,S,b)),beta0(fitindcs),...
+									lowerLim(fitindcs),upperLim(fitindcs),options);
 			end
 		end
 	end
