@@ -1,13 +1,13 @@
-classdef openplotbrowsers
+classdef plotfitcoefficients
 	properties (Constant = true)
-		menuitemName = 'openplotbrowsers';
-		menuitemText = 'Open Plot Browser(s)';
+		menuitemName = 'plotfitcoefficients';
+		menuitemText = 'Plot Fit Coefficients';
 		menuitemMultiSelection = true;
 	end
 
 	methods (Static)
 		function menucallback(Parent,SelectedItems)
-			WorkspaceList = Parent.SpectraList;
+			WorkspaceList = Parent.FitsList;
 			
 			% Get the objects
 			if isempty(SelectedItems.Variables)
@@ -27,8 +27,8 @@ classdef openplotbrowsers
 
 			% Open the plot browsers
 			for i = 1:length(plants)
-				hfig = plants{i}.plotbrowser();
-				set(hfig,'Name',sprintf('%s',plantnames{i}));
+				hfig = plants{i}.plotfitcoefficients();
+				set(hfig,'Name',sprintf('Coeff:%s',plantnames{i}));
 				set(hfig,'NumberTitle','off');
 				Parent.TPComponent.addFigure(hfig);
 			end

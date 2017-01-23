@@ -7,10 +7,10 @@ classdef setacquiredestination
 
 	methods (Static)
 		function menucallback(Parent,SelectedItems)
-			WorkspaceList = Parent.ImagesList;
+			WorkspaceList = Parent.SpectraList;
 
 			itemNames = WorkspaceList.getItemNames(SelectedItems.Variables);
-			Parent.acquiretab.imageDestTextField.Text = itemNames{1};
+			Parent.acquiretab.spectraDestTextField.Text = itemNames{1};
 		end
 	end
 end

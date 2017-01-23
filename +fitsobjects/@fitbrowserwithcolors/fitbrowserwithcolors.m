@@ -183,11 +183,14 @@ classdef fitbrowserwithcolors < handle
             set(this.plotHandle,'YData',reshape(this.Parent.y(:,:,ind),[],1));
             for i = 1:numel(this.Parent.fitbNames)
                 indx = this.Parent.fitbNamesInd(i);
-                set(this.simPlotHandles(i),'XData',this.Parent.wavenum(:));
-                set(this.simPlotHandles(i),'YData',this.Parent.fitM(:,indx).*this.Parent.fitb(indx,ind));
+				x = this.Parent.wavenum(:);
+				y = this.Parent.fitM(:,indx).*this.Parent.fitb(indx,ind);
+				[~,sortInd] = sort(x);
+                set(this.simPlotHandles(i),'XData',x(sortInd));
+                set(this.simPlotHandles(i),'YData',y(sortInd));
             end
             
-            title(this.axesHandle,sprintf('T = %i us',this.Parent.t(ind)));
+            title(this.axesHandle,sprintf('T = %i us, \\chi^2_{red} = %f',this.Parent.t(ind),this.Parent.fitChiSquared(ind)));
         end
     end
 end

@@ -422,7 +422,7 @@ classdef VIPAxaxis < handle
 			if ~isempty(obj.expLinkIndx)
 				xval = eventdata.IntersectionPoint(1);
 				yval = eventdata.IntersectionPoint(2);
-				indxSim = min(find(round(1000*xval) == round(1000*obj.wavenumSim)));
+				[~,indxSim] = min(abs(1000*xval-1000*obj.wavenumSim));
 				
 				% Save Positions
 				if isempty(obj.linePositionsSim)

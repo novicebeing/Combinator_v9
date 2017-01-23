@@ -1,7 +1,7 @@
-classdef openplotbrowsers
+classdef openfftplotbrowsers
 	properties (Constant = true)
-		menuitemName = 'openplotbrowsers';
-		menuitemText = 'Open Plot Browser(s)';
+		menuitemName = 'openfftplotbrowsers';
+		menuitemText = 'Open FFT Plot Browser(s)';
 		menuitemMultiSelection = true;
 	end
 
@@ -22,14 +22,11 @@ classdef openplotbrowsers
 				end
 			end
 			plants = WorkspaceList.Plants(idx);
-			plantnames = WorkspaceList.PlantNames(idx);
 			dupids = [];
 
 			% Open the plot browsers
 			for i = 1:length(plants)
-				hfig = plants{i}.plotbrowser();
-				set(hfig,'Name',sprintf('%s',plantnames{i}));
-				set(hfig,'NumberTitle','off');
+				hfig = plants{i}.plotbrowser('fft');
 				Parent.TPComponent.addFigure(hfig);
 			end
 		end

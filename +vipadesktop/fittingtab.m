@@ -15,6 +15,8 @@ classdef fittingtab < handle
        % Text Fields
        instrumentGaussianFWHMTextField
        instrumentLorentzianFWHMTextField
+       instrumentGaussianFWHMFittingCheckbox
+       instrumentLorentzianFWHMFittingCheckbox
    end
    events
        OpenButtonPressed
@@ -48,7 +50,7 @@ classdef fittingtab < handle
 			
             % Add Instrument Parameters Section
             this.InstrumentParametersSection = toolpack.desktop.ToolSection('instrumentparameters','Inst. Parameters');
-            panel = toolpack.component.TSPanel('7px, f:p, 4px, f:p, 7px','3px, 20px, 4px, 20px, 4px, 22px');
+            panel = toolpack.component.TSPanel('7px, f:p, 4px, f:p, 4px, f:p, 7px','3px, 20px, 4px, 20px, 4px, 22px');
             this.InstrumentParametersSection.add(panel);
             l = toolpack.component.TSLabel('Inst. Gaussian FWHM [cm-1]');
             panel.add(l,'xy(2,2,''r,c'')');
@@ -64,6 +66,11 @@ classdef fittingtab < handle
             this.instrumentLorentzianFWHMTextField.Editable = true;
             %addlistener(this.calibrationTextField,'ActionPerformed',@(~,~) setTextFieldText(this.calibrationTextField,'none'));
             panel.add(this.instrumentLorentzianFWHMTextField,'xywh(4,4,1,1)');
+			% Fitting checkboxes
+			this.instrumentGaussianFWHMFittingCheckbox = toolpack.component.TSCheckBox('Fit',false);
+			panel.add(this.instrumentGaussianFWHMFittingCheckbox,'xywh(6,2,1,1)');
+			this.instrumentLorentzianFWHMFittingCheckbox = toolpack.component.TSCheckBox('Fit',false);
+			panel.add(this.instrumentLorentzianFWHMFittingCheckbox,'xywh(6,4,1,1)');
             this.TPComponent.add(this.InstrumentParametersSection);
             
             this.vipadesktop = vipadesktop;

@@ -1,7 +1,7 @@
-classdef openplotbrowsers
+classdef openmultiplotbrowser
 	properties (Constant = true)
-		menuitemName = 'openplotbrowsers';
-		menuitemText = 'Open Plot Browser(s)';
+		menuitemName = 'openmultiplotbrowser';
+		menuitemText = 'Open Multi Plot Browser';
 		menuitemMultiSelection = true;
 	end
 
@@ -22,16 +22,11 @@ classdef openplotbrowsers
 				end
 			end
 			plants = WorkspaceList.Plants(idx);
-			plantnames = WorkspaceList.PlantNames(idx);
 			dupids = [];
 
-			% Open the plot browsers
-			for i = 1:length(plants)
-				hfig = plants{i}.plotbrowser();
-				set(hfig,'Name',sprintf('%s',plantnames{i}));
-				set(hfig,'NumberTitle','off');
-				Parent.TPComponent.addFigure(hfig);
-			end
+			% Open the multi plot browser
+			obj = spectraobjects.multispectrabrowser(plants);
+			hfig = obj.figureHandle;
 		end
 	end
 end

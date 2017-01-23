@@ -1,13 +1,13 @@
-classdef openplotbrowsers
+classdef openlineprofilebrowser
 	properties (Constant = true)
-		menuitemName = 'openplotbrowsers';
-		menuitemText = 'Open Plot Browser(s)';
-		menuitemMultiSelection = true;
+		menuitemName = 'openlineprofilebrowser';
+		menuitemText = 'Open Line Profile Browser';
+		menuitemMultiSelection = false;
 	end
 
 	methods (Static)
 		function menucallback(Parent,SelectedItems)
-			WorkspaceList = Parent.SpectraList;
+			WorkspaceList = Parent.ImagesList;
 			
 			% Get the objects
 			if isempty(SelectedItems.Variables)
@@ -22,14 +22,11 @@ classdef openplotbrowsers
 				end
 			end
 			plants = WorkspaceList.Plants(idx);
-			plantnames = WorkspaceList.PlantNames(idx);
 			dupids = [];
 
 			% Open the plot browsers
 			for i = 1:length(plants)
-				hfig = plants{i}.plotbrowser();
-				set(hfig,'Name',sprintf('%s',plantnames{i}));
-				set(hfig,'NumberTitle','off');
+				hfig = plants{i}.lineProfileBrowser();
 				Parent.TPComponent.addFigure(hfig);
 			end
 		end

@@ -1,4 +1,5 @@
-function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,varargin)
+function fitobjectout = nonlinearSpectrumFit(spectrumobject,fitspectrumobjects,varargin)
+	return
     % Check the input arguments
     if ~isa(spectrumobject,'kineticsobject') && ~isa(spectrumobject,'spectraobjects.spectraobject')
         error('Spectra object must be of "kineticsobject" or "spectraobjects.spectraobject" type');
@@ -6,16 +7,13 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,vara
 
     % Check inputs
     p = inputParser;
-    addParameter(p,'instrumentGaussianFWHM',0,@isnumeric);
+    addParameter(p,'instrumentGaussianFWHM',0,@islogical);
+	addParameter(p,'fitGaussianFWHM',0,@isnumeric);
     addParameter(p,'instrumentLorentzianFWHM',0.06,@isnumeric);
+	addParameter(p,'fitLorentzianFWHM',0,@islogical);
     addParameter(p,'instrumentPhase',0,@isnumeric);
     addParameter(p,'lineshapeFunction','pseudoVoigt',@ischar);
     parse(p,varargin{:});
-
-    % Warn that gaussian fwhm is hard coded
-    %warning('Gaussian FWHM is hard coded...');
-    %warning('kineticsobject averaging is hard coded...');
-    %warning('nan removal with averaging is hard coded...');
     
     % Make sure that the kineticsobject spectrum is properly averaged
     spectrumobject.averageSpectra();
@@ -28,11 +26,9 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,vara
     fitArrayNum = 1;
     for i = 1:numel(fitspectrumobjects)
         for j = 1:numel(fitspectrumobjects{i})
-            y = fitspectrumobjects{i}(j).createSpectrum(x,varargin{:});%0.02997); %***
-            k = spectraobjects.spectraobject(); %***
-            %k.averageSpectrum(x,y,[],0);
+            y = fitspectrumobjects{i}(j).createSpectrum(x,varargin{:});
+            k = spectraobjects.spectraobject();
 			[yy,~] = k.assignyerror(x,y);
-            %yy = k.ysum./k.wsum;
             yy(isnan(yy)) = 0;
             fitMatrix(:,:,fitArrayNum) = yy;
             fitbNames{fitArrayNum} = fitspectrumobjects{i}(j).name;
@@ -88,4 +84,24 @@ function fitobjectout = linearSpectrumFit(spectrumobject,fitspectrumobjects,vara
     fitobjectout.fitbNames = fitbNames;
     fitobjectout.fitbNamesInd = fitbInd;
 	fitobjectout.fitChiSquared = chiSquared;
+end
+
+function makeSpectra(beta,x,fitspectraobjects,varargin)
+	% Construct the fit matrix
+    fitbNames = {};
+    fitbInd = [];
+    fitMatrix = zeros(size(x,1),size(x,2),numel(fitspectrumobjects));
+    fitArrayNum = 1;
+    for i = 1:numel(fitspectrumobjects)
+        for j = 1:numel(fitspectrumobjects{i})
+            y = fitspectrumobjects{i}(j).createSpectrum(x,varargin{:});
+            k = spectraobjects.spectraobject();
+			[yy,~] = k.assignyerror(x,y);
+            yy(isnan(yy)) = 0;
+            fitMatrix(:,:,fitArrayNum) = yy;
+            fitbNames{fitArrayNum} = fitspectrumobjects{i}(j).name;
+            fitbInd(fitArrayNum) = fitArrayNum;
+            fitArrayNum = fitArrayNum + 1;
+        end
+    end
 end

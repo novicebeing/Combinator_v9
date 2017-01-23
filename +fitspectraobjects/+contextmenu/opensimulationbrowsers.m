@@ -1,13 +1,13 @@
-classdef openplotbrowsers
+classdef opensimulationbrowsers
 	properties (Constant = true)
-		menuitemName = 'openplotbrowsers';
-		menuitemText = 'Open Plot Browser(s)';
+		menuitemName = 'opensimulationbrowsers';
+		menuitemText = 'Open Simulation Browser(s)';
 		menuitemMultiSelection = true;
 	end
 
 	methods (Static)
 		function menucallback(Parent,SelectedItems)
-			WorkspaceList = Parent.SpectraList;
+			WorkspaceList = Parent.FitSpectraList;
 			
 			% Get the objects
 			if isempty(SelectedItems.Variables)
@@ -22,14 +22,11 @@ classdef openplotbrowsers
 				end
 			end
 			plants = WorkspaceList.Plants(idx);
-			plantnames = WorkspaceList.PlantNames(idx);
 			dupids = [];
 
 			% Open the plot browsers
 			for i = 1:length(plants)
-				hfig = plants{i}.plotbrowser();
-				set(hfig,'Name',sprintf('%s',plantnames{i}));
-				set(hfig,'NumberTitle','off');
+				hfig = plants{i}.spectrumsimulationbrowser();
 				Parent.TPComponent.addFigure(hfig);
 			end
 		end
